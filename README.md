@@ -57,7 +57,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#transitions) and [Callbacks](#callbacks) sections for more details.
+As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#2-transitions) and [Callbacks](#4-callbacks) sections for more details.
 
 ### 1.1 current
 
