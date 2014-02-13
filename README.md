@@ -7,9 +7,7 @@
 [travis]: http://travis-ci.org/peter-murach/finite_machine
 [codeclimate]: https://codeclimate.com/github/peter-murach/finite_machine
 
-A minimal finite state machine with a straightforward syntax. With intuitive
-syntax you can quickly model states and add callbacks that can be triggered
-synchronously or asynchronously.
+A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously.
 
 ## Features
 
@@ -29,7 +27,7 @@ Add this line to your application's Gemfile:
 
     gem 'finite_machine'
 
-And then execute:
+Then execute:
 
     $ bundle
 
@@ -59,11 +57,11 @@ fm = FiniteMachine.define do
 end
 ```
 
-As the example demonstrates, by calling the `define` method on **FiniteMachine** one gets to create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#transitions) and [Callbacks](#callbacks) sections for more detail.
+As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#transitions) and [Callbacks](#callbacks) sections for more details.
 
 ### 1.1 current
 
-The **FiniteMachine** allows to query the current state by calling `current` method. 
+The **FiniteMachine** allows you to query the current state by calling the `current` method.
 
 ```ruby
   fm.current  # => :red
@@ -71,9 +69,9 @@ The **FiniteMachine** allows to query the current state by calling `current` met
 
 ### 1.2 initial
 
-There are number of ways to provide initial state  **FiniteMachine** depending on your requirements.
+There are number of ways to provide the initial state  **FiniteMachine** depending on your requirements.
 
-By default the **FiniteMachine** will be in `:none` state and you would need to provide event to transition out of this state.
+By default the **FiniteMachine** will be in the `:none` state and you will need to provide an event to transition out of this state.
 
 ```ruby
   fm = FiniteMachine.define do
@@ -87,7 +85,7 @@ By default the **FiniteMachine** will be in `:none` state and you would need to 
   fm.current # => :none
 ```
 
-If you specify initial state using `initial` helper then an `init` event will be created and triggered when the state machine is constructed.
+If you specify initial state using the `initial` helper, an `init` event will be created and triggered when the state machine is created.
 
 ```ruby
   fm = FiniteMachine.define do
@@ -102,7 +100,7 @@ If you specify initial state using `initial` helper then an `init` event will be
   fm.current # => :green
 ```
 
-Finally, if you want to defer calling the initial state method pass the `:defer` option to `initial` helper.
+If you want to defer calling the initial state method pass the `:defer` option to the `initial` helper.
 
 ```ruby
   fm = FiniteMachine.define do
@@ -120,7 +118,7 @@ Finally, if you want to defer calling the initial state method pass the `:defer`
 
 ### 1.3 terminal
 
-To specify a final state **FiniteMachine** uses `terminal` method.
+To specify a final state **FiniteMachine** uses the `terminal` method.
 
 ```ruby
   fm = FiniteMachine.define do
@@ -134,7 +132,7 @@ To specify a final state **FiniteMachine** uses `terminal` method.
   end
 ```
 
-After terminal state has been specified, you can use `finished?` method on the state machine instance to verify if the terminal state has been reached or not. 
+When the terminal state has been specified, you can use `finished?` method on the state machine instance to verify if the terminal state has been reached or not.
 
 ```ruby
   fm.finished?  # => false
@@ -146,7 +144,7 @@ After terminal state has been specified, you can use `finished?` method on the s
 
 ### 1.4 is?
 
-To verify whether or not a state machine is in a given state, **FiniteMachine** uses `is?` method. It returns `true` if machien is found to be in a state, and `false` otherwise.
+To verify whether or not a state machine is in a given state, **FiniteMachine** uses `is?` method. It returns `true` if the machine is found to be in the given state, or `false` otherwise.
 
 ```ruby
   fm.is?(:red)    # => true
@@ -155,7 +153,7 @@ To verify whether or not a state machine is in a given state, **FiniteMachine** 
 
 ### 1.5 can? and cannot?
 
-To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if transition can be performed and returns true if state change can happend, and false otherwise. `cannot?` is simply the inverse of `can?`.
+To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if **FiniteMachine** can fire a given event, returning true, otherwise, it will return false. `cannot?` is simply the inverse of `can?`.
 
 ```ruby
   fm.can?(:ready)    # => true
@@ -166,7 +164,7 @@ To verify whether or not an event can be fired, **FiniteMachine** provides `can?
 
 ### 1.6 states
 
-You can use `states` method to query for all states. It returns an array of all the states for the current state machine.
+You can use the `states` method to return an array of all the states for a given state machine.
 
 ```ruby
   fm.states # => [:none, :green, :yellow, :red]
@@ -205,7 +203,7 @@ in the form of `:from` and `:to` hash keys or by using the state names themselve
   event :start, :neutral => :first
 ```
 
-Once specified the **FiniteMachine** will create custom methods for transitioning between the states.
+Once specified, the **FiniteMachine** will create custom methods for transitioning between each state.
 The following methods trigger transitions for the example state machine.
 
 * ready
@@ -214,14 +212,14 @@ The following methods trigger transitions for the example state machine.
 
 ### 2.1 Performing transitions
 
-In order to transition to the next reachable state simply call the event name on the **FiniteMachine** instance.
+In order to transition to the next reachable state, simply call the event's name on the **FiniteMachine** instance.
 
 ```ruby
   fm.ready
   fm.current       # => :yellow
 ```
 
-Further, you can pass additional parameters with the method call that will be available in the triggered callback.
+Furthermore, you can pass additional parameters with the method call that will be available in the triggered callback.
 
 ```ruby
   fm.go('Piotr!')
@@ -335,7 +333,7 @@ Finally, it's possible to use string that will be evaluated using `eval` and nee
 
 ### 3.4 Combining transition conditions
 
-When multiple conditions define whether or not a transition should happen, an Array can be used. Moreover, you can apply both `:if` and `:unless` to the same transition.
+When multiple conditions define whether or not a transition should happen, an Array can be used. Furthermore, you can apply both `:if` and `:unless` to the same transition.
 
 ```ruby
   fsm = FiniteMachine.define do
@@ -354,15 +352,15 @@ The transition only runs when all the `:if` conditions and none of the `unless` 
 
 ## 4 Callbacks
 
-You can consume state machine events and the information they provide by registering a callback. The following main 3 types of callbacks are available in **FiniteMachine**:
+You can watch state machine events and the information they provide by registering a callback. The following 3 types of callbacks are available in **FiniteMachine**:
 
 * `on_enter`
 * `on_transition`
 * `on_exit`
 
-Use `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered. Use the state or event name as a first parameter to the callback followed by a list arguments that you expect to receive.
+Use the `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered. Use the state or event name as a first parameter to the callback followed by a list arguments that you expect to receive.
 
-When you subscribe to `:green` state event, the callback will be called whenever someone instruments change for that state. The same will happend upon subscription to event `ready`, namely, the callback will be called each time the state transition method is called.
+When you subscribe to the `:green` state event, the callback will be called whenever someone instruments change for that state. The same will happend on subscription to event `ready`, namely, the callback will be called each time the state transition method is called.
 
 ```ruby
 fm = FiniteMachine.define do
@@ -387,19 +385,19 @@ fm.go('Piotr!')
 
 ### 4.1 on_enter
 
-This method is executed before given event or state change happens. If you provide only a callback without the name for the state or event to listen for, then `any` state and event will be observered.
+This method is executed before given event or state change. If you provide only a callback without the name of the state or event to listen out for, then `:any` state and `:any` event will be observered.
 
 ### 4.2 on_transition
 
-This method is executed when given event or state change happens. If you provide only a callback without the name for the state or event to listen for, then `any` state and event will be observered.
+This method is executed when given event or state change happens. If you provide only a callback without the name of the state or event to listen out for, then `:any` state and `:any` event will be observered.
 
 ### 4.3 on_exit
 
-This method is executed after given event or state change happens. If you provide only a callback without the name for the state or event to listen for, then `any` state and event will be observered.
+This method is executed after a given event or state change happens. If you provide only a callback without the name of the state or event to listen for, then `:any` state and `:any` event will be observered.
 
 ### 4.4 Parameters
 
-All callbacks are passed `TransitionEvent` object with the following attributes.
+All callbacks get the `TransitionEvent` object with the following attributes.
 
 * name    # the event name
 * from    # the state transitioning from
@@ -453,7 +451,7 @@ end
 
 ## 6 Integration
 
-Since **FiniteMachine** is an object in its own right it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models(e.i.ActiveRecord) to transform them into state machine or require mixing into exisiting class.
+Since **FiniteMachine** is an object in its own right it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
 
 ```ruby
 
@@ -502,7 +500,7 @@ end
 
 ## 7 Tips
 
-Creating standalone **FiniteMachine** brings few benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself.
+Creating a standalone **FiniteMachine** brings few benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself.
 
 ## Contributing
 
