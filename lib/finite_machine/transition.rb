@@ -47,6 +47,7 @@ module FiniteMachine
     def parse_states(attrs)
       _attrs = attrs.dup
       [:name, :if, :unless].each { |key| _attrs.delete(key) }
+      raise_not_enough_transitions(attrs) unless _attrs.any?
 
       if [:from, :to].any? { |key| attrs.keys.include?(key) }
         [Array(_attrs[:from] || ANY_STATE), _attrs[:to]]
@@ -96,6 +97,15 @@ module FiniteMachine
 
     def inspect
       "<#{self.class} name: #{@name}, transitions: #{@from} => #{@to}, when: #{@conditions}>"
+    end
+
+    private
+
+    # Raise error when not enough transitions are provided
+    #
+    # @api private
+    def raise_not_enough_transitions(attrs)
+      raise NotEnoughTransitionsError, "please provide state transitions for '#{attrs.inspect}'"
     end
 
   end # Transition
