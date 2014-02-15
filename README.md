@@ -136,25 +136,25 @@ fm.current # => :green
 To specify a final state **FiniteMachine** uses the `terminal` method.
 
 ```ruby
-  fm = FiniteMachine.define do
-    initial :green
-    terminal :red
+fm = FiniteMachine.define do
+  initial :green
+  terminal :red
 
-    events {
-      event :slow, :green  => :yellow
-      event :stop, :yellow => :red
-    }
-  end
+  events {
+    event :slow, :green  => :yellow
+    event :stop, :yellow => :red
+  }
+end
 ```
 
 When the terminal state has been specified, you can use `finished?` method on the state machine instance to verify if the terminal state has been reached or not.
 
 ```ruby
-  fm.finished?  # => false
-  fm.slow
-  fm.finished?  # => false
-  fm.stop
-  fm.finished?  # => true
+fm.finished?  # => false
+fm.slow
+fm.finished?  # => false
+fm.stop
+fm.finished?  # => true
 ```
 
 ### 1.4 is?
@@ -162,8 +162,8 @@ When the terminal state has been specified, you can use `finished?` method on th
 To verify whether or not a state machine is in a given state, **FiniteMachine** uses `is?` method. It returns `true` if the machine is found to be in the given state, or `false` otherwise.
 
 ```ruby
-  fm.is?(:red)    # => true
-  fm.is?(:yellow) # => false
+fm.is?(:red)    # => true
+fm.is?(:yellow) # => false
 ```
 
 ### 1.5 can? and cannot?
@@ -171,10 +171,10 @@ To verify whether or not a state machine is in a given state, **FiniteMachine** 
 To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if **FiniteMachine** can fire a given event, returning true, otherwise, it will return false. `cannot?` is simply the inverse of `can?`.
 
 ```ruby
-  fm.can?(:ready)    # => true
-  fm.can?(:go)       # => false
-  fm.cannot?(:ready) # => false
-  fm.cannot?(:go)    # => true
+fm.can?(:ready)    # => true
+fm.can?(:go)       # => false
+fm.cannot?(:ready) # => false
+fm.cannot?(:go)    # => true
 ```
 
 ### 1.6 states
@@ -182,7 +182,7 @@ To verify whether or not an event can be fired, **FiniteMachine** provides `can?
 You can use the `states` method to return an array of all the states for a given state machine.
 
 ```ruby
-  fm.states # => [:none, :green, :yellow, :red]
+fm.states # => [:none, :green, :yellow, :red]
 ```
 
 ### 1.7 target
@@ -420,24 +420,42 @@ All callbacks get the `TransitionEvent` object with the following attributes.
 
 followed by the rest of arguments that were passed to the event method.
 
+```ruby
+fm = FiniteMachine.define do
+  initial :red
+
+  events {
+    event :ready, :red => :yellow
+  }
+
+  callbacks {
+    on_enter_ready { |event, time|
+      puts "lights switching from #{event.from} to #{event.to} in #{time} seconds"
+    }
+  }
+end
+
+fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
+```
+
 ### 4.5 Same kind of callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
 
 ```ruby
-  fm = FiniteMachine.define do
-    initial :green
+fm = FiniteMachine.define do
+  initial :green
 
-    events {
-      event :slow, :green => :yellow
-    }
+  events {
+    event :slow, :green => :yellow
+  }
 
-    callbacks {
-      on_enter(:yellow) { this_is_run_first }
-      on_enter(:yellow) { then_this }
-    }
-  end
-  fm.slow # => will invoke both callbacks
+  callbacks {
+    on_enter(:yellow) { this_is_run_first }
+    on_enter(:yellow) { then_this }
+  }
+end
+fm.slow # => will invoke both callbacks
 ```
 
 ### 4.6 Fluid callbacks
