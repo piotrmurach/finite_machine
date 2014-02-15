@@ -62,7 +62,7 @@ describe FiniteMachine, ':if, :unless' do
       initial :green
 
       events {
-        event :slow, :green => :yellow, unless: -> { return true }
+        event :slow, :green => :yellow, unless: -> { true }
         event :stop, :yellow => :red
       }
 
@@ -125,7 +125,7 @@ describe FiniteMachine, ':if, :unless' do
       target car
 
       events {
-        event :start, :neutral => :one, if: -> (car) { car.engine_on? }
+        event :start, :neutral => :one, if: proc {|car| car.engine_on? }
         event :shift, :one => :two
       }
     end
