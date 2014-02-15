@@ -79,7 +79,7 @@ module FiniteMachine
 
     TransitionEvent = Struct.new(:from, :to, :name) do
       def build(_transition)
-        self.from = _transition.from.first
+        self.from = _transition.from_state
         self.to   = _transition.to
         self.name = _transition.name
       end
@@ -91,7 +91,7 @@ module FiniteMachine
       hook.call(trans_event, *event.data)
     end
 
-    def trigger(event)
+    def trigger(event, *args, &block)
       [event.type, ANY_EVENT].each do |event_type|
         [event.state, ANY_STATE].each do |event_state|
           hooks.call(event_type, event_state, event) do |hook|

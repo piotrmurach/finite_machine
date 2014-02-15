@@ -279,7 +279,32 @@ describe FiniteMachine, 'callbacks' do
       initial :green
 
       events {
-        event :slow,  :green  => :yellow
+        event :slow, :green  => :yellow
+      }
+
+      callbacks {
+        on_enter(:yellow) { |e| evt = e }
+      }
+    end
+
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(fsm.current).to eql(:yellow)
+
+    expect(evt.from).to eql(:green)
+    expect(evt.to).to eql(:yellow)
+    expect(evt.name).to eql(:slow)
+  end
+
+  it "identifies the from state for callback event parameter" do
+    evt = nil
+
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow, [:red, :blue, :green]  => :yellow
+        event :fast, :red => :purple
       }
 
       callbacks {

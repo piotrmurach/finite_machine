@@ -20,6 +20,9 @@ module FiniteMachine
     # The current state machine
     attr_threadsafe :machine
 
+    # The original from state
+    attr_threadsafe :from_state
+
     # Initialize a Transition
     #
     # @api public
@@ -27,6 +30,7 @@ module FiniteMachine
       @machine    = machine
       @name       = attrs.fetch(:name, DEFAULT_STATE)
       @from, @to  = *parse_states(attrs)
+      @from_state = @from.first
       @if         = Array(attrs.fetch(:if, []))
       @unless     = Array(attrs.fetch(:unless, []))
       @conditions = make_conditions
@@ -78,6 +82,7 @@ module FiniteMachine
     def call
       sync_exclusive do
         transitions = machine.transitions[name]
+        self.from_state = machine.state
         machine.state = transitions[machine.state] || transitions[ANY_STATE] || name
       end
     end
