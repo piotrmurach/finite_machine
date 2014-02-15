@@ -45,37 +45,27 @@ module FiniteMachine
       hooks[event_type][name] << callback
     end
 
-    def on_enter(*args, &callback)
+    def listen_on(type, *args, &callback)
       if machine.states.any? { |state| state == args.first }
-        on :enterstate, *args, &callback
+        on :"#{type}state", *args, &callback
       elsif machine.event_names.any? { |name| name == args.first }
-        on :enteraction, *args, &callback
+        on :"#{type}action", *args, &callback
       else
-        on :enterstate, *args, &callback
-        on :enteraction, *args, &callback
+        on :"#{type}state", *args, &callback
+        on :"#{type}action", *args, &callback
       end
+    end
+
+    def on_enter(*args, &callback)
+      listen_on :enter, *args, &callback
     end
 
     def on_transition(*args, &callback)
-      if machine.states.any? { |state| state == args.first }
-        on :transitionstate, *args, &callback
-      elsif machine.event_names.any? { |name| name == args.first }
-        on :transitionaction, *args, &callback
-      else
-        on :transitionstate, *args, &callback
-        on :transitionaction, *args, &callback
-      end
+      listen_on :transition, *args, &callback
     end
 
     def on_exit(*args, &callback)
-      if machine.states.any? { |state| state == args.first }
-        on :exitstate, *args, &callback
-      elsif machine.event_names.any? { |name| name == args.first }
-        on :exitaction, *args, &callback
-      else
-        on :exitstate, *args, &callback
-        on :exitaction, *args, &callback
-      end
+      listen_on :exit, *args, &callback
     end
 
     def method_missing(method_name, *args, &block)
