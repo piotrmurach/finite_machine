@@ -4,13 +4,17 @@ module FiniteMachine
 
   # A generic DSL for describing the state machine
   class GenericDSL
+    include Threadable
+
     class << self
       # @api private
       attr_accessor :top_level
     end
 
+    attr_threadsafe :machine
+
     def initialize(machine)
-      @machine = machine
+      self.machine = machine
     end
 
     def method_missing(method_name, *args, &block)
@@ -22,18 +26,16 @@ module FiniteMachine
     end
 
     def call(&block)
-      instance_eval(&block)
+      sync_exclusive { instance_eval(&block) }
       # top_level.instance_eval(&block)
     end
   end # GenericDSL
 
   class DSL < GenericDSL
 
-    attr_reader :machine
+    attr_threadsafe :defer
 
-    attr_reader :defer
-
-    attr_reader :initial_event
+    attr_threadsafe :initial_event
 
     # Initialize top level DSL
     #
@@ -41,7 +43,7 @@ module FiniteMachine
     def initialize(machine)
       super(machine)
       machine.state = FiniteMachine::DEFAULT_STATE
-      @defer = true
+      self.defer = true
     end
 
     # Define initial state
@@ -50,8 +52,8 @@ module FiniteMachine
     #
     # @api public
     def initial(value)
-      state, name, @defer = parse(value)
-      @initial_event = name
+      state, name, self.defer = parse(value)
+      self.initial_event = name
       event = proc { event name, from: FiniteMachine::DEFAULT_STATE, to: state }
       machine.events.call(&event)
     end
@@ -124,9 +126,11 @@ module FiniteMachine
     #
     # @api public
     def event(name, attrs = {}, &block)
-      _transition = Transition.new(machine, attrs.merge!(name: name))
-      _transition.define
-      _transition.define_event
+      sync_exclusive do
+        _transition = Transition.new(machine, attrs.merge!(name: name))
+        _transition.define
+        _transition.define_event
+      end
     end
   end # EventsDSL
 end # FiniteMachine

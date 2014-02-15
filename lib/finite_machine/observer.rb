@@ -36,8 +36,10 @@ module FiniteMachine
     #
     # @api public
     def on(event_type = ANY_EVENT, name = ANY_STATE, &callback)
-      ensure_valid_callback_name!(name)
-      hooks.register event_type, name, callback
+      sync_exclusive do
+        ensure_valid_callback_name!(name)
+        hooks.register event_type, name, callback
+      end
     end
 
     def listen_on(type, *args, &callback)
@@ -92,10 +94,12 @@ module FiniteMachine
     end
 
     def trigger(event, *args, &block)
-      [event.type, ANY_EVENT].each do |event_type|
-        [event.state, ANY_STATE].each do |event_state|
-          hooks.call(event_type, event_state, event) do |hook|
-            run_callback(hook, event)
+      sync_exclusive do
+        [event.type, ANY_EVENT].each do |event_type|
+          [event.state, ANY_STATE].each do |event_state|
+            hooks.call(event_type, event_state, event) do |hook|
+              run_callback(hook, event)
+            end
           end
         end
       end
