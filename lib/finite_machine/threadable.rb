@@ -27,8 +27,12 @@ module FiniteMachine
       def attr_threadsafe(*attrs)
         attrs.flatten.each do |attr|
           class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
-            def #{attr}
-              sync_shared { @#{attr} }
+            def #{attr}(*args)
+              if args.empty?
+                sync_shared { @#{attr} }
+              else
+                self.#{attr} = args.shift
+              end
             end
             alias_method '#{attr}?', '#{attr}'
 
