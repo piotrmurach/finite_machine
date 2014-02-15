@@ -380,7 +380,6 @@ describe FiniteMachine, 'callbacks' do
       }
     end
 
-
     expected = {name: :slow, from: :green, to: :yellow, a: 1, b: 2, c: 3}
     fsm.slow(1, 2, 3)
 
@@ -410,7 +409,18 @@ describe FiniteMachine, 'callbacks' do
     }.to raise_error(FiniteMachine::InvalidCallbackNameError, /magic is not a valid callback name/)
   end
 
-  xit "propagates exceptions raised inside callback"
+  it "propagates exceptions raised inside callback" do
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events { event :slow,  :green  => :yellow }
+
+      callbacks { on_enter(:yellow) { raise RuntimeError } }
+    end
+
+    expect(fsm.current).to eql(:green)
+    expect { fsm.slow }.to raise_error(RuntimeError)
+  end
 
   xit "executes callbacks with multiple 'from' transitions"
 end
