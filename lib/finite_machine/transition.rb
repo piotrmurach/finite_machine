@@ -51,6 +51,27 @@ module FiniteMachine
       end
     end
 
+    # Add transition to the machine
+    #
+    # @return [Transition]
+    #
+    # @api private
+    def define
+      from.each do |from|
+        machine.transitions[name][from] = to || from
+      end
+    end
+
+    # Define event on the machine
+    #
+    # @api private
+    def define_event
+      _transition = self
+      machine.class.__send__(:define_method, name) do |*args, &block|
+        transition(_transition, *args, &block)
+      end
+    end
+
     # Execute current transition
     #
     # @api private
@@ -61,8 +82,15 @@ module FiniteMachine
       end
     end
 
+    # Return transition name
+    #
+    # @api public
+    def to_s
+      @name
+    end
+
     def inspect
-      [@name, @from, @to, @conditions].inspect
+      "<#{self.class} name: #{@name}, transitions: #{@from} => #{@to}, when: #{@conditions}>"
     end
 
   end # Transition

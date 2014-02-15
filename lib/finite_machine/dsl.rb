@@ -101,34 +101,18 @@ module FiniteMachine
 
     # Create event and associate transition
     #
+    # @example
+    #   event :go, :green => :yellow
+    #   event :go, :green => :yellow, if: :lights_on?
+    #
+    # @return [Transition]
+    #
     # @api public
     def event(name, attrs = {}, &block)
       _transition = Transition.new(machine, attrs.merge!(name: name))
-      add_transition(_transition)
-      define_event(_transition)
+      _transition.define
+      _transition.define_event
     end
 
-    # Add transition
-    #
-    # @param [Transition] _transition
-    #
-    # @api private
-    def add_transition(_transition)
-      _transition.from.each do |from|
-        machine.transitions[_transition.name][from] = _transition.to || from
-      end
-    end
-
-    # Define event
-    #
-    # @param [String] name
-    # @param [Transition] _transition
-    #
-    # @api private
-    def define_event(_transition)
-      machine.class.__send__ :define_method, _transition.name do |*args, &block|
-        transition(_transition, *args, &block)
-      end
-    end
   end # EventsDSL
 end # FiniteMachine
