@@ -18,12 +18,7 @@ module FiniteMachine
     def initialize(machine)
       @machine = machine
       @machine.subscribe(self)
-
-      @hooks = Hash.new { |events_hash, event_type|
-        events_hash[event_type] = Hash.new { |state_hash, name|
-          state_hash[name] = []
-        }
-      }
+      @hooks = FiniteMachine::Hooks.new(machine)
     end
 
     # Evaluate in current context
@@ -42,7 +37,7 @@ module FiniteMachine
     # @api public
     def on(event_type = ANY_EVENT, name = ANY_STATE, &callback)
       ensure_valid_callback_name!(name)
-      hooks[event_type][name] << callback
+      hooks.register event_type, name, callback
     end
 
     def listen_on(type, *args, &callback)
@@ -99,8 +94,8 @@ module FiniteMachine
     def trigger(event)
       [event.type, ANY_EVENT].each do |event_type|
         [event.state, ANY_STATE].each do |event_state|
-          hooks[event_type][event_state].each do |hook|
-            run_callback hook, event
+          hooks.call(event_type, event_state, event) do |hook|
+            run_callback(hook, event)
           end
         end
       end
