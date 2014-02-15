@@ -74,46 +74,61 @@ There are number of ways to provide the initial state  **FiniteMachine** dependi
 By default the **FiniteMachine** will be in the `:none` state and you will need to provide an event to transition out of this state.
 
 ```ruby
-  fm = FiniteMachine.define do
-    events {
-      event :start, :none   => :green
-      event :slow,  :green  => :yellow
-      event :stop,  :yellow => :red
-    }
-  end
+fm = FiniteMachine.define do
+  events {
+    event :start, :none   => :green
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+end
 
-  fm.current # => :none
+fm.current # => :none
 ```
 
 If you specify initial state using the `initial` helper, an `init` event will be created and triggered when the state machine is created.
 
 ```ruby
-  fm = FiniteMachine.define do
-    initial :green
+fm = FiniteMachine.define do
+  initial :green
 
-    events {
-      event :slow,  :green  => :yellow
-      event :stop,  :yellow => :red
-    }
-  end
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+end
 
-  fm.current # => :green
+fm.current # => :green
+```
+
+If your target object already has `init` method or one of the events names redefines `init`, you can use different name by passing `:event` option to `initial` helper.
+
+```ruby
+fm = FiniteMachine.define do
+  initial :green, event: :start
+
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+end
+
+fm.current # => :green
 ```
 
 If you want to defer calling the initial state method pass the `:defer` option to the `initial` helper.
 
 ```ruby
-  fm = FiniteMachine.define do
-    initial state: :green, defer: true
+fm = FiniteMachine.define do
+  initial state: :green, defer: true
 
-    events {
-      event :slow,  :green  => :yellow
-      event :stop,  :yellow => :red
-    }
-  end
-  fm.current # => :none
-  fm.init
-  fm.current # => :green
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+end
+fm.current # => :none
+fm.init
+fm.current # => :green
 ```
 
 ### 1.3 terminal
