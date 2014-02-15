@@ -41,6 +41,9 @@ module FiniteMachine
   # Raised when a callback is defined with invalid name
   InvalidCallbackNameError = Class.new(::StandardError)
 
+  # Raised when event has no transitions
+  NotEnoughTransitionsError = Class.new(::ArgumentError)
+
   Environment = Struct.new(:target)
 
   # TODO: this should instantiate system not the state machine
