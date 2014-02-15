@@ -315,7 +315,7 @@ You can also use a symbol corresponding to the name of a method that will get ca
   end
 ```
 
-### 3.2 Using a String
+### 3.3 Using a String
 
 Finally, it's possible to use string that will be evaluated using `eval` and needs to contain valid Ruby code. It should only be used when the string represents a short condition.
 
