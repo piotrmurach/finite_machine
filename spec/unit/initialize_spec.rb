@@ -47,6 +47,23 @@ describe FiniteMachine, 'initialize' do
       initial state: :green, event: :start
 
       events {
+        event :slow, :green  => :none
+        event :stop, :yellow => :red
+      }
+    end
+
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(fsm.current).to eql(:none)
+    fsm.start
+    expect(fsm.current).to eql(:green)
+  end
+
+  it "allows to specify deferred inital start event" do
+    fsm = FiniteMachine.define do
+      initial state: :green, event: :start, defer: true
+
+      events {
         event :slow, :green  => :yellow
         event :stop, :yellow => :red
       }
@@ -56,4 +73,5 @@ describe FiniteMachine, 'initialize' do
     fsm.start
     expect(fsm.current).to eql(:green)
   end
+
 end

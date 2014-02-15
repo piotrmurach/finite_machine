@@ -2,6 +2,7 @@
 
 module FiniteMachine
 
+  # A generic DSL for describing the state machine
   class GenericDSL
     class << self
       # @api private
@@ -34,6 +35,9 @@ module FiniteMachine
 
     attr_reader :initial_event
 
+    # Initialize top level DSL
+    #
+    # @api public
     def initialize(machine)
       super(machine)
       machine.state = FiniteMachine::DEFAULT_STATE
@@ -46,14 +50,7 @@ module FiniteMachine
     #
     # @api public
     def initial(value)
-      if value.is_a?(String) || value.is_a?(Symbol)
-        state, name = value, FiniteMachine::DEFAULT_EVENT_NAME
-        @defer = false
-      else
-        state = value[:state]
-        name  = value.has_key?(:event) ? value[:event] : FiniteMachine::DEFAULT_EVENT_NAME
-        @defer = value[:defer] || true
-      end
+      state, name, @defer = parse(value)
       @initial_event = name
       event = proc { event name, from: FiniteMachine::DEFAULT_STATE, to: state }
       machine.events.call(&event)
@@ -89,6 +86,24 @@ module FiniteMachine
     # @api public
     def error
     end
+
+    private
+
+    # Parse initial options
+    #
+    # @params [String, Hash] value
+    #
+    # @return [Array[Symbol,String]]
+    #
+    # @api private
+    def parse(value)
+      if value.is_a?(String) || value.is_a?(Symbol)
+        [value, FiniteMachine::DEFAULT_EVENT_NAME, false]
+      else
+        [value[:state], value.fetch(:event, FiniteMachine::DEFAULT_EVENT_NAME),
+        !!value[:defer]]
+      end
+    end
   end # DSL
 
   class EventsDSL < GenericDSL
@@ -113,6 +128,5 @@ module FiniteMachine
       _transition.define
       _transition.define_event
     end
-
   end # EventsDSL
 end # FiniteMachine
