@@ -43,15 +43,16 @@ module FiniteMachine
     end
 
     def listen_on(type, *args, &callback)
-      state_or_event = args.first
-      if machine.states.include?(state_or_event) || state_or_event == ANY_STATE_HOOK
-        on :"#{type}state", *args, &callback
-      elsif machine.event_names.include?(state_or_event)  || state_or_event == ANY_EVENT_HOOK
-        on :"#{type}action", *args, &callback
+      name   = args.first
+      events = []
+      if machine.states.include?(name) || name == ANY_STATE_HOOK
+        events << :"#{type}state"
+      elsif machine.event_names.include?(name)  || name == ANY_EVENT_HOOK
+        events << :"#{type}action"
       else
-        on :"#{type}state", *args, &callback
-        on :"#{type}action", *args, &callback
+        events << :"#{type}state" << :"#{type}action"
       end
+      events.each { |event| on event, *args, &callback }
     end
 
     def on_enter(*args, &callback)
