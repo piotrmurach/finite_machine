@@ -373,6 +373,15 @@ You can watch state machine events and the information they provide by registeri
 * `on_transition`
 * `on_exit`
 
+In addition, you can listen for generic state changes or events fired by using the following 6 callbacks:
+
+* `on_enter_state`
+* `on_enter_event`
+* `on_transition_state`
+* `on_transition_event`
+* `on_exit_state`
+* `on_exit_event`
+
 Use the `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered. Use the state or event name as a first parameter to the callback followed by a list arguments that you expect to receive.
 
 When you subscribe to the `:green` state event, the callback will be called whenever someone instruments change for that state. The same will happend on subscription to event `ready`, namely, the callback will be called each time the state transition method is called.
@@ -402,13 +411,19 @@ fm.go('Piotr!')
 
 This method is executed before given event or state change. If you provide only a callback without the name of the state or event to listen out for, then `:any` state and `:any` event will be observered.
 
+You can further narrow down the listener to only watch enter state changes using `on_enter_state` callback. Similarly, use `on_enter_event` to only watch for event changes.
+
 ### 4.2 on_transition
 
 This method is executed when given event or state change happens. If you provide only a callback without the name of the state or event to listen out for, then `:any` state and `:any` event will be observered.
 
+You can further narrow down the listener to only watch state transition changes using `on_transition_state` callback. Similarly, use `on_transition_event` to only watch for event transition changes.
+
 ### 4.3 on_exit
 
 This method is executed after a given event or state change happens. If you provide only a callback without the name of the state or event to listen for, then `:any` state and `:any` event will be observered.
+
+You can further narrow down the listener to only watch state exit changes using `on_exit_state` callback. Similarly, use `on_exit_event` to only watch for event exit changes.
 
 ### 4.4 Parameters
 
