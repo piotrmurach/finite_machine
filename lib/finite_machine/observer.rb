@@ -43,9 +43,10 @@ module FiniteMachine
     end
 
     def listen_on(type, *args, &callback)
-      if machine.states.any? { |state| state == args.first }
+      state_or_event = args.first
+      if machine.states.include?(state_or_event) || state_or_event == ANY_STATE_HOOK
         on :"#{type}state", *args, &callback
-      elsif machine.event_names.any? { |name| name == args.first }
+      elsif machine.event_names.include?(state_or_event)  || state_or_event == ANY_EVENT_HOOK
         on :"#{type}action", *args, &callback
       else
         on :"#{type}state", *args, &callback
@@ -96,7 +97,8 @@ module FiniteMachine
     def trigger(event, *args, &block)
       sync_exclusive do
         [event.type, ANY_EVENT].each do |event_type|
-          [event.state, ANY_STATE].each do |event_state|
+          [event.state, ANY_STATE,
+           ANY_STATE_HOOK, ANY_EVENT_HOOK].each do |event_state|
             hooks.call(event_type, event_state, event) do |hook|
               run_callback(hook, event)
             end
@@ -112,6 +114,7 @@ module FiniteMachine
       @callback_names.merge machine.event_names
       @callback_names.merge machine.states
       @callback_names.merge [ANY_STATE, ANY_EVENT]
+      @callback_names.merge [ANY_STATE_HOOK, ANY_EVENT_HOOK]
     end
 
     def ensure_valid_callback_name!(name)

@@ -18,9 +18,17 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
+        on_enter       do |event| called << 'on_enter' end
+        on_enter_state do |event| called << 'on_enter_state' end
+        on_enter_event do |event| called << 'on_enter_event' end
+
+        on_transition       do |event| called << 'on_transition' end
+        on_transition_state do |event| called << 'on_transition_state' end
+        on_transition_event do |event| called << 'on_transition_event' end
+
         on_exit       do |event| called << 'on_exit' end
+        on_exit_state do |event| called << 'on_exit_state' end
+        on_exit_event do |event| called << 'on_exit_event' end
 
         # state callbacks
         on_enter :none  do |event| called << 'on_enter_none' end
@@ -42,16 +50,22 @@ describe FiniteMachine, 'callbacks' do
     expect(called).to eql([
       'on_exit_none',
       'on_exit',
+      'on_exit_state',
       'on_enter_init',
       'on_enter',
+      'on_enter_event',
       'on_transition_green',
       'on_transition',
+      'on_transition_state',
       'on_transition_init',
       'on_transition',
+      'on_transition_event',
       'on_enter_green',
       'on_enter',
+      'on_enter_state',
       'on_exit_init',
-      'on_exit'
+      'on_exit',
+      'on_exit_event'
     ])
   end
 
@@ -69,9 +83,17 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
+        on_enter       do |event| called << 'on_enter' end
+        on_enter_state do |event| called << 'on_enter_state' end
+        on_enter_event do |event| called << 'on_enter_event' end
+
+        on_transition       do |event| called << 'on_transition' end
+        on_transition_state do |event| called << 'on_transition_state' end
+        on_transition_event do |event| called << 'on_transition_event' end
+
         on_exit       do |event| called << 'on_exit' end
+        on_exit_state do |event| called << 'on_exit_state' end
+        on_exit_event do |event| called << 'on_exit_event' end
 
         # state callbacks
         on_enter :green  do |event| called << 'on_enter_green' end
@@ -109,16 +131,22 @@ describe FiniteMachine, 'callbacks' do
     expect(called).to eql([
       'on_exit_green',
       'on_exit',
+      'on_exit_state',
       'on_enter_slow',
       'on_enter',
+      'on_enter_event',
       'on_transition_yellow',
       'on_transition',
+      'on_transition_state',
       'on_transition_slow',
       'on_transition',
+      'on_transition_event',
       'on_enter_yellow',
       'on_enter',
+      'on_enter_state',
       'on_exit_slow',
-      'on_exit'
+      'on_exit',
+      'on_exit_event'
     ])
 
     called = []
@@ -126,16 +154,22 @@ describe FiniteMachine, 'callbacks' do
     expect(called).to eql([
       'on_exit_yellow',
       'on_exit',
+      'on_exit_state',
       'on_enter_stop',
       'on_enter',
+      'on_enter_event',
       'on_transition_red',
       'on_transition',
+      'on_transition_state',
       'on_transition_stop',
       'on_transition',
+      'on_transition_event',
       'on_enter_red',
       'on_enter',
+      'on_enter_state',
       'on_exit_stop',
-      'on_exit'
+      'on_exit',
+      'on_exit_event'
     ])
 
     called = []
@@ -143,16 +177,22 @@ describe FiniteMachine, 'callbacks' do
     expect(called).to eql([
       'on_exit_red',
       'on_exit',
+      'on_exit_state',
       'on_enter_ready',
       'on_enter',
+      'on_enter_event',
       'on_transition_yellow',
       'on_transition',
+      'on_transition_state',
       'on_transition_ready',
       'on_transition',
+      'on_transition_event',
       'on_enter_yellow',
       'on_enter',
+      'on_enter_state',
       'on_exit_ready',
-      'on_exit'
+      'on_exit',
+      'on_exit_event'
     ])
 
     called = []
@@ -160,16 +200,22 @@ describe FiniteMachine, 'callbacks' do
     expect(called).to eql([
       'on_exit_yellow',
       'on_exit',
+      'on_exit_state',
       'on_enter_go',
       'on_enter',
+      'on_enter_event',
       'on_transition_green',
       'on_transition',
+      'on_transition_state',
       'on_transition_go',
       'on_transition',
+      'on_transition_event',
       'on_enter_green',
       'on_enter',
+      'on_enter_state',
       'on_exit_go',
-      'on_exit'
+      'on_exit',
+      'on_exit_event'
     ])
   end
 
