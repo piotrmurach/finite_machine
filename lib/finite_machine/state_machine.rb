@@ -57,10 +57,12 @@ module FiniteMachine
     #
     # @api public
     def notify(event_type, _transition, *data)
-      event_class     = Event.const_get(event_type.capitalize.to_s)
-      state_or_action = event_class < Event::Anystate ? state : _transition.name
-      _event          = event_class.new(state_or_action, _transition, *data)
-      subscribers.visit(_event)
+      sync_shared do
+        event_class     = Event.const_get(event_type.capitalize.to_s)
+        state_or_action = event_class < Event::Anystate ? state : _transition.name
+        _event          = event_class.new(state_or_action, _transition, *data)
+        subscribers.visit(_event)
+      end
     end
 
     # Get current state
