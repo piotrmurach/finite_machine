@@ -12,13 +12,11 @@ matrix:
     - rvm: jruby-20mode
     - rvm: jruby-21mode
     - rvm: jruby-head
-    - rvm: rbx-20mode
-    - rvm: rbx-21mode
-    - rvm: rbx-head
+    - rvm: rbx
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx-head
-    - rvm: rbx-20mode
-    - rvm: rbx-21mode
+    - rvm: rbx
   fast_finish: true
+branches:
+  only: master
