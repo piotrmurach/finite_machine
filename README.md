@@ -507,18 +507,19 @@ class Car
   attr_accessor :reverse_lights
 
   def turn_reverse_lights_off
-    reverse_lights = false
+    self.reverse_lights = false
   end
 
   def turn_reverse_lights_on
-    reverse_lights = true
+    self.reverse_lights = true
   end
 
   def gears
+    context = self
     @gears ||= FiniteMachine.define do
       initial :neutral
 
-      target: self
+      target: context
 
       events {
         event :start, :neutral => :one
@@ -528,15 +529,15 @@ class Car
       }
 
       callbacks {
-        on_enter :reverse do |car, event|
-          car.turnReverseLightsOn
+        on_enter :reverse do |event|
+          context.turn_reverse_lights_on
         end
 
-        on_exit :reverse do |car, event|
-          car.turnReverseLightsOff
+        on_exit :reverse do |event|
+          context.turn_reverse_lights_off
         end
 
-        on_transition do |car, event|
+        on_transition do |event|
           puts "shifted from #{event.from} to #{event.to}"
         end
       }
