@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe FiniteMachine, ':if, :unless' do
-  before(:all) {
+  before(:each) {
     Car = Class.new do
       def turn_engine_on
         @engine_on = true
