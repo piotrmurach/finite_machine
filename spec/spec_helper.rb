@@ -12,4 +12,11 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  # Remove defined constants
+  config.before :each do
+    if Object.const_defined?(:Car)
+      Object.send(:remove_const, :Car)
+    end
+  end
 end
