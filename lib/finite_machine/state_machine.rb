@@ -186,5 +186,17 @@ module FiniteMachine
       SUCCEEDED
     end
 
+    def method_missing(method_name, *args, &block)
+      if env.target.respond_to?(method_name.to_sym)
+        env.target.send(method_name.to_sym, *args, &block)
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      env.target.respond_to?(method_name.to_sym)
+    end
+
   end # StateMachine
 end # FiniteMachine
