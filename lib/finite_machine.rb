@@ -40,6 +40,9 @@ module FiniteMachine
   # When transition between states is invalid
   TransitionError = Class.new(::StandardError)
 
+  # Raised when transitining to invalid state
+  InvalidStateError = Class.new(::ArgumentError)
+
   InvalidEventError = Class.new(::NoMethodError)
 
   # Raised when a callback is defined with invalid name
