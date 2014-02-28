@@ -92,7 +92,11 @@ module FiniteMachine
     def run_callback(hook, event)
       trans_event = TransitionEvent.new
       trans_event.build(event.transition)
-      hook.call(trans_event, *event.data)
+      data = event.data
+      deferred_hook = proc { |trans_event, *data|
+        machine.instance_exec(trans_event, *data, &hook)
+      }
+      deferred_hook.call(trans_event, *data)
     end
 
     def trigger(event, *args, &block)
