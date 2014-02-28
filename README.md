@@ -204,6 +204,29 @@ If you need to execute some external code in the context of the current state ma
   end
 ```
 
+Furthermore, the context created through `target` helper will allow you to reference and call methods from another object.
+
+```ruby
+  car = Car.new
+
+  fm = FiniteMachine.define do
+    initial :neutral
+
+    target car
+
+    events {
+      event :start, :neutral => :one, if: "engine_on?"
+    }
+
+    callbacks {
+      on_enter_start do |event| turn_engine_on end
+      on_exit_start  do |event| turn_engine_off end
+    }
+  end
+```
+
+For more complex example see [Integration](#6-integration) section.
+
 ## 2 Transitions
 
 The `events` scope exposes the `event` helper to define possible state transitions.
@@ -298,7 +321,7 @@ You can also execute methods on an associated object by passing it as an argumen
   end
 
   car = Car.new
-  car.trun_engine_on
+  car.turn_engine_on
 
   fm = FiniteMachine.define do
     initial :neutral
@@ -494,6 +517,65 @@ fm = FiniteMachine.define do
   }
 end
 ```
+
+### 4.7 Executing methods inside callbacks
+
+In order to execute method from another object use `target` helper.
+
+```ruby
+class Car
+  attr_accessor :reverse_lights
+
+  def turn_reverse_lights_off
+    @reverse_lights = false
+  end
+
+  def turn_reverse_lights_on
+    @reverse_lights = true
+  end
+end
+
+car = Car.new
+
+fm = FiniteMachine.define do
+  initial :neutral
+
+  target car
+
+  events {
+    event :forward, [:reverse, :neutral] => :one
+    event :back,    [:neutral, :one] => :reverse
+  }
+
+  callbacks {
+    on_enter_reverse { |event| turn_reverse_lights_on }
+    on_exit_reverse  { |event| turn_reverse_lights_off }
+  }
+end
+```
+
+Note that you can also fire events from callbacks.
+
+```ruby
+fm = FiniteMachine.define do
+  initial :neutral
+
+  target car
+
+  events {
+    event :forward, [:reverse, :neutral] => :one
+    event :back,    [:neutral, :one] => :reverse
+  }
+
+  callbacks {
+    on_enter_reverse { |event| forward('Piotr!') }
+    on_exit_reverse  { |event, name| puts "Go #{name}" }
+  }
+end
+fm.back   # => Go Piotr!
+```
+
+For more complex example see [Integration](#6-integration) section.
 
 ## 5 Errors
 
