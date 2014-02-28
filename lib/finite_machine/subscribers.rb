@@ -29,7 +29,7 @@ module FiniteMachine
     end
 
     def visit(event)
-      each { |subscriber| @mutex.synchronize { event.notify subscriber } }
+      each { |subscriber| event.notify subscriber }
     end
 
     def reset
