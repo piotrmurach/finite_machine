@@ -378,9 +378,12 @@ describe FiniteMachine, 'callbacks' do
       expect(b).to eql(expected[:b])
       expect(c).to eql(expected[:c])
     }
+    context = self
 
     fsm = FiniteMachine.define do
       initial :green
+
+      target context
 
       events {
         event :slow,  :green  => :yellow
