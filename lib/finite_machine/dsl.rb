@@ -86,7 +86,8 @@ module FiniteMachine
     # Error handler that throws exception when machine is in illegal state
     #
     # @api public
-    def error
+    def handlers(&block)
+      machine.errors.call(&block)
     end
 
     private
@@ -110,12 +111,6 @@ module FiniteMachine
 
   class EventsDSL < GenericDSL
 
-    attr_reader :machine
-
-    def initialize(machine)
-      super(machine)
-    end
-
     # Create event and associate transition
     #
     # @example
@@ -133,4 +128,22 @@ module FiniteMachine
       end
     end
   end # EventsDSL
+
+  class ErrorsDSL < GenericDSL
+
+    def initialize(machine)
+      super(machine)
+      machine.error_handlers = []
+    end
+
+    # Add error handler
+    #
+    # @param [Array] exceptions
+    #
+    # @api public
+    def handle(*exceptions, &block)
+      machine.handle(*exceptions, &block)
+    end
+
+  end # ErrorsDSL
 end # FiniteMachine

@@ -15,8 +15,10 @@ RSpec.configure do |config|
 
   # Remove defined constants
   config.before :each do
-    if Object.const_defined?(:Car)
-      Object.send(:remove_const, :Car)
+    [:Car, :Logger].each do |class_name|
+      if Object.const_defined?(class_name)
+        Object.send(:remove_const, class_name)
+      end
     end
   end
 end

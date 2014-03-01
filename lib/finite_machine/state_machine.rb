@@ -5,6 +5,7 @@ module FiniteMachine
   # Base class for state machine
   class StateMachine
     include Threadable
+    include Catchable
 
     # Initial state, defaults to :none
     attr_threadsafe :initial_state
@@ -17,6 +18,9 @@ module FiniteMachine
 
     # Events DSL
     attr_threadsafe :events
+
+    # Errors DSL
+    attr_threadsafe :errors
 
     # The prefix used to name events.
     attr_threadsafe :namespace
@@ -39,6 +43,7 @@ module FiniteMachine
     def initialize(*args, &block)
       @subscribers = Subscribers.new(self)
       @events      = EventsDSL.new(self)
+      @errors      = ErrorsDSL.new(self)
       @observer    = Observer.new(self)
       @transitions = Hash.new { |hash, name| hash[name] = Hash.new }
       @env         = Environment.new(target: self)
@@ -138,21 +143,18 @@ module FiniteMachine
       is?(final_state)
     end
 
-    #
-    #
-    # @api public
-    def errors
-    end
-
     private
 
     # Check if state is reachable
     #
     # @api private
-    def validate_state(_transition)
+    def valid_state?(_transition)
       current_states = transitions[_transition.name].keys
-      if !current_states.include?(state)  && !current_states.include?(ANY_STATE)
-        raise TransitionError, "inappropriate current state '#{state}'"
+      if !current_states.include?(state) && !current_states.include?(ANY_STATE)
+        exception = InvalidStateError
+        catch_error(exception) ||
+          raise(exception, "inappropriate current state '#{state}'")
+        true
       end
     end
 
@@ -160,9 +162,11 @@ module FiniteMachine
     #
     # @api private
     def transition(_transition, *args, &block)
-      validate_state(_transition)
+      return CANCELLED if valid_state?(_transition)
 
-      return CANCELLED unless _transition.conditions.all? { |c| c.call(env.target) }
+      return CANCELLED unless _transition.conditions.all? do |condition|
+                                condition.call(env.target)
+                              end
       return NOTRANSITION if state == _transition.to
 
       sync_exclusive do
@@ -174,9 +178,10 @@ module FiniteMachine
 
           notify :transitionstate, _transition, *args
           notify :transitionaction, _transition, *args
-        rescue StandardError => e
-          raise TransitionError, "#(#{e.class}): #{e.message}\n" +
-            "occured at #{e.backtrace.join("\n")}"
+        rescue Exception => e
+          catch_error(e) ||
+            raise(TransitionError, "#(#{e.class}): #{e.message}\n" +
+              "occured at #{e.backtrace.join("\n")}")
         end
 
         notify :enterstate, _transition, *args
