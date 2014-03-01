@@ -162,7 +162,7 @@ module FiniteMachine
     def transition(_transition, *args, &block)
       validate_state(_transition)
 
-      return CANCELLED unless _transition.conditions.all? { |c| c.call(env) }
+      return CANCELLED unless _transition.conditions.all? { |c| c.call(env.target) }
       return NOTRANSITION if state == _transition.to
 
       sync_exclusive do
