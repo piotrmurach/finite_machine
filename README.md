@@ -190,39 +190,39 @@ fm.states # => [:none, :green, :yellow, :red]
 If you need to execute some external code in the context of the current state machine use `target` helper.
 
 ```ruby
-  car = Car.new
+car = Car.new
 
-  fm = FiniteMachine.define do
-    initial :neutral
+fm = FiniteMachine.define do
+  initial :neutral
 
-    target car
+  target car
 
-    events {
-      event :start, :neutral => :one, if: "engine_on?"
-      event :shift, :one => :two
-    }
-  end
+  events {
+    event :start, :neutral => :one, if: "engine_on?"
+    event :shift, :one => :two
+  }
+end
 ```
 
 Furthermore, the context created through `target` helper will allow you to reference and call methods from another object.
 
 ```ruby
-  car = Car.new
+car = Car.new
 
-  fm = FiniteMachine.define do
-    initial :neutral
+fm = FiniteMachine.define do
+  initial :neutral
 
-    target car
+  target car
 
-    events {
-      event :start, :neutral => :one, if: "engine_on?"
-    }
+  events {
+    event :start, :neutral => :one, if: "engine_on?"
+  }
 
-    callbacks {
-      on_enter_start do |event| turn_engine_on end
-      on_exit_start  do |event| turn_engine_off end
-    }
-  end
+  callbacks {
+    on_enter_start do |event| turn_engine_on end
+    on_exit_start  do |event| turn_engine_off end
+  }
+end
 ```
 
 For more complex example see [Integration](#6-integration) section.
@@ -561,8 +561,7 @@ fm = FiniteMachine.define do
   initial :neutral
 
   target car
-
-  events {
+events {
     event :forward, [:reverse, :neutral] => :one
     event :back,    [:neutral, :one] => :reverse
   }
@@ -579,21 +578,75 @@ For more complex example see [Integration](#6-integration) section.
 
 ## 5 Errors
 
+By default, the **FiniteMachine** will throw an exception whenever the machine is in invalid state or fails to transition.
+
+* FiniteMachine::TransitionError
+* FiniteMachine::InvalidStateError
+* FiniteMachine::InvalidCallbackError
+
+You can attach specific error handler inside the `handlers` scope by passing the name of the error and actual callback to be executed when the error happens inside the `handle` method. The `handle` receives a list of exception class or exception class names, and an option `:with` with a name of the method or a Proc object to be called to handle the error. As an alternative, you can pass a block.
+
+```ruby
+fm = FiniteMachine.define do
+  initial :green, event: :start
+
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+
+  handlers {
+    handle FiniteMachine::InvalidStateError do |exception|
+      # run some custom logging
+      raise exception
+    end
+
+    handle FiniteMachine::TransitionError, with: proc { |exception| ... }
+  }
+end
+```
+
+### 5.1 Using target
+
+You can pass an external context via `target` helper that will be the receiver for the handler. The handler method needs to take one argument that will be called with the exception.
+
+```ruby
+class Logger
+  def log_error(exception)
+    puts "Exception : #{exception.message}"
+  end
+end
+
+fm = FiniteMachine.define do
+  target logger
+
+  initial :green
+
+  events {
+    event :slow, :green  => :yellow
+    event :stop, :yellow => :red
+  }
+
+  handlers {
+    handle 'InvalidStateError', with: :log_error
+  }
+end
+```
+
 ## 6 Integration
 
 Since **FiniteMachine** is an object in its own right it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
 
 ```ruby
-
 class Car
   attr_accessor :reverse_lights
 
   def turn_reverse_lights_off
-    self.reverse_lights = false
+    @reverse_lights = false
   end
 
   def turn_reverse_lights_on
-    self.reverse_lights = true
+    @reverse_lights = true
   end
 
   def gears
@@ -612,11 +665,11 @@ class Car
 
       callbacks {
         on_enter :reverse do |event|
-          context.turn_reverse_lights_on
+          turn_reverse_lights_on
         end
 
         on_exit :reverse do |event|
-          context.turn_reverse_lights_off
+          turn_reverse_lights_off
         end
 
         on_transition do |event|
@@ -626,7 +679,48 @@ class Car
     end
   end
 end
+```
 
+### 6.1 ActiveRecord
+
+In order to integrate **FiniteMachine** with ActiveRecord use the `target` helper to reference the current class and call ActiveRecord methods inside the callbacks to persist the state.
+
+```ruby
+class Account < ActiveRecord::Base
+  validates :state, presence: true
+
+  def initialize
+    self.state = :unapproved
+  end
+
+  def manage
+    context = self
+    @machine ||= FiniteMachine.define do
+      target context
+
+      initial context.state
+
+      events {
+        event :enqueue, :unapproved => :pending
+        event :authorize, :pending => :access
+      }
+
+      callbacks {
+        on_enter_state do |event|
+          state = event.to
+          save
+        end
+      }
+    end
+  end
+end
+
+account = Account.new
+account.state   # => :unapproved
+account.manage.enqueue
+account.state   # => :pending
+account.manage.authorize
+account.state   # => :access
 ```
 
 ## 7 Tips
