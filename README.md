@@ -35,6 +35,16 @@ Or install it yourself as:
 
     $ gem install finite_machine
 
+## Contents
+
+* [1. Usage](#1-usage)
+* [2. Transitions](#2-transitions)
+* [3. Conditional transitions](#3-conditional-transitions)
+* [4. Callbacks](#4-callbacks)
+* [5. Errors](#5-errors)
+* [6. Integration](#6-integration)
+* [7. Tips](#7-tips)
+
 ## 1 Usage
 
 Here is a very simple example of a state machine:
@@ -725,7 +735,7 @@ account.state   # => :access
 
 ## 7 Tips
 
-Creating a standalone **FiniteMachine** brings few benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself.
+Creating a standalone **FiniteMachine** brings few benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself. Ideally, you would test the machine in isolation and then integrate it with other objects or ORMs.
 
 ## Contributing
 
