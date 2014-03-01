@@ -4,6 +4,16 @@ require 'spec_helper'
 
 describe FiniteMachine, 'initialize' do
 
+  before(:each) {
+    Logger = Class.new do
+      attr_accessor :level
+
+      def initialize
+        @level = :pending
+      end
+    end
+  }
+
   it "defaults initial state to :none" do
     fsm = FiniteMachine.define do
       events {
@@ -74,4 +84,16 @@ describe FiniteMachine, 'initialize' do
     expect(fsm.current).to eql(:green)
   end
 
+  it "evaluates initial state" do
+    logger = Logger.new
+    fsm = FiniteMachine.define do
+      initial logger.level
+
+      events {
+        event :slow, :green  => :none
+        event :stop, :yellow => :red
+      }
+    end
+    expect(fsm.current).to eql(:pending)
+  end
 end
