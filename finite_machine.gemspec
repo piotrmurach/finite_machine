@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = FiniteMachine::VERSION
   spec.authors       = ["Piotr Murach"]
   spec.email         = [""]
-  spec.description   = %q{A minimal finite state machine with a straightforward syntax.}
+  spec.description   = %q{A minimal finite state machine with a straightforward syntax. You can quickly model states, add callbacks and use object-oriented techniques to integrate with ORMs.}
   spec.summary       = %q{A minimal finite state machine with a straightforward syntax.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/peter-murach/finite_machine"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
