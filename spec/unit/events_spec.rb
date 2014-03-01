@@ -147,7 +147,7 @@ describe FiniteMachine, 'events' do
 
     expect(fsm.current).to eql(:green)
 
-    expect { fsm.stop }.to raise_error(FiniteMachine::TransitionError, /state 'green'/)
+    expect { fsm.stop }.to raise_error(FiniteMachine::InvalidStateError, /state 'green'/)
   end
 
   context 'when multiple from states' do
