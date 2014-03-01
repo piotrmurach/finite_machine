@@ -93,8 +93,8 @@ module FiniteMachine
       trans_event = TransitionEvent.new
       trans_event.build(event.transition)
       data = event.data
-      deferred_hook = proc { |trans_event, *data|
-        machine.instance_exec(trans_event, *data, &hook)
+      deferred_hook = proc { |_trans_event, *_data|
+        machine.instance_exec(_trans_event, *_data, &hook)
       }
       deferred_hook.call(trans_event, *data)
     end
@@ -124,8 +124,10 @@ module FiniteMachine
 
     def ensure_valid_callback_name!(name)
       unless callback_names.include?(name)
-        raise InvalidCallbackNameError, "#{name} is not a valid callback name." +
-          " Valid callback names are #{callback_names.to_a.inspect}"
+        exception = InvalidCallbackNameError
+        machine.catch_error(exception) ||
+        raise(InvalidCallbackNameError, "#{name} is not a valid callback name." +
+        " Valid callback names are #{callback_names.to_a.inspect}")
       end
     end
 
