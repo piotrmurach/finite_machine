@@ -462,9 +462,9 @@ You can further narrow down the listener to only watch state exit changes using 
 
 All callbacks get the `TransitionEvent` object with the following attributes.
 
-* name    # the event name
-* from    # the state transitioning from
-* to      # the state transitioning to
+* `name    # the event name`
+* `from    # the state transitioning from`
+* `to      # the state transitioning to`
 
 followed by the rest of arguments that were passed to the event method.
 
@@ -590,9 +590,9 @@ For more complex example see [Integration](#6-integration) section.
 
 By default, the **FiniteMachine** will throw an exception whenever the machine is in invalid state or fails to transition.
 
-* FiniteMachine::TransitionError
-* FiniteMachine::InvalidStateError
-* FiniteMachine::InvalidCallbackError
+* `FiniteMachine::TransitionError`
+* `FiniteMachine::InvalidStateError`
+* `FiniteMachine::InvalidCallbackError`
 
 You can attach specific error handler inside the `handlers` scope by passing the name of the error and actual callback to be executed when the error happens inside the `handle` method. The `handle` receives a list of exception class or exception class names, and an option `:with` with a name of the method or a Proc object to be called to handle the error. As an alternative, you can pass a block.
 
@@ -664,7 +664,7 @@ class Car
     @gears ||= FiniteMachine.define do
       initial :neutral
 
-      target: context
+      target context
 
       events {
         event :start, :neutral => :one
