@@ -9,11 +9,11 @@ describe FiniteMachine, '#target' do
       attr_accessor :reverse_lights
 
       def turn_reverse_lights_off
-        self.reverse_lights = false
+        @reverse_lights = false
       end
 
       def turn_reverse_lights_on
-        self.reverse_lights = true
+        @reverse_lights = true
       end
 
       def engine
@@ -88,11 +88,11 @@ describe FiniteMachine, '#target' do
       attr_accessor :called
 
       def turn_reverse_lights_off
-        self.reverse_lights = false
+        @reverse_lights = false
       end
 
       def turn_reverse_lights_on
-        self.reverse_lights = true
+        @reverse_lights = true
       end
 
       def engine
