@@ -29,8 +29,7 @@ module FiniteMachine
     # @param [Object] target
     #
     # @api public
-    def call(env, *args, &block)
-      target = env.target
+    def call(target, *args, &block)
       case object
       when Symbol
         target.__send__(@object.to_sym)
@@ -38,11 +37,7 @@ module FiniteMachine
         value = eval "lambda { #{@object} }"
         target.instance_exec(&value)
       when ::Proc
-        if object.arity >= 1
-          object.call(target, *args)
-        else
-          object.call
-        end
+        object.arity.zero? ?  object.call : object.call(target, *args)
       else
         raise ArgumentError, "Unknown callable #{@object}"
       end
