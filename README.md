@@ -705,7 +705,7 @@ class Account < ActiveRecord::Base
 
   def manage
     context = self
-    @machine ||= FiniteMachine.define do
+    @manage ||= FiniteMachine.define do
       target context
 
       initial context.state
