@@ -41,6 +41,7 @@ module FiniteMachine
     #
     # @api private
     def initialize(*args, &block)
+      init_catchable
       @subscribers = Subscribers.new(self)
       @events      = EventsDSL.new(self)
       @errors      = ErrorsDSL.new(self)

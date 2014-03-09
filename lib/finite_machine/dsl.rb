@@ -131,14 +131,12 @@ module FiniteMachine
 
   class ErrorsDSL < GenericDSL
 
-    def initialize(machine)
-      super(machine)
-      machine.error_handlers = []
-    end
-
     # Add error handler
     #
     # @param [Array] exceptions
+    #
+    # @example
+    #   handle InvalidStateError, with: :log_errors
     #
     # @api public
     def handle(*exceptions, &block)

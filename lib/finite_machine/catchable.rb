@@ -6,9 +6,16 @@ module FiniteMachine
   module Catchable
 
     def self.included(base)
-      base.class_eval do
+      base.module_eval do
         attr_threadsafe :error_handlers
       end
+    end
+
+    # Initialize errors storage
+    #
+    # @api public
+    def init_catchable
+      self.error_handlers = []
     end
 
     # Rescue exception raised in state machine
