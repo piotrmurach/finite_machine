@@ -67,19 +67,6 @@ module FiniteMachine
       listen_on :exit, *args, &callback
     end
 
-    def method_missing(method_name, *args, &block)
-      _, event_name, callback_name = *method_name.to_s.match(/^(on_\w+?)_(\w+)$/)
-      if callback_names.include?(callback_name.to_sym)
-        send(event_name, callback_name.to_sym, *args, &block)
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_name, include_private = false)
-      _, callback_name = *method_name.to_s.match(/^(on_\w+?)_(\w+)$/)
-      callback_names.include?(callback_name.to_sym)
-    end
 
     TransitionEvent = Struct.new(:from, :to, :name) do
       def build(_transition)
@@ -129,6 +116,38 @@ module FiniteMachine
         raise(InvalidCallbackNameError, "#{name} is not a valid callback name." +
         " Valid callback names are #{callback_names.to_a.inspect}")
       end
+    end
+
+    # Forward the message to observer
+    #
+    # @param [String] method_name
+    #
+    # @param [Array] args
+    #
+    # @return [self]
+    #
+    # @api private
+    def method_missing(method_name, *args, &block)
+      _, event_name, callback_name = *method_name.to_s.match(/^(on_\w+?)_(\w+)$/)
+      if callback_names.include?(callback_name.to_sym)
+        public_send(event_name, callback_name.to_sym, *args, &block)
+      else
+        super
+      end
+    end
+
+    # Test if a message can be handled by observer
+    #
+    # @param [String] method_name
+    #
+    # @param [Boolean] include_private
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    def respond_to_missing?(method_name, include_private = false)
+      _, event_name, callback_name = *method_name.to_s.match(/^(on_\w+?)_(\w+)$/)
+      callback_names.include?(callback_name.to_sym)
     end
 
   end # Observer

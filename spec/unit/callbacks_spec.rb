@@ -473,5 +473,71 @@ describe FiniteMachine, 'callbacks' do
     expect { fsm.slow }.to raise_error(RuntimeError)
   end
 
-  xit "executes callbacks with multiple 'from' transitions"
+  it "executes callbacks with multiple 'from' transitions" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :stop,  :green  => :yellow
+        event :stop,  :yellow => :red
+      }
+
+      callbacks {
+        on_enter_stop do |event|
+          called << 'on_enter_stop'
+        end
+      }
+    end
+    expect(fsm.current).to eql(:green)
+    fsm.stop
+    expect(fsm.current).to eql(:yellow)
+    fsm.stop
+    expect(fsm.current).to eql(:red)
+    expect(called).to eql([
+      'on_enter_stop',
+      'on_enter_stop'
+    ])
+  end
+
+  it "allows to define callbacks on machine instance" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow,  :green  => :yellow
+        event :stop,  :yellow => :red
+        event :ready, :red    => :yellow
+        event :go,    :yellow => :green
+      }
+    end
+
+    fsm.on_enter_yellow do |event|
+      called << 'on_enter_yellow'
+    end
+
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(called).to eql([
+      'on_enter_yellow'
+    ])
+  end
+
+  it "raises error for unknown callback" do
+    expect { FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow,  :green  => :yellow
+        event :stop,  :yellow => :red
+        event :ready, :red    => :yellow
+        event :go,    :yellow => :green
+      }
+
+      callbacks {
+        on_enter_unknown do |event| end
+      }
+    end }.to raise_error(NoMethodError)
+  end
 end
