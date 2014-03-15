@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # Class describing a transition associated with a given event
   class Transition
     include Threadable
@@ -72,7 +71,12 @@ module FiniteMachine
     # @api private
     def define_event
       _transition = self
-      machine.class.__send__(:define_method, name) do |*args, &block|
+      _name       = name
+
+      machine.singleton_class.class_eval do
+        undef_method(_name) if method_defined?(_name)
+      end
+      machine.send(:define_singleton_method, name) do |*args, &block|
         transition(_transition, *args, &block)
       end
     end
@@ -107,6 +111,5 @@ module FiniteMachine
     def raise_not_enough_transitions(attrs)
       raise NotEnoughTransitionsError, "please provide state transitions for '#{attrs.inspect}'"
     end
-
   end # Transition
 end # FiniteMachine
