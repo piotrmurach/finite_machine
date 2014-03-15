@@ -590,6 +590,26 @@ fm.back   # => Go Piotr!
 
 For more complex example see [Integration](#6-integration) section.
 
+### 4.8 Definig callbacks
+
+When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
+
+```ruby
+fm = FiniteMachine.define do
+  initial :red
+
+  events {
+    event :ready, :red    => :yellow
+    event :go,    :yellow => :green
+    event :stop,  :green  => :red
+  }
+end
+
+fm.on_enter_yellow do |event|
+  ...
+end
+```
+
 ## 5 Errors
 
 By default, the **FiniteMachine** will throw an exception whenever the machine is in invalid state or fails to transition.
