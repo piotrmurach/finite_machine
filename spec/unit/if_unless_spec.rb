@@ -125,7 +125,7 @@ describe FiniteMachine, ':if, :unless' do
       target car
 
       events {
-        event :start, :neutral => :one, if: proc {|car| car.engine_on? }
+        event :start, :neutral => :one, if: proc {|_car| _car.engine_on? }
         event :shift, :one => :two
       }
     end

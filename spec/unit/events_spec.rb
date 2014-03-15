@@ -216,6 +216,7 @@ describe FiniteMachine, 'events' do
         event :stop,  :green  => :yellow
         event :stop,  :yellow => :red
         event :stop,  :red    => :pink
+        event :cycle, [:yellow, :red, :pink] => :green
       }
     end
 
@@ -229,6 +230,10 @@ describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:red)
     fsm.stop
     expect(fsm.current).to eql(:pink)
+    fsm.cycle
+    expect(fsm.current).to eql(:green)
+    fsm.stop
+    expect(fsm.current).to eql(:yellow)
   end
 
   it "returns values for events" do

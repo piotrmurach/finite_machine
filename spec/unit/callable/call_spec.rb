@@ -8,6 +8,10 @@ describe FiniteMachine::Callable, '#call' do
     Car = Class.new do
       attr_reader :result
 
+      def initialize
+        @engine_on = false
+      end
+
       def turn_engine_on
         @result = 'turn_engine_on'
         @engine_on = true

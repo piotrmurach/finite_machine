@@ -47,6 +47,8 @@ describe FiniteMachine, 'callbacks' do
       }
     end
 
+    expect(fsm.current).to eql(:green)
+
     expect(called).to eql([
       'on_exit_none',
       'on_exit',
