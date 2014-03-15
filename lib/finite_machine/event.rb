@@ -29,7 +29,7 @@ module FiniteMachine
 
     def notify(subscriber, *args, &block)
       if subscriber.respond_to? MESSAGE
-        subscriber.__send__(MESSAGE, self, *args, &block)
+        subscriber.public_send(MESSAGE, self, *args, &block)
       end
     end
 
