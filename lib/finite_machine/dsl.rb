@@ -48,7 +48,7 @@ module FiniteMachine
 
     # Define initial state
     #
-    # @params [String, Hash] value
+    # @param [String, Hash] value
     #
     # @api public
     def initial(value)
@@ -100,7 +100,7 @@ module FiniteMachine
 
     # Parse initial options
     #
-    # @params [String, Hash] value
+    # @param [String, Hash] value
     #
     # @return [Array[Symbol,String]]
     #
@@ -143,6 +143,8 @@ module FiniteMachine
     #
     # @example
     #   handle InvalidStateError, with: :log_errors
+    #
+    # @return [Array[Exception]]
     #
     # @api public
     def handle(*exceptions, &block)
