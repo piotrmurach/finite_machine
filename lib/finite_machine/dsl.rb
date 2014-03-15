@@ -58,8 +58,14 @@ module FiniteMachine
       machine.events.call(&event)
     end
 
-    def target(value)
-      machine.env.target = value
+    # Attach state machine to an object. This allows state machine
+    # to initiate events in the context of a particular object.
+    #
+    # @param [Object] object
+    #
+    # @api public
+    def target(object)
+      machine.env.target = object
     end
 
     # Define terminal state
