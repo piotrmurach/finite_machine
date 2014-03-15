@@ -7,15 +7,30 @@ module FiniteMachine
     module InstanceMethods
       @@sync = Sync.new
 
+      # Exclusive lock
+      #
+      # @return [nil]
+      #
+      # @api public
       def sync_exclusive(&block)
         @@sync.synchronize(:EX, &block)
       end
 
+      # Shared lock
+      #
+      # @return [nil]
+      #
+      # @api public
       def sync_shared(&block)
         @@sync.synchronize(:SH, &block)
       end
     end
 
+    # Module hook
+    #
+    # @return [nil]
+    #
+    # @api private
     def self.included(base)
       base.extend ClassMethods
       base.module_eval do
@@ -23,17 +38,35 @@ module FiniteMachine
       end
     end
 
+    private_class_method :included
+
     module ClassMethods
       include InstanceMethods
 
+      # Defines threadsafe attributes for a class
+      #
+      # @example
+      #   attr_threadable :errors, :events
+      #
+      # @example
+      #   attr_threadable :errors, default: []
+      #
+      # @return [nil]
+      #
+      # @api public
       def attr_threadsafe(*attrs)
+        opts    = attrs.last.is_a?(::Hash) ? attrs.pop : {}
+        default = opts.fetch(:default, nil)
         attrs.flatten.each do |attr|
           class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
             def #{attr}(*args)
-              if args.empty?
+              value = args.shift
+              if value
+                self.#{attr} = value
+              elsif instance_variables.include?(:@#{attr})
                 sync_shared { @#{attr} }
-              else
-                self.#{attr} = args.shift
+              elsif #{!default.nil?}
+                sync_shared { instance_variable_set(:@#{attr}, #{default}) }
               end
             end
             alias_method '#{attr}?', '#{attr}'
