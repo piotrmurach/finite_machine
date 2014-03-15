@@ -53,6 +53,23 @@ describe FiniteMachine, '#target' do
     expect(car.reverse_lights).to be_false
   end
 
+  it "propagates method call" do
+    fsm = FiniteMachine.define do
+      initial :green
+      events {
+        event :slow, :green => :yellow
+      }
+
+      callbacks {
+        on_enter_yellow do |event|
+          uknown_method
+        end
+      }
+    end
+    expect(fsm.current).to eql(:green)
+    expect { fsm.slow }.to raise_error(StandardError)
+  end
+
   it "references machine methods inside callback" do
     called = []
     fsm = FiniteMachine.define do
