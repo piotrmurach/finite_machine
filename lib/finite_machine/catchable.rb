@@ -7,15 +7,8 @@ module FiniteMachine
 
     def self.included(base)
       base.module_eval do
-        attr_threadsafe :error_handlers
+        attr_threadsafe :error_handlers, default: []
       end
-    end
-
-    # Initialize errors storage
-    #
-    # @api public
-    def init_catchable
-      self.error_handlers = []
     end
 
     # Rescue exception raised in state machine
