@@ -540,4 +540,42 @@ describe FiniteMachine, 'callbacks' do
       }
     end }.to raise_error(NoMethodError)
   end
+
+  it "triggers callbacks only once" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow,  :green  => :yellow
+        event :go,    :yellow => :green
+      }
+
+      callbacks {
+        once_on_enter_green  do |event| called << 'once_on_enter_green' end
+        once_on_enter_yellow do |event| called << 'once_on_enter_yellow' end
+
+        once_on_transition_green do |event| called << 'once_on_transition_green' end
+        once_on_transition_yellow do |event| called << 'once_on_transition_yellow' end
+
+        once_on_exit_green  do |event| called << 'once_on_exit_green' end
+        once_on_exit_yellow do |event| called << 'once_on_exit_yellow' end
+      }
+    end
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(fsm.current).to eql(:yellow)
+    fsm.go
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(fsm.current).to eql(:yellow)
+    expect(called).to eql([
+      'once_on_transition_green',
+      'once_on_enter_green',
+      'once_on_exit_green',
+      'once_on_transition_yellow',
+      'once_on_enter_yellow',
+      'once_on_exit_yellow'
+    ])
+  end
 end

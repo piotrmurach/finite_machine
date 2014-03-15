@@ -28,7 +28,7 @@ module FiniteMachine
       instance_eval(&block)
     end
 
-    # Register callback for a given event.
+    # Register callback for a given event
     #
     # @param [Symbol] event_type
     # @param [Symbol] name
@@ -41,6 +41,17 @@ module FiniteMachine
         hooks.register event_type, name, callback
       end
     end
+
+    # Unregister callback for a given event
+    #
+    # @api public
+    def off(event_type = ANY_EVENT, name = ANY_STATE, &callback)
+      sync_exclusive do
+        hooks.unregister event_type, name, callback
+      end
+    end
+
+    module Once; end
 
     def listen_on(type, *args, &callback)
       name   = args.first
@@ -67,6 +78,17 @@ module FiniteMachine
       listen_on :exit, *args, &callback
     end
 
+    def once_on_enter(*args, &callback)
+      listen_on :enter, *args, &callback.extend(Once)
+    end
+
+    def once_on_transition(*args, &callback)
+      listen_on :transition, *args, &callback.extend(Once)
+    end
+
+    def once_on_exit(*args, &callback)
+      listen_on :exit, *args, &callback.extend(Once)
+    end
 
     TransitionEvent = Struct.new(:from, :to, :name) do
       def build(_transition)
@@ -93,6 +115,7 @@ module FiniteMachine
            ANY_STATE_HOOK, ANY_EVENT_HOOK].each do |event_state|
             hooks.call(event_type, event_state, event) do |hook|
               run_callback(hook, event)
+              off(event_type, event_state, &hook) if hook.is_a?(Once)
             end
           end
         end
@@ -128,9 +151,9 @@ module FiniteMachine
     #
     # @api private
     def method_missing(method_name, *args, &block)
-      _, event_name, callback_name = *method_name.to_s.match(/^(on_\w+?)_(\w+)$/)
+      _, event_name, callback_name = *method_name.to_s.match(/^(\w*?on_\w+?)_(\w+)$/)
       if callback_names.include?(callback_name.to_sym)
-        public_send(event_name, callback_name.to_sym, *args, &block)
+        public_send(event_name, :"#{callback_name}", *args, &block)
       else
         super
       end
@@ -146,8 +169,8 @@ module FiniteMachine
     #
     # @api private
     def respond_to_missing?(method_name, include_private = false)
-      _, event_name, callback_name = *method_name.to_s.match(/^(on_\w+?)_(\w+)$/)
-      callback_names.include?(callback_name.to_sym)
+      *_, callback_name = *method_name.to_s.match(/^(\w*?on_\w+?)_(\w+)$/)
+      callback_names.include?(:"#{callback_name}")
     end
 
   end # Observer
