@@ -96,6 +96,9 @@ module FiniteMachine
 
     # Retrieve all states
     #
+    # @example
+    #  fsm.states # => [:yellow, :green, :red]
+    #
     # @return [Array[Symbol]]
     #
     # @api public
@@ -191,14 +194,34 @@ module FiniteMachine
       SUCCEEDED
     end
 
+    # Forward the message to target, observer or self
+    #
+    # @param [String] method_name
+    #
+    # @param [Array] args
+    #
+    # @return [self]
+    #
+    # @api private
     def method_missing(method_name, *args, &block)
       if env.target.respond_to?(method_name.to_sym)
-        env.target.send(method_name.to_sym, *args, &block)
+        env.target.public_send(method_name.to_sym, *args, &block)
+      elsif observer.respond_to?(method_name.to_sym)
+        observer.public_send(method_name.to_sym, *args, &block)
       else
         super
       end
     end
 
+    # Test if a message can be handled by state machine
+    #
+    # @param [String] method_name
+    #
+    # @param [Boolean] include_private
+    #
+    # @return [Boolean]
+    #
+    # @api private
     def respond_to_missing?(method_name, include_private = false)
       env.target.respond_to?(method_name.to_sym)
     end
