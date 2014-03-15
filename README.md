@@ -2,11 +2,13 @@
 [![Gem Version](https://badge.fury.io/rb/finite_machine.png)][gem]
 [![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.png?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/peter-murach/finite_machine.png)][codeclimate]
+[![Coverage Status](https://coveralls.io/repos/peter-murach/finite_machine/badge.png)][coverage]
 [![Inline docs](http://inch-pages.github.io/github/peter-murach/finite_machine.png)][inchpages]
 
 [gem]: http://badge.fury.io/rb/finite_machine
 [travis]: http://travis-ci.org/peter-murach/finite_machine
 [codeclimate]: https://codeclimate.com/github/peter-murach/finite_machine
+[coverage]: https://coveralls.io/r/peter-murach/finite_machine
 [inchpages]: http://inch-pages.github.io/github/peter-murach/finite_machine
 
 A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously.
