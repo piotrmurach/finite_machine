@@ -96,4 +96,57 @@ describe FiniteMachine, 'handlers' do
     expect(fsm.current).to eql(:green)
     expect(called).to eql(['invalid_state_error'])
   end
+
+  it 'allows for empty block handler' do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+
+      handlers {
+        handle FiniteMachine::InvalidStateError do
+          called << 'invalidstate'
+        end
+      }
+    end
+
+    expect(fsm.current).to eql(:green)
+    fsm.stop
+    expect(fsm.current).to eql(:green)
+    expect(called).to eql([
+      'invalidstate'
+    ])
+  end
+
+  it 'requires error handler' do
+    expect { FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow, :green => :yellow
+      }
+
+      handlers {
+        handle 'UnknownErrorType'
+      }
+    end }.to raise_error(ArgumentError, /error handler/)
+  end
+
+  it 'checks handler class to be Exception' do
+    expect { FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow, :green => :yellow
+      }
+
+      handlers {
+        handle Object do end
+      }
+    end }.to raise_error(ArgumentError, /Object isn't an Exception/)
+  end
 end
