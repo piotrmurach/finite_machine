@@ -1,5 +1,20 @@
 # encoding: utf-8
 
+if RUBY_VERSION > '1.9' and (ENV['COVERAGE'] || ENV['TRAVIS'])
+  require 'simplecov'
+  require 'coveralls'
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter
+  ]
+
+  SimpleCov.start do
+    command_name 'spec'
+    add_filter 'spec'
+  end
+end
+
 require 'finite_machine'
 
 RSpec.configure do |config|
