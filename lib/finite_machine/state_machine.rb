@@ -70,6 +70,22 @@ module FiniteMachine
       end
     end
 
+    alias_method :sync, :method_missing
+
+    # Explicitly invoke event on proxy or delegate to proxy
+    #
+    # @return [AsyncProxy]
+    #
+    # @api public
+    def async(method_name = nil, *args, &block)
+      @async_proxy = AsyncProxy.new(self)
+      if method_name
+        @async_proxy.method_missing method_name, *args, &block
+      else
+        @async_proxy
+      end
+    end
+
     # Get current state
     #
     # @return [String]
