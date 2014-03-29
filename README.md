@@ -181,6 +181,13 @@ fm.is?(:red)    # => true
 fm.is?(:yellow) # => false
 ```
 
+Moreover, you can use helper methods to check for current state using the state name itself like so
+
+```ruby
+fm.red?     # => true
+fm.yellow?  # => false
+```
+
 ### 1.5 can? and cannot?
 
 To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if **FiniteMachine** can fire a given event, returning true, otherwise, it will return false. `cannot?` is simply the inverse of `can?`.
