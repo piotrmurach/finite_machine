@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A generic interface for executing strings, symbol methods or procs.
   class Callable
 
@@ -21,7 +20,7 @@ module FiniteMachine
     #
     # @api public
     def invert
-      lambda { |*args, &block|  !self.call(*args, &block) }
+      lambda { |*args, &block|  !call(*args, &block) }
     end
 
     # Execute action
@@ -32,14 +31,15 @@ module FiniteMachine
     def call(target, *args, &block)
       case object
       when Symbol
-        target.__send__(@object.to_sym)
+        target.public_send(object.to_sym, *args, &block)
       when String
-        value = eval "lambda { #{@object} }"
+        string = args.empty? ? "-> { #{object} }" : "-> { #{object}(*#{args}) }"
+        value  = eval string
         target.instance_exec(&value)
       when ::Proc
         object.arity.zero? ?  object.call : object.call(target, *args)
       else
-        raise ArgumentError, "Unknown callable #{@object}"
+        raise ArgumentError, "Unknown callable #{object}"
       end
     end
   end # Callable

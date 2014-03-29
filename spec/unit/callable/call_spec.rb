@@ -17,7 +17,7 @@ describe FiniteMachine::Callable, '#call' do
         @engine_on = true
       end
 
-      def set_engine(value)
+      def set_engine(value = :on)
         @result = "set_engine(#{value})"
         @engine = value.to_sym == :on
       end
@@ -58,12 +58,30 @@ describe FiniteMachine::Callable, '#call' do
     end
   end
 
+  context 'when string with arguments' do
+    let(:object) {  'set_engine' }
+
+    it 'executes method with arguments' do
+      instance.call(target, :off)
+      expect(target.result).to eql('set_engine(off)')
+    end
+  end
+
   context 'when symbol' do
-    let(:object) {  :engine_on? }
+    let(:object) {  :set_engine }
 
     it 'executes method on target' do
       instance.call(target)
-      expect(target.result).to eql('engine_on')
+      expect(target.result).to eql('set_engine(on)')
+    end
+  end
+
+  context 'when symbol with arguments' do
+    let(:object) {  :set_engine }
+
+    it 'executes method on target' do
+      instance.call(target, :off)
+      expect(target.result).to eql('set_engine(off)')
     end
   end
 
