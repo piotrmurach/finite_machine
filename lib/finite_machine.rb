@@ -10,6 +10,7 @@ require "finite_machine/catchable"
 require "finite_machine/async_proxy"
 require "finite_machine/async_call"
 require "finite_machine/event"
+require "finite_machine/event_queue"
 require "finite_machine/hooks"
 require "finite_machine/transition"
 require "finite_machine/dsl"
@@ -60,6 +61,10 @@ module FiniteMachine
   # and then delegate calls to StateMachine instance etc...
   def self.define(*args, &block)
     StateMachine.new(*args, &block)
+  end
+
+  def self.event_queue
+    Thread.current[:finite_machine_event_queue] ||= FiniteMachine::EventQueue.new
   end
 
 end # FiniteMachine
