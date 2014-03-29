@@ -1,15 +1,18 @@
 # encoding: utf-8
 
+require 'monitor'
+
 module FiniteMachine
 
   # A class responsibile for storage of event subscribers
   class Subscribers
     include Enumerable
+    include MonitorMixin
 
     def initialize(machine)
+      super()
       @machine     = machine
       @subscribers = []
-      @mutex       = Mutex.new
     end
 
     def each(&block)
@@ -29,7 +32,7 @@ module FiniteMachine
     end
 
     def visit(event)
-      each { |subscriber| event.notify subscriber }
+      each { |subscriber| synchronize { event.notify subscriber } }
     end
 
     def reset
