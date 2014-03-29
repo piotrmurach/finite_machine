@@ -24,6 +24,9 @@ module FiniteMachine
 
     # Initialize a Transition
     #
+    # @param [StateMachine] machine
+    # @param [Hash] attrs
+    #
     # @api public
     def initialize(machine, attrs = {})
       @machine    = machine
@@ -35,12 +38,17 @@ module FiniteMachine
       @conditions = make_conditions
     end
 
+    # Reduce conditions
+    #
+    # @api private
     def make_conditions
       @if.map { |c| Callable.new(c) } +
         @unless.map { |c| Callable.new(c).invert }
     end
 
     # Extract states from attributes
+    #
+    # @param [Hash] attrs
     #
     # @api private
     def parse_states(attrs)
@@ -66,6 +74,25 @@ module FiniteMachine
       end
     end
 
+    # Define helper state mehods for the transition states
+    #
+    # @api private
+    def define_state_methods
+      from.concat([to]).each { |state| define_state_method(state) }
+    end
+
+    # Define state helper method
+    #
+    # @param [Symbol] state
+    #
+    # @api private
+    def define_state_method(state)
+      return if machine.respond_to?("#{state}?")
+      machine.send(:define_singleton_method, "#{state}?") do
+        machine.is?(state.to_sym)
+      end
+    end
+
     # Define event on the machine
     #
     # @api private
@@ -83,6 +110,8 @@ module FiniteMachine
 
     # Execute current transition
     #
+    # @return [nil]
+    #
     # @api private
     def call
       sync_exclusive do
@@ -99,6 +128,11 @@ module FiniteMachine
       @name
     end
 
+    # Return string representation
+    #
+    # @return [String]
+    #
+    # @api public
     def inspect
       "<#{self.class} name: #{@name}, transitions: #{@from} => #{@to}, when: #{@conditions}>"
     end
@@ -106,6 +140,13 @@ module FiniteMachine
     private
 
     # Raise error when not enough transitions are provided
+    #
+    # @param [Hash] attrs
+    #
+    # @raise [NotEnoughTransitionsError]
+    #   if the event has not enough transition arguments
+    #
+    # @return [nil]
     #
     # @api private
     def raise_not_enough_transitions(attrs)
