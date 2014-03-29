@@ -11,7 +11,7 @@
 [coverage]: https://coveralls.io/r/peter-murach/finite_machine
 [inchpages]: http://inch-pages.github.io/github/peter-murach/finite_machine
 
-A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously.
+A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
 
 ## Features
 
@@ -22,6 +22,7 @@ A minimal finite state machine with a straightforward and intuitive syntax. You 
 * ability to check reachable states
 * ability to check for terminal state
 * conditional transitions
+* sync and async transitions
 * sync and async callbacks (TODO - only sync)
 * nested/composable states (TODO)
 
@@ -250,9 +251,9 @@ method on the **FiniteMachine** instance. As a second parameter `event` accepts 
 in the form of `:from` and `:to` hash keys or by using the state names themselves as key value pairs.
 
 ```ruby
-  event :start, from: :neutral, to: :first
-  or
-  event :start, :neutral => :first
+event :start, from: :neutral, to: :first
+or
+event :start, :neutral => :first
 ```
 
 Once specified, the **FiniteMachine** will create custom methods for transitioning between each state.
@@ -267,18 +268,35 @@ The following methods trigger transitions for the example state machine.
 In order to transition to the next reachable state, simply call the event's name on the **FiniteMachine** instance.
 
 ```ruby
-  fm.ready
-  fm.current       # => :yellow
+fm.ready
+fm.current       # => :yellow
 ```
 
 Furthermore, you can pass additional parameters with the method call that will be available in the triggered callback.
 
 ```ruby
-  fm.go('Piotr!')
-  fm.current       # => :green
+fm.go('Piotr!')
+fm.current       # => :green
 ```
 
-### 2.2 single event with multiple from states
+### 2.2 Asynchronous transitions
+
+By default the transitions will be fired synchronosuly.
+
+```ruby
+fm.ready
+or
+fm.sync.ready
+fm.current     # => :yellow
+```
+
+In order to fire the event transition asynchronously use the `async` scope like so
+
+```ruby
+fm.async.ready  # => executes in separate Thread
+```
+
+### 2.3 single event with multiple from states
 
 If an event transitions from multiple states to the same state then all the states can be grouped into an array.
 Altenatively, you can create separte events under the same name for each transition that needs combining.
@@ -306,49 +324,49 @@ Each event takes an optional `:if` and `:unless` options which act as a predicat
 You can associate the `:if` and `:unless` options with a Proc object that will get called right before transition happens. Proc object gives you ability to write inline condition instead of separate method.
 
 ```ruby
-  fm = FiniteMachine.define do
-    initial :green
+fm = FiniteMachine.define do
+  initial :green
 
-    events {
-      event :slow, :green => :yellow, if: -> { return false }
-    }
-  end
-  fm.slow    # doesn't transition to :yellow state
-  fm.current # => :green
+  events {
+    event :slow, :green => :yellow, if: -> { return false }
+  }
+end
+fm.slow    # doesn't transition to :yellow state
+fm.current # => :green
 ```
 
 You can also execute methods on an associated object by passing it as an argument to `target` helper.
 
 ```ruby
-  class Car
-    def turn_engine_on
-      @engine_on = true
-    end
-
-    def turn_engine_off
-      @engine_on = false
-    end
-
-    def engine_on?
-      @engine_on
-    end
+class Car
+  def turn_engine_on
+    @engine_on = true
   end
 
-  car = Car.new
-  car.turn_engine_on
-
-  fm = FiniteMachine.define do
-    initial :neutral
-
-    target car
-
-    events {
-      event :start, :neutral => :one, if: "engine_on?"
-    }
+  def turn_engine_off
+    @engine_on = false
   end
 
-  fm.start
-  fm.current # => :one
+  def engine_on?
+    @engine_on
+  end
+end
+
+car = Car.new
+car.turn_engine_on
+
+fm = FiniteMachine.define do
+  initial :neutral
+
+  target car
+
+  events {
+    event :start, :neutral => :one, if: "engine_on?"
+  }
+end
+
+fm.start
+fm.current # => :one
 ```
 
 ### 3.2 Using a Symbol
@@ -356,15 +374,15 @@ You can also execute methods on an associated object by passing it as an argumen
 You can also use a symbol corresponding to the name of a method that will get called right before transition happens.
 
 ```ruby
-  fsm = FiniteMachine.define do
-    initial :neutral
+fsm = FiniteMachine.define do
+  initial :neutral
 
-    target car
+  target car
 
-    events {
-      event :start, :neutral => :one, if: :engine_on?
-    }
-  end
+  events {
+    event :start, :neutral => :one, if: :engine_on?
+  }
+end
 ```
 
 ### 3.3 Using a String
@@ -372,15 +390,15 @@ You can also use a symbol corresponding to the name of a method that will get ca
 Finally, it's possible to use string that will be evaluated using `eval` and needs to contain valid Ruby code. It should only be used when the string represents a short condition.
 
 ```ruby
-  fsm = FiniteMachine.define do
-    initial :neutral
+fsm = FiniteMachine.define do
+  initial :neutral
 
-    target car
+  target car
 
-    events {
-      event :start, :neutral => :one, if: "engine_on?"
-    }
-  end
+  events {
+    event :start, :neutral => :one, if: "engine_on?"
+  }
+end
 ```
 
 ### 3.4 Combining transition conditions
@@ -388,16 +406,16 @@ Finally, it's possible to use string that will be evaluated using `eval` and nee
 When multiple conditions define whether or not a transition should happen, an Array can be used. Furthermore, you can apply both `:if` and `:unless` to the same transition.
 
 ```ruby
-  fsm = FiniteMachine.define do
-    initial :green
+fsm = FiniteMachine.define do
+  initial :green
 
-    events {
-      event :slow, :green => :yellow,
-        if: [ -> { return true }, -> { return true} ],
-        unless: -> { return true }
-      event :stop, :yellow => :red
-    }
-  end
+  events {
+    event :slow, :green => :yellow,
+      if: [ -> { return true }, -> { return true} ],
+      unless: -> { return true }
+    event :stop, :yellow => :red
+  }
+end
 ```
 
 The transition only runs when all the `:if` conditions and none of the `unless` conditions are evaluated to `true`.
@@ -462,7 +480,15 @@ This method is executed after a given event or state change happens. If you prov
 
 You can further narrow down the listener to only watch state exit changes using `on_exit_state` callback. Similarly, use `on_exit_event` to only watch for event exit changes.
 
-### 4.4 Parameters
+### 4.4 once_on
+
+**FiniteMachine** allows you to listen on initial state change or when the event is fired first time by using the following 3 types of callbacks:
+
+* `once_on_enter`
+* `once_on_transition`
+* `once_on_exit`
+
+### 4.5 Parameters
 
 All callbacks get the `TransitionEvent` object with the following attributes.
 
@@ -490,7 +516,7 @@ end
 fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
 ```
 
-### 4.5 Same kind of callbacks
+### 4.6 Same kind of callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
 
@@ -510,7 +536,7 @@ end
 fm.slow # => will invoke both callbacks
 ```
 
-### 4.6 Fluid callbacks
+### 4.7 Fluid callbacks
 
 Callbacks can also be specified as full method calls.
 
@@ -532,7 +558,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 4.7 Executing methods inside callbacks
+### 4.8 Executing methods inside callbacks
 
 In order to execute method from another object use `target` helper.
 
@@ -590,7 +616,7 @@ fm.back   # => Go Piotr!
 
 For more complex example see [Integration](#6-integration) section.
 
-### 4.8 Defining callbacks
+### 4.9 Defining callbacks
 
 When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
 
