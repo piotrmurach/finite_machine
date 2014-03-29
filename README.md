@@ -590,7 +590,7 @@ fm.back   # => Go Piotr!
 
 For more complex example see [Integration](#6-integration) section.
 
-### 4.8 Definig callbacks
+### 4.8 Defining callbacks
 
 When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
 
