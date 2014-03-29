@@ -130,6 +130,7 @@ module FiniteMachine
       sync_exclusive do
         _transition = Transition.new(machine, attrs.merge!(name: name))
         _transition.define
+        _transition.define_state_methods
         _transition.define_event
       end
     end

@@ -95,7 +95,7 @@ module FiniteMachine
       state
     end
 
-    # Check if current state machtes provided state
+    # Check if current state matches provided state
     #
     # @param [String, Array[String]] state
     #
