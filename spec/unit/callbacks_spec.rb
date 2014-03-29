@@ -396,9 +396,9 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic callbacks
-        on_enter      &callback
-        on_transition &callback
-        on_exit       &callback
+        on_enter(&callback)
+        on_transition(&callback)
+        on_exit(&callback)
 
         # state callbacks
         on_enter :green,  &callback
