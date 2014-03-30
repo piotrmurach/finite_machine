@@ -6,6 +6,7 @@ module FiniteMachine
   class StateMachine
     include Threadable
     include Catchable
+    include ThreadContext
 
     # Initial state, defaults to :none
     attr_threadsafe :initial_state
@@ -51,8 +52,13 @@ module FiniteMachine
       @dsl = DSL.new self
       @dsl.call(&block) if block_given?
       send(:"#{@dsl.initial_event}") unless @dsl.defer
+      self.event_queue = FiniteMachine::EventQueue.new
     end
 
+    # @example
+    #   machine.subscribe(Observer.new(machine))
+    #
+    # @api public
     def subscribe(*observers)
       @subscribers.subscribe(*observers)
     end
@@ -70,6 +76,14 @@ module FiniteMachine
       end
     end
 
+    # Help to mark the event as synchronous
+    #
+    # @example
+    #   fsm.sync.go
+    #
+    # @return [self]
+    #
+    # @api public
     alias_method :sync, :method_missing
 
     # Explicitly invoke event on proxy or delegate to proxy
@@ -96,6 +110,9 @@ module FiniteMachine
     end
 
     # Check if current state matches provided state
+    #
+    # @example
+    #   fsm.is?(:green) # => true
     #
     # @param [String, Array[String]] state
     #
@@ -133,6 +150,9 @@ module FiniteMachine
 
     # Checks if event can be triggered
     #
+    # @example
+    #   fsm.can?(:go) # => true
+    #
     # @param [String] event
     #
     # @return [Boolean]
@@ -143,6 +163,9 @@ module FiniteMachine
     end
 
     # Checks if event cannot be triggered
+    #
+    # @example
+    #   fsm.cannot?(:go) # => false
     #
     # @param [String] event
     #
@@ -178,6 +201,12 @@ module FiniteMachine
     end
 
     # Performs transition
+    #
+    # @param [Transition] _transition
+    # @param [Array] args
+    #
+    # @return [Integer]
+    #   the status code for the transition
     #
     # @api private
     def transition(_transition, *args, &block)
