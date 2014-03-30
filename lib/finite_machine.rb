@@ -5,6 +5,7 @@ require "sync"
 
 require "finite_machine/version"
 require "finite_machine/threadable"
+require "finite_machine/thread_context"
 require "finite_machine/callable"
 require "finite_machine/catchable"
 require "finite_machine/async_proxy"
@@ -62,9 +63,4 @@ module FiniteMachine
   def self.define(*args, &block)
     StateMachine.new(*args, &block)
   end
-
-  def self.event_queue
-    Thread.current[:finite_machine_event_queue] ||= FiniteMachine::EventQueue.new
-  end
-
 end # FiniteMachine
