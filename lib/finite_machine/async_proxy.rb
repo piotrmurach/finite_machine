@@ -3,8 +3,10 @@
 module FiniteMachine
   # An asynchronous messages proxy
   class AsyncProxy
+    include Threadable
+    include ThreadContext
 
-    attr_reader :context
+    attr_threadsafe :context
 
     # Initialize an AsynxProxy
     #
@@ -13,15 +15,14 @@ module FiniteMachine
     #
     # @api private
     def initialize(context)
-      @context = context
+      self.context = context
     end
 
     # Delegate asynchronous event to event queue
     #
     # @api private
     def method_missing(method_name, *args, &block)
-      @event_queue = FiniteMachine.event_queue
-      @event_queue << AsyncCall.build(@context, Callable.new(method_name), *args, &block)
+      event_queue << AsyncCall.build(context, Callable.new(method_name), *args, &block)
     end
   end # AsyncProxy
 end # FiniteMachine
