@@ -7,7 +7,7 @@ describe FiniteMachine, 'callbacks' do
   it "triggers default init event" do
     called = []
     fsm = FiniteMachine.define do
-      initial :green
+      initial state: :green, defer: true
 
       events {
         event :slow,  :green  => :yellow
@@ -47,8 +47,8 @@ describe FiniteMachine, 'callbacks' do
       }
     end
 
-    expect(fsm.current).to eql(:green)
-
+    expect(fsm.current).to eql(:none)
+    fsm.init
     expect(called).to eql([
       'on_exit_none',
       'on_exit',
@@ -570,12 +570,12 @@ describe FiniteMachine, 'callbacks' do
     fsm.slow
     expect(fsm.current).to eql(:yellow)
     expect(called).to eql([
-      'once_on_transition_green',
-      'once_on_enter_green',
       'once_on_exit_green',
       'once_on_transition_yellow',
       'once_on_enter_yellow',
-      'once_on_exit_yellow'
+      'once_on_exit_yellow',
+      'once_on_transition_green',
+      'once_on_enter_green'
     ])
   end
 end

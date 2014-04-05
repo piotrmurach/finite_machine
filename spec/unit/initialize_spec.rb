@@ -25,7 +25,22 @@ describe FiniteMachine, 'initialize' do
     expect(fsm.current).to eql(:none)
   end
 
+  it "requires initial state transition from :none" do
+    fsm = FiniteMachine.define do
+      events {
+        event :init, :none   => :green
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+    end
+
+    expect(fsm.current).to eql(:none)
+    fsm.init
+    expect(fsm.current).to eql(:green)
+  end
+
   it "allows to specify inital state" do
+    called = []
     fsm = FiniteMachine.define do
       initial :green
 
@@ -33,9 +48,12 @@ describe FiniteMachine, 'initialize' do
         event :slow, :green  => :yellow
         event :stop, :yellow => :red
       }
+      callbacks {
+        on_enter :green do |event| called << 'on_enter_green' end
+      }
     end
-
     expect(fsm.current).to eql(:green)
+    expect(called).to be_empty
   end
 
   it "allows to specify deferred inital state" do
@@ -48,8 +66,22 @@ describe FiniteMachine, 'initialize' do
       }
     end
 
+    expect(fsm.current).to eql(:none)
     fsm.init
     expect(fsm.current).to eql(:green)
+  end
+
+  it "raises error when specyfying initial without state name" do
+    expect {
+      FiniteMachine.define do
+        initial defer: true
+
+        events {
+          event :slow, :green  => :yellow
+          event :stop, :yellow => :red
+        }
+      end
+    }.to raise_error(FiniteMachine::MissingInitialStateError)
   end
 
   it "allows to specify inital start event" do

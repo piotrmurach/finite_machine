@@ -48,10 +48,9 @@ module FiniteMachine
       @observer    = Observer.new(self)
       @transitions = Hash.new { |hash, name| hash[name] = Hash.new }
       @env         = Environment.new(target: self)
+      @dsl         = DSL.new(self)
 
-      @dsl = DSL.new self
       @dsl.call(&block) if block_given?
-      send(:"#{@dsl.initial_event}") unless @dsl.defer
     end
 
     # @example

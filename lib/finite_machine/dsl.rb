@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A generic DSL for describing the state machine
   class GenericDSL
     include Threadable
@@ -32,7 +31,6 @@ module FiniteMachine
   end # GenericDSL
 
   class DSL < GenericDSL
-
     attr_threadsafe :defer
 
     attr_threadsafe :initial_event
@@ -48,12 +46,20 @@ module FiniteMachine
 
     # Define initial state
     #
+    # @example
+    #   initial :green
+    #
+    # @example
+    #   initial state: green, defer: true
+    #
     # @param [String, Hash] value
+    #
+    # @return [StateMachine]
     #
     # @api public
     def initial(value)
       state, name, self.defer = parse(value)
-      self.initial_event = name
+      machine.state = state unless defer
       event = proc { event name, from: FiniteMachine::DEFAULT_STATE, to: state }
       machine.events.call(&event)
     end
@@ -69,6 +75,11 @@ module FiniteMachine
     end
 
     # Define terminal state
+    #
+    # @example
+    #   terminal :red
+    #
+    # @return [StateMachine]
     #
     # @api public
     def terminal(value)
@@ -109,9 +120,18 @@ module FiniteMachine
       if value.is_a?(String) || value.is_a?(Symbol)
         [value, FiniteMachine::DEFAULT_EVENT_NAME, false]
       else
-        [value[:state], value.fetch(:event, FiniteMachine::DEFAULT_EVENT_NAME),
-        !!value[:defer]]
+        [value.fetch(:state) { raise_missing_state },
+         value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
+         value.fetch(:defer) { false }]
       end
+    end
+
+    # Raises missing state error
+    #
+    # @api private
+    def raise_missing_state
+      raise MissingInitialStateError,
+            'Provide state to transition :to for the initial event'
     end
   end # DSL
 
@@ -151,6 +171,5 @@ module FiniteMachine
     def handle(*exceptions, &block)
       machine.handle(*exceptions, &block)
     end
-
   end # ErrorsDSL
 end # FiniteMachine
