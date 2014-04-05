@@ -24,13 +24,13 @@ describe FiniteMachine, 'async_events' do
 
     expect(fsm.current).to eql(:green)
     fsm.async.slow(:foo)
-    fsm.event_queue.join 0.001
+    fsm.event_queue.join 0.01
     expect(fsm.current).to eql(:yellow)
     expect(called).to eql([
       'on_enter_yellow_foo'
     ])
     fsm.async.stop(:bar)
-    fsm.event_queue.join 0.001
+    fsm.event_queue.join 0.01
     expect(fsm.current).to eql(:red)
     expect(called).to eql([
       'on_enter_yellow_foo',
