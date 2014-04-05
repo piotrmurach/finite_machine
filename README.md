@@ -98,9 +98,11 @@ fm = FiniteMachine.define do
 end
 
 fm.current # => :none
+fm.start
+fm.current # => :green
 ```
 
-If you specify initial state using the `initial` helper, an `init` event will be created and triggered when the state machine is created.
+If you specify initial state using the `initial` helper, the state machine will be created already in that state.
 
 ```ruby
 fm = FiniteMachine.define do
@@ -115,22 +117,7 @@ end
 fm.current # => :green
 ```
 
-If your target object already has `init` method or one of the events names redefines `init`, you can use different name by passing `:event` option to `initial` helper.
-
-```ruby
-fm = FiniteMachine.define do
-  initial :green, event: :start
-
-  events {
-    event :slow,  :green  => :yellow
-    event :stop,  :yellow => :red
-  }
-end
-
-fm.current # => :green
-```
-
-If you want to defer calling the initial state method pass the `:defer` option to the `initial` helper.
+If you want to defer setting the initial state, pass the `:defer` option to the `initial` helper. By default **FiniteMachine** will create `init` event that will allow to transition from `:none` state to the new state.
 
 ```ruby
 fm = FiniteMachine.define do
@@ -143,6 +130,23 @@ fm = FiniteMachine.define do
 end
 fm.current # => :none
 fm.init
+fm.current # => :green
+```
+
+If your target object already has `init` method or one of the events names redefines `init`, you can use different name by passing `:event` option to `initial` helper.
+
+```ruby
+fm = FiniteMachine.define do
+  initial state: :green, event: :start, defer: true
+
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+end
+
+fm.current # => :none
+fm.start
 fm.current # => :green
 ```
 
