@@ -52,7 +52,6 @@ module FiniteMachine
       @dsl = DSL.new self
       @dsl.call(&block) if block_given?
       send(:"#{@dsl.initial_event}") unless @dsl.defer
-      self.event_queue = FiniteMachine::EventQueue.new
     end
 
     # @example
