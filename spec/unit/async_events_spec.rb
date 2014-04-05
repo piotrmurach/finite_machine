@@ -24,13 +24,13 @@ describe FiniteMachine, 'async_events' do
 
     expect(fsm.current).to eql(:green)
     fsm.async.slow(:foo)
-    fsm.event_queue.join 0.01
+    fsm.event_queue.join 0.001
     expect(fsm.current).to eql(:yellow)
     expect(called).to eql([
       'on_enter_yellow_foo'
     ])
     fsm.async.stop(:bar)
-    fsm.event_queue.join 0.01
+    fsm.event_queue.join 0.001
     expect(fsm.current).to eql(:red)
     expect(called).to eql([
       'on_enter_yellow_foo',
@@ -56,10 +56,10 @@ describe FiniteMachine, 'async_events' do
         on_enter :yellow do |event, a| called << "(bar)on_enter_yellow_#{a}" end
       }
     end
-    fsmFoo.slow(:foo)
-    fsmBar.slow(:bar)
-    fsmFoo.event_queue.join 0.01
-    fsmBar.event_queue.join 0.01
+    foo_thread = Thread.new { fsmFoo.async.slow(:foo) }
+    bar_thread = Thread.new { fsmBar.async.slow(:bar) }
+    [foo_thread, bar_thread].each(&:join)
+    [fsmFoo, fsmBar].each { |fsm| fsm.event_queue.join 0.001 }
     expect(called).to include('(foo)on_enter_yellow_foo')
     expect(called).to include('(bar)on_enter_yellow_bar')
     expect(fsmFoo.current).to eql(:yellow)
