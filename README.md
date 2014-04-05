@@ -792,7 +792,7 @@ account.state   # => :access
 
 ## 7 Tips
 
-Creating a standalone **FiniteMachine** brings few benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself. Ideally, you would test the machine in isolation and then integrate it with other objects or ORMs.
+Creating a standalone **FiniteMachine** brings a number of benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself. Ideally, you would test the machine in isolation and then integrate it with other objects or ORMs.
 
 ## Contributing
 
