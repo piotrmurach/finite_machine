@@ -56,6 +56,9 @@ module FiniteMachine
   # Raised when event has no transitions
   NotEnoughTransitionsError = Class.new(::ArgumentError)
 
+  # Raised when initial event specified without state name
+  MissingInitialStateError = Class.new(::StandardError)
+
   Environment = Struct.new(:target)
 
   # TODO: this should instantiate system not the state machine
