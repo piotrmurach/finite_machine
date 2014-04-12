@@ -16,7 +16,10 @@ module FiniteMachine
       @queue = Queue.new
       @mutex = Mutex.new
       @dead  = false
-      run
+
+      @thread = Thread.new do
+        process_events
+      end
     end
 
     # Retrieve the next event
@@ -104,20 +107,19 @@ module FiniteMachine
 
     private
 
-    # Run all the events
+    # Process all the events
     #
     # @return [Thread]
     #
     # @api private
-    def run
-      @thread = Thread.new do
-        Thread.current.abort_on_exception = true
-        until(@dead) do
-          event = next_event
-          Thread.exit unless event
-          event.dispatch
-        end
+    def process_events
+      until(@dead) do
+        event = next_event
+        event.dispatch
       end
+    rescue Exception => ex
+      puts "Error while running event: #{ex}"
     end
+
   end # EventQueue
 end # FiniteMachine
