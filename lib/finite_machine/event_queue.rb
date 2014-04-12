@@ -118,7 +118,7 @@ module FiniteMachine
         event.dispatch
       end
     rescue Exception => ex
-      puts "Error while running event: #{ex}"
+      Logger.error "Error while running event: #{ex}"
     end
 
   end # EventQueue
