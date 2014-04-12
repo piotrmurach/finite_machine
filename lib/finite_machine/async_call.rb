@@ -13,6 +13,13 @@ module FiniteMachine
 
     attr_threadsafe :block
 
+    # Create an AsynCall
+    #
+    # @api private
+    def initialize
+      @mutex = Mutex.new
+    end
+
     # Build asynchronous call instance
     #
     # @param [Object] context
@@ -41,7 +48,9 @@ module FiniteMachine
     #
     # @api private
     def dispatch
-      callable.call(context, *arguments, block)
+      @mutex.synchronize do
+        callable.call(context, *arguments, block)
+      end
     end
   end # AsyncCall
 end # FiniteMachine
