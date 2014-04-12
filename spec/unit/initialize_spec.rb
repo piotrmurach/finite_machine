@@ -128,4 +128,19 @@ describe FiniteMachine, 'initialize' do
     end
     expect(fsm.current).to eql(:pending)
   end
+
+  it "doesn't care about state type" do
+    fsm = FiniteMachine.define do
+      initial 1
+      events {
+        event :a, 1 => 2
+        event :b, 2 => 3
+      }
+    end
+    expect(fsm.current).to eql(1)
+    fsm.a
+    expect(fsm.current).to eql(2)
+    fsm.b
+    expect(fsm.current).to eql(3)
+  end
 end

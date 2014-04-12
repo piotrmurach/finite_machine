@@ -111,13 +111,13 @@ module FiniteMachine
 
     # Parse initial options
     #
-    # @param [String, Hash] value
+    # @param [Object] value
     #
     # @return [Array[Symbol,String]]
     #
     # @api private
     def parse(value)
-      if value.is_a?(String) || value.is_a?(Symbol)
+      unless value.is_a?(Hash)
         [value, FiniteMachine::DEFAULT_EVENT_NAME, false]
       else
         [value.fetch(:state) { raise_missing_state },
