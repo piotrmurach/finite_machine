@@ -125,7 +125,7 @@ module FiniteMachine
     #
     # @api public
     def to_s
-      @name
+      @name.to_s
     end
 
     # Return string representation
