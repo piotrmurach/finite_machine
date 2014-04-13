@@ -1,3 +1,13 @@
+0.4.0 (April 13, 2014)
+
+* Change initial state to stop firing event notification
+* Fix initial to accept any state object
+* Add logger
+* Add ability to cancel transitions inside callbacks
+* Fix proc conditions to accept aditional arguments
+* Increase test coverage to 97%
+* Add ability to force transitions
+
 0.3.0 (March 30, 2014)
 
 * Move development dependencies to Gemfile
