@@ -52,8 +52,9 @@ Or install it yourself as:
     * [1.7 target](#17-target)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
-    * [2.2 Asynchronous transitions](#22-asynchronous-transitions)
-    * [2.3 Single event with multiple from states](#23-single-event-with-multiple-from-states)
+    * [2.2 Forcing transitions](#22-forcing-transitions)
+    * [2.3 Asynchronous transitions](#23-asynchronous-transitions)
+    * [2.4 Single event with multiple from states](#24-single-event-with-multiple-from-states)
 * [3. Conditional transitions](#3-conditional-transitions)
     * [3.1 Using a Proc](#31-using-a-proc)
     * [3.2 Using a Symbol](#32-using-a-symbol)
@@ -316,7 +317,11 @@ fm.go('Piotr!')
 fm.current       # => :green
 ```
 
-### 2.2 Asynchronous transitions
+### 2.2 Forcing transitions
+
+When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you need to perform transition disregarding current state reachable states, the `ready!` will transition without any validations or callbacks.
+
+### 2.3 Asynchronous transitions
 
 By default the transitions will be fired synchronosuly.
 
@@ -333,7 +338,7 @@ In order to fire the event transition asynchronously use the `async` scope like 
 fm.async.ready  # => executes in separate Thread
 ```
 
-### 2.3 Single event with multiple from states
+### 2.4 Single event with multiple from states
 
 If an event transitions from multiple states to the same state then all the states can be grouped into an array.
 Altenatively, you can create separte events under the same name for each transition that needs combining.
