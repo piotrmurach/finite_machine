@@ -43,11 +43,37 @@ Or install it yourself as:
 ## Contents
 
 * [1. Usage](#1-usage)
+    * [1.1 Current](#11-current)
+    * [1.2 Initial](#12-initial)
+    * [1.3 Terminal](#13-terminal)
+    * [1.4 is?](#14-is)
+    * [1.5 can? and cannot?](#15-can-and-cannot)
+    * [1.6 states](#16-states)
+    * [1.7 target](#17-target)
 * [2. Transitions](#2-transitions)
+    * [2.1 Performing transitions](#21-performing-transitions)
+    * [2.2 Asynchronous transitions](#22-asynchronous-transitions)
+    * [2.3 Single event with multiple from states](#23-single-event-with-multiple-from-states)
 * [3. Conditional transitions](#3-conditional-transitions)
+    * [3.1 Using a Proc](#31-using-a-proc)
+    * [3.2 Using a Symbol](#32-using-a-symbol)
+    * [3.3 Using a String](#33-using-a-string)
+    * [3.4 Combining transition conditions](#34-combining-transition-conditions)
 * [4. Callbacks](#4-callbacks)
+    * [4.1 on_enter](#41-on_enter)
+    * [4.2 on_transition](#42-on_transition)
+    * [4.3 on_exit](#43-on_exit)
+    * [4.4 once_on](#44-once_on)
+    * [4.5 parameters](#45-parameters)
+    * [4.6 Same kind of callbacks](#46-same-kind-of-callbacks)
+    * [4.7 Fluid callbacks](#47-fluid-callbacks)
+    * [4.8 Executing methods inside callbacks](#48-executing-methods-inside-callbacks)
+    * [4.9 Defining callbacks](#49-defining-callbacks)
+    * [4.10 Cancelling inside callbacks](#410-cancelling-inside-callbacks)
 * [5. Errors](#5-errors)
+    * [5.1 Using target](#51-using-target)
 * [6. Integration](#6-integration)
+    * [6.1 ActiveRecord](#61-activerecord)
 * [7. Tips](#7-tips)
 
 ## 1 Usage
@@ -307,7 +333,7 @@ In order to fire the event transition asynchronously use the `async` scope like 
 fm.async.ready  # => executes in separate Thread
 ```
 
-### 2.3 single event with multiple from states
+### 2.3 Single event with multiple from states
 
 If an event transitions from multiple states to the same state then all the states can be grouped into an array.
 Altenatively, you can create separte events under the same name for each transition that needs combining.
@@ -387,7 +413,7 @@ fm.start(true)
 fm.current       # => :one
 ```
 
-When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [4.10 Cancelling inside callbacks](#410-cancellig-inside-callbacks)
+When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [4.10 Cancelling inside callbacks](#410-cancelling-inside-callbacks)
 
 ### 3.2 Using a Symbol
 
