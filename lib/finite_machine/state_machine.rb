@@ -211,7 +211,7 @@ module FiniteMachine
       return CANCELLED if valid_state?(_transition)
 
       return CANCELLED unless _transition.conditions.all? do |condition|
-                                condition.call(env.target)
+                                condition.call(env.target, *args)
                               end
       return NOTRANSITION if state == _transition.to
 

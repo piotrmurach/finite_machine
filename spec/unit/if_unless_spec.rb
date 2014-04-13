@@ -5,6 +5,8 @@ require 'spec_helper'
 describe FiniteMachine, ':if, :unless' do
   before(:each) {
     Car = Class.new do
+      attr_accessor :engine_on
+
       def turn_engine_on
         @engine_on = true
       end
@@ -116,81 +118,109 @@ describe FiniteMachine, ':if, :unless' do
     ])
   end
 
-  it "specifies :if and :unless with proc" do
-    car = Car.new
+  context 'when proc' do
+    it "specifies :if and :unless" do
+      car = Car.new
 
-    fsm = FiniteMachine.define do
-      initial :neutral
+      fsm = FiniteMachine.define do
+        initial :neutral
 
-      target car
+        target car
 
-      events {
-        event :start, :neutral => :one, if: proc {|_car| _car.engine_on? }
-        event :shift, :one => :two
-      }
+        events {
+          event :start, :neutral => :one, if: proc {|_car| _car.engine_on? }
+          event :shift, :one => :two
+        }
+      end
+      car.turn_engine_off
+      expect(car.engine_on?).to be_false
+      expect(fsm.current).to eql(:neutral)
+      fsm.start
+      expect(fsm.current).to eql(:neutral)
+
+      car.turn_engine_on
+      expect(car.engine_on?).to be_true
+      expect(fsm.current).to eql(:neutral)
+      fsm.start
+      expect(fsm.current).to eql(:one)
     end
-    car.turn_engine_off
-    expect(car.engine_on?).to be_false
-    expect(fsm.current).to eql(:neutral)
-    fsm.start
-    expect(fsm.current).to eql(:neutral)
 
-    car.turn_engine_on
-    expect(car.engine_on?).to be_true
-    expect(fsm.current).to eql(:neutral)
-    fsm.start
-    expect(fsm.current).to eql(:one)
+    it "passes arguments to the scope" do
+      car = Car.new
+
+      fsm = FiniteMachine.define do
+        initial :neutral
+
+        target car
+
+        events {
+          event :start, :neutral => :one, if: proc { |_car, state|
+            _car.engine_on = state
+            _car.engine_on?
+          }
+          event :shift, :one => :two
+        }
+      end
+      fsm.start(false)
+      expect(fsm.current).to eql(:neutral)
+      fsm.start(true)
+      expect(fsm.current).to eql(:one)
+    end
   end
 
-  it "specifies :if and :unless with symbol" do
-    car = Car.new
+  context 'when symbol' do
+    it "specifies :if and :unless" do
+      car = Car.new
 
-    fsm = FiniteMachine.define do
-      initial :neutral
+      fsm = FiniteMachine.define do
+        initial :neutral
 
-      target car
+        target car
 
-      events {
-        event :start, :neutral => :one, if: :engine_on?
-        event :shift, :one => :two
-      }
+        events {
+          event :start, :neutral => :one, if: :engine_on?
+          event :shift, :one => :two
+        }
+      end
+      car.turn_engine_off
+      expect(car.engine_on?).to be_false
+      expect(fsm.current).to eql(:neutral)
+      fsm.start
+      expect(fsm.current).to eql(:neutral)
+
+      car.turn_engine_on
+      expect(car.engine_on?).to be_true
+      expect(fsm.current).to eql(:neutral)
+      fsm.start
+      expect(fsm.current).to eql(:one)
     end
-    car.turn_engine_off
-    expect(car.engine_on?).to be_false
-    expect(fsm.current).to eql(:neutral)
-    fsm.start
-    expect(fsm.current).to eql(:neutral)
-
-    car.turn_engine_on
-    expect(car.engine_on?).to be_true
-    expect(fsm.current).to eql(:neutral)
-    fsm.start
-    expect(fsm.current).to eql(:one)
   end
 
-  it "specifies :if and :unless with string" do
-    car = Car.new
+  context 'when string' do
+    it "specifies :if and :unless" do
+      car = Car.new
 
-    fsm = FiniteMachine.define do
-      initial :neutral
+      fsm = FiniteMachine.define do
+        initial :neutral
 
-      target car
+        target car
 
-      events {
-        event :start, :neutral => :one, if: "engine_on?"
-        event :shift, :one => :two
-      }
+        events {
+          event :start, :neutral => :one, if: "engine_on?"
+          event :shift, :one => :two
+        }
+      end
+      car.turn_engine_off
+      expect(car.engine_on?).to be_false
+      expect(fsm.current).to eql(:neutral)
+      fsm.start
+      expect(fsm.current).to eql(:neutral)
+
+      car.turn_engine_on
+      expect(car.engine_on?).to be_true
+      expect(fsm.current).to eql(:neutral)
+      fsm.start
+      expect(fsm.current).to eql(:one)
     end
-    car.turn_engine_off
-    expect(car.engine_on?).to be_false
-    expect(fsm.current).to eql(:neutral)
-    fsm.start
-    expect(fsm.current).to eql(:neutral)
-
-    car.turn_engine_on
-    expect(car.engine_on?).to be_true
-    expect(fsm.current).to eql(:neutral)
-    fsm.start
-    expect(fsm.current).to eql(:one)
   end
 end
