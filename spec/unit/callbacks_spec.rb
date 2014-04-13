@@ -578,4 +578,46 @@ describe FiniteMachine, 'callbacks' do
       'once_on_enter_green'
     ])
   end
+
+  it "cancels transition on state callback" do
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow,  :green  => :yellow
+        event :go,    :yellow => :green
+      }
+
+      callbacks {
+        on_exit :green do |event| FiniteMachine::CANCELLED end
+      }
+    end
+
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(fsm.current).to eql(:green)
+  end
+
+  it "cancels transition on event callback" do
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow,  :green  => :yellow
+        event :go,    :yellow => :green
+      }
+
+      callbacks {
+        on_enter :slow do |event|
+          FiniteMachine::CANCELLED
+        end
+      }
+    end
+
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(fsm.current).to eql(:green)
+  end
+
+  xit "groups callbacks"
 end

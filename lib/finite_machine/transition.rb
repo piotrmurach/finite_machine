@@ -22,6 +22,9 @@ module FiniteMachine
     # The original from state
     attr_threadsafe :from_state
 
+    # Check if transition should be cancelled
+    attr_threadsafe :cancelled
+
     # Initialize a Transition
     #
     # @param [StateMachine] machine
@@ -36,6 +39,7 @@ module FiniteMachine
       @if         = Array(attrs.fetch(:if, []))
       @unless     = Array(attrs.fetch(:unless, []))
       @conditions = make_conditions
+      @cancelled  = false
     end
 
     # Reduce conditions
@@ -115,6 +119,7 @@ module FiniteMachine
     # @api private
     def call
       sync_exclusive do
+        return if cancelled
         transitions = machine.transitions[name]
         self.from_state = machine.state
         machine.state = transitions[machine.state] || transitions[ANY_STATE] || name

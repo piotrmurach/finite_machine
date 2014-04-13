@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module FiniteMachine
 
   # A class responsible for observing state changes
@@ -98,14 +100,20 @@ module FiniteMachine
       end
     end
 
+    # Run callback
+    #
+    # @api private
     def run_callback(hook, event)
       trans_event = TransitionEvent.new
       trans_event.build(event.transition)
       data = event.data
-      deferred_hook = proc { |_trans_event, *_data|
+      transition = event.transition
+      deferred_hook = proc do |_trans_event, *_data|
         machine.instance_exec(_trans_event, *_data, &hook)
-      }
-      deferred_hook.call(trans_event, *data)
+      end
+      callable = Callable.new(deferred_hook)
+      result = callable.call(trans_event, *data)
+      transition.cancelled = (result == CANCELLED)
     end
 
     def trigger(event, *args, &block)
