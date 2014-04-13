@@ -101,14 +101,34 @@ module FiniteMachine
     #
     # @api private
     def define_event
-      _transition = self
       _name       = name
+      bang_name   = "#{_name}!"
 
       machine.singleton_class.class_eval do
-        undef_method(_name) if method_defined?(_name)
+        undef_method(_name)     if method_defined?(_name)
+        undef_method(bang_name) if method_defined?(bang_name)
       end
+      define_transition(name)
+      define_event_bang(name)
+    end
+
+    # Define transition event
+    #
+    # @api private
+    def define_transition(name)
+      _transition = self
       machine.send(:define_singleton_method, name) do |*args, &block|
         transition(_transition, *args, &block)
+      end
+    end
+
+    # Define event that skips validations
+    #
+    # @api private
+    def define_event_bang(name)
+      machine.send(:define_singleton_method, "#{name}!") do
+        transitions   = machine.transitions[name]
+        machine.state = transitions.values[0]
       end
     end
 
@@ -120,9 +140,9 @@ module FiniteMachine
     def call
       sync_exclusive do
         return if cancelled
-        transitions = machine.transitions[name]
+        transitions     = machine.transitions[name]
         self.from_state = machine.state
-        machine.state = transitions[machine.state] || transitions[ANY_STATE] || name
+        machine.state   = transitions[machine.state] || transitions[ANY_STATE] || name
       end
     end
 
@@ -155,7 +175,8 @@ module FiniteMachine
     #
     # @api private
     def raise_not_enough_transitions(attrs)
-      raise NotEnoughTransitionsError, "please provide state transitions for '#{attrs.inspect}'"
+      fail NotEnoughTransitionsError, "please provide state transitions for" \
+           " '#{attrs.inspect}'"
     end
   end # Transition
 end # FiniteMachine
