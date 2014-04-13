@@ -346,10 +346,12 @@ fm.slow    # doesn't transition to :yellow state
 fm.current # => :green
 ```
 
-You can also execute methods on an associated object by passing it as an argument to `target` helper.
+Provided your **FiniteMachine** is associated with another object through `target` helper. Then the target object together with event arguments will be passed to the `:if` or `:unless` condition scope.
 
 ```ruby
 class Car
+  attr_accessor :engine_on
+
   def turn_engine_on
     @engine_on = true
   end
@@ -372,13 +374,20 @@ fm = FiniteMachine.define do
   target car
 
   events {
-    event :start, :neutral => :one, if: "engine_on?"
+    event :start, :neutral => :one, if: -> (_car, state) {
+      _car.engine_on = state
+      _car.engine_on?
+    }
   }
 end
 
-fm.start
-fm.current # => :one
+fm.start(false)
+fm.current       # => :neutral
+fm.start(true)
+fm.current       # => :one
 ```
+
+When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [4.10 Cancelling inside callbacks](#410-cancellig-inside-callbacks)
 
 ### 3.2 Using a Symbol
 
@@ -645,6 +654,33 @@ end
 fm.on_enter_yellow do |event|
   ...
 end
+```
+
+### 4.10 Cancelling inside callbacks
+
+Preferred way to handle cancelling transitions is to use [3 Conditional transitions](#3-conditional-transitions). However if the logic is more than one liner you can cancel the event, hence the transition by returning `FiniteMachine::CANCELLED` constant from the callback scope. The two ways you can affect the event are
+
+* `on_exit :state_name`
+* `on_enter :event_name`
+
+For example
+
+```ruby
+fm = FiniteMachine.define do
+  initial :red
+
+  events {
+    event :ready, :red    => :yellow
+    event :go,    :yellow => :green
+    event :stop,  :green  => :red
+  }
+  callbacks {
+    on_exit :red do |event| FiniteMachine::CANCELLED end
+  }
+end
+
+fm.ready
+fm.current  # => :red
 ```
 
 ## 5 Errors
