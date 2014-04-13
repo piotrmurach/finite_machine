@@ -59,7 +59,7 @@ describe FiniteMachine, 'async_events' do
     foo_thread = Thread.new { fsmFoo.async.slow(:foo) }
     bar_thread = Thread.new { fsmBar.async.slow(:bar) }
     [foo_thread, bar_thread].each(&:join)
-    [fsmFoo, fsmBar].each { |fsm| fsm.event_queue.join 0.01 }
+    sleep 0.01
     expect(called).to include('(foo)on_enter_yellow_foo')
     expect(called).to include('(bar)on_enter_yellow_bar')
     expect(fsmFoo.current).to eql(:yellow)
