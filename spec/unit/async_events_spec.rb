@@ -67,4 +67,32 @@ describe FiniteMachine, 'async_events' do
     expect(fsmFoo.current).to eql(:yellow)
     expect(fsmBar.current).to eql(:yellow)
   end
+
+  it "permits async callback" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow,  :green  => :yellow
+        event :go,    :yellow => :green
+      }
+
+      callbacks {
+        on_enter :green,  :async  do |event| called << 'on_enter_green' end
+        on_enter :slow,   :async  do |event| called << 'on_enter_slow'  end
+        on_exit  :yellow, :async  do |event| called << 'on_exit_yellow' end
+        on_exit  :go,     :async  do |event| called << 'on_exit_go'     end
+      }
+    end
+    fsm.slow
+    fsm.go
+    sleep 0.1
+    expect(called).to match_array([
+      'on_enter_green',
+      'on_enter_slow',
+      'on_exit_go',
+      'on_exit_yellow'
+    ])
+  end
 end
