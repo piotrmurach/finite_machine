@@ -27,8 +27,6 @@ describe FiniteMachine, 'define' do
       expect(fsm.current).to eql(:yellow)
       fsm.go
       expect(fsm.current).to eql(:green)
-
-      print fsm.transitions.inspect
     end
   end
 
