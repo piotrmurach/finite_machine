@@ -20,6 +20,7 @@ require "finite_machine/dsl"
 require "finite_machine/state_machine"
 require "finite_machine/subscribers"
 require "finite_machine/observer"
+require "finite_machine/listener"
 
 module FiniteMachine
 
