@@ -21,6 +21,17 @@ describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:red)
   end
 
+  it "allows to add event without events scope" do
+    fsm = FiniteMachine.define do
+      initial :green
+
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
+    end
+
+    expect(fsm.current).to eql(:green)
+  end
+
   it "allows for (:from | :to) key pairs to describe transition" do
     fsm = FiniteMachine.define do
       initial :green

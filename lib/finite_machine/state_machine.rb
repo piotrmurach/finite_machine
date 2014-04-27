@@ -7,6 +7,7 @@ module FiniteMachine
     include Threadable
     include Catchable
     include ThreadContext
+    extend Forwardable
 
     # Initial state, defaults to :none
     attr_threadsafe :initial_state
@@ -37,6 +38,12 @@ module FiniteMachine
 
     # The state machine environment
     attr_threadsafe :env
+
+    def_delegators :@dsl, :initial, :terminal, :target
+
+    def_delegator :@events, :event
+
+    # def_delegator :@errors, :handle
 
     # Initialize state machine
     #
