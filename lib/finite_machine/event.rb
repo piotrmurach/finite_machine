@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A class responsible for event notification
   class Event
     include Threadable
@@ -56,11 +55,14 @@ module FiniteMachine
       name.split('::').last.downcase.to_sym
     end
 
-    EVENTS.each do |event|
-      (class << self; self; end).class_eval do
-        define_method(event.event_name) { event.event_name }
-      end
+    def self.to_s
+      event_name
     end
 
+    EVENTS.each do |event|
+      (class << self; self; end).class_eval do
+        define_method(event.event_name) { event }
+      end
+    end
   end # Event
 end # FiniteMachine
