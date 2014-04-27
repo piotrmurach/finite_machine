@@ -71,8 +71,8 @@ module FiniteMachine
     def define(*args, &block)
       StateMachine.new(*args, &block)
     end
+    alias_method :new, :define
   end
-
 end # FiniteMachine
 
 FiniteMachine.logger = Logger.new(STDERR)
