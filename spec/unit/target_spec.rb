@@ -151,4 +151,27 @@ describe FiniteMachine, '#target' do
       'on_enter_forward with Piotr!'
     ])
   end
+
+  it "allows to access target inside the callback" do
+    context = double(:context)
+    called = nil
+    fsm = FiniteMachine.define do
+      initial :green
+
+      target  context
+
+      events {
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+      callbacks {
+        on_enter_yellow do |event|
+          called = target
+        end
+      }
+    end
+    expect(fsm.current).to eql(:green)
+    fsm.slow
+    expect(called).to eq(context)
+  end
 end

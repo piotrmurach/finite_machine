@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # Base class for state machine
   class StateMachine
     include Threadable
@@ -42,8 +41,6 @@ module FiniteMachine
     def_delegators :@dsl, :initial, :terminal, :target
 
     def_delegator :@events, :event
-
-    # def_delegator :@errors, :handle
 
     # Initialize state machine
     #
@@ -276,6 +273,5 @@ module FiniteMachine
     def respond_to_missing?(method_name, include_private = false)
       env.target.respond_to?(method_name.to_sym)
     end
-
   end # StateMachine
 end # FiniteMachine

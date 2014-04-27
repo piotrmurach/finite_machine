@@ -89,8 +89,12 @@ module FiniteMachine
     # @return [FiniteMachine::StateMachine]
     #
     # @api public
-    def target(object)
-      machine.env.target = object
+    def target(object = nil)
+      if object.nil?
+        machine.env.target
+      else
+        machine.env.target = object
+      end
     end
 
     # Define terminal state
