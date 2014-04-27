@@ -61,6 +61,9 @@ module FiniteMachine
   # Raised when initial event specified without state name
   MissingInitialStateError = Class.new(::StandardError)
 
+  # Raised when event queue is already dead
+  EventQueueDeadError = Class.new(::StandardError)
+
   Environment = Struct.new(:target)
 
   class << self
