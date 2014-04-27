@@ -12,7 +12,13 @@ module FiniteMachine
 
     attr_threadsafe :machine
 
-    def initialize(machine)
+    attr_threadsafe :attrs
+
+    # Initialize a generic DSL
+    #
+    # @api public
+    def initialize(machine, attrs = {})
+      self.attrs = attrs
       self.machine = machine
     end
 
@@ -30,6 +36,7 @@ module FiniteMachine
     end
   end # GenericDSL
 
+  # A class responsible for adding state machine specific dsl
   class DSL < GenericDSL
     attr_threadsafe :defer
 
@@ -38,11 +45,14 @@ module FiniteMachine
     # Initialize top level DSL
     #
     # @api public
-    def initialize(machine)
-      super(machine)
+    def initialize(machine, attrs = {})
+      super(machine, attrs)
       machine.state = FiniteMachine::DEFAULT_STATE
-      self.defer = true
+      self.defer    = true
+
+      initialize_attrs
     end
+
 
     # Define initial state
     #
@@ -64,10 +74,19 @@ module FiniteMachine
       machine.events.call(&event)
     end
 
-    # Attach state machine to an object. This allows state machine
-    # to initiate events in the context of a particular object.
+    # Attach state machine to an object
+    #
+    # This allows state machine to initiate events in the context
+    # of a particular object
+    #
+    # @example
+    #   FiniteMachine.define do
+    #     target :red
+    #  end
     #
     # @param [Object] object
+    #
+    # @return [FiniteMachine::StateMachine]
     #
     # @api public
     def target(object)
@@ -79,7 +98,7 @@ module FiniteMachine
     # @example
     #   terminal :red
     #
-    # @return [StateMachine]
+    # @return [FiniteMachine::StateMachine]
     #
     # @api public
     def terminal(value)
@@ -87,6 +106,8 @@ module FiniteMachine
     end
 
     # Define state machine events
+    #
+    # @return [FiniteMachine::StateMachine]
     #
     # @api public
     def events(&block)
@@ -108,6 +129,15 @@ module FiniteMachine
     end
 
     private
+
+    # Initialize state machine properties based off attributes
+    #
+    # @api private
+    def initialize_attrs
+      attrs[:initial]  and initial(attrs[:initial])
+      attrs[:target]   and target(attrs[:target])
+      attrs[:terminal] and terminal(attrs[:terminal])
+    end
 
     # Parse initial options
     #

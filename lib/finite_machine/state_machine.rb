@@ -49,13 +49,14 @@ module FiniteMachine
     #
     # @api private
     def initialize(*args, &block)
+      attributes   = args.last.is_a?(Hash) ? args.pop : {}
       @subscribers = Subscribers.new(self)
       @events      = EventsDSL.new(self)
       @errors      = ErrorsDSL.new(self)
       @observer    = Observer.new(self)
       @transitions = Hash.new { |hash, name| hash[name] = Hash.new }
       @env         = Environment.new(target: self)
-      @dsl         = DSL.new(self)
+      @dsl         = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
     end

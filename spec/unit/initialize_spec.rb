@@ -56,6 +56,16 @@ describe FiniteMachine, 'initialize' do
     expect(called).to be_empty
   end
 
+  it "allows to specify initial state through parameter" do
+    fsm = FiniteMachine.define initial: :green do
+      events {
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+    end
+    expect(fsm.current).to eql(:green)
+  end
+
   it "allows to specify deferred inital state" do
     fsm = FiniteMachine.define do
       initial state: :green, defer: true

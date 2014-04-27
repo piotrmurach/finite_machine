@@ -27,6 +27,20 @@ describe FiniteMachine, 'finished?' do
     expect(fsm.finished?).to be_true
   end
 
+  it "allows to specify terminal state as parameter" do
+    fsm = FiniteMachine.define terminal: :red do
+      initial :green
+
+      events {
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+    end
+    fsm.slow
+    fsm.stop
+    expect(fsm.finished?).to be_true
+  end
+
   it "checks without terminal state" do
     fsm = FiniteMachine.define do
       initial :green
