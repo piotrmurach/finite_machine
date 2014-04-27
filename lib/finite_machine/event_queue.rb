@@ -1,11 +1,8 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A class responsible for running asynchronous events
   class EventQueue
-    include Enumerable
-
     # Initialize an event queue
     #
     # @example
@@ -13,9 +10,10 @@ module FiniteMachine
     #
     # @api public
     def initialize
-      @queue = Queue.new
-      @mutex = Mutex.new
-      @dead  = false
+      @queue     = Queue.new
+      @mutex     = Mutex.new
+      @dead      = false
+      @listeners = []
 
       @thread = Thread.new do
         process_events
@@ -48,6 +46,16 @@ module FiniteMachine
       ensure
         @mutex.unlock rescue nil
       end
+      self
+    end
+
+    # Add listener to the queue to receive messages
+    #
+    # @api public
+    def subscribe(*args, &block)
+      listener = Listener.new
+      listener.on_delivery(&block)
+      @listeners << listener
     end
 
     # Check if there are any events to handle
@@ -95,17 +103,44 @@ module FiniteMachine
     #
     # @api public
     def shutdown
+      raise EventQueueDeadError, "event queue already dead" if @dead
+
       @mutex.lock
       begin
+        queue = @queue
         @queue.clear
         @dead = true
       ensure
         @mutex.unlock rescue nil
       end
+      while(!queue.empty?)
+        Logger.debug "Discarded message: #{queue.pop}"
+      end
       true
     end
 
+    # Get number of events waiting for processing
+    #
+    # @example
+    #   event_queue.size
+    #
+    # @return [Integer]
+    #
+    # @api public
+    def size
+      @mutex.synchronize { @queue.size }
+    end
+
     private
+
+    # Notify consumers about process event
+    #
+    # @param [FiniteMachine::AsyncCall] event
+    #
+    # @api private
+    def notify_listeners(event)
+      @listeners.each { |listener| listener.handle_delivery(event) }
+    end
 
     # Process all the events
     #
@@ -113,13 +148,13 @@ module FiniteMachine
     #
     # @api private
     def process_events
-      until(@dead) do
+      until @dead
         event = next_event
+        notify_listeners(event)
         event.dispatch
       end
     rescue Exception => ex
       Logger.error "Error while running event: #{ex}"
     end
-
   end # EventQueue
 end # FiniteMachine
