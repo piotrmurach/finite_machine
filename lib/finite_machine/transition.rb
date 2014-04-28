@@ -143,6 +143,7 @@ module FiniteMachine
         transitions     = machine.transitions[name]
         self.from_state = machine.state
         machine.state   = transitions[machine.state] || transitions[ANY_STATE] || name
+        machine.initial_state = machine.state if from_state == DEFAULT_STATE
       end
     end
 

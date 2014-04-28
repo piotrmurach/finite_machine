@@ -53,7 +53,6 @@ module FiniteMachine
       initialize_attrs
     end
 
-
     # Define initial state
     #
     # @example
@@ -69,7 +68,10 @@ module FiniteMachine
     # @api public
     def initial(value)
       state, name, self.defer = parse(value)
-      machine.state = state unless defer
+      unless defer
+        machine.state         = state
+        machine.initial_state = state
+      end
       event = proc { event name, from: FiniteMachine::DEFAULT_STATE, to: state }
       machine.events.call(&event)
     end

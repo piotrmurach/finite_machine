@@ -153,4 +153,36 @@ describe FiniteMachine, 'initialize' do
     fsm.b
     expect(fsm.current).to eql(3)
   end
+
+  it "allows to retrieve initial state" do
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events {
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+    end
+    expect(fsm.current).to eq(:green)
+    expect(fsm.initial_state).to eq(:green)
+    fsm.slow
+    expect(fsm.current).to eq(:yellow)
+    expect(fsm.initial_state).to eq(:green)
+  end
+
+  it "allows to retrieve initial state for deferred" do
+    fsm = FiniteMachine.define do
+      initial state: :green, defer: true
+
+      events {
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+    end
+    expect(fsm.current).to eq(:none)
+    expect(fsm.initial_state).to eq(:none)
+    fsm.init
+    expect(fsm.current).to eq(:green)
+    expect(fsm.initial_state).to eq(:green)
+  end
 end

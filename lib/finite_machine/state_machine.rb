@@ -47,6 +47,7 @@ module FiniteMachine
     # @api private
     def initialize(*args, &block)
       attributes   = args.last.is_a?(Hash) ? args.pop : {}
+      @initial_state = DEFAULT_STATE
       @subscribers = Subscribers.new(self)
       @events      = EventsDSL.new(self)
       @errors      = ErrorsDSL.new(self)
