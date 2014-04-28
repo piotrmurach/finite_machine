@@ -63,12 +63,10 @@ module FiniteMachine
     def listen_on(type, *args, &callback)
       name   = args.first
       events = []
-      if machine.states.include?(name) || name == ANY_STATE_HOOK
-        events << :"#{type}state"
-      elsif machine.event_names.include?(name)  || name == ANY_EVENT_HOOK
-        events << :"#{type}action"
-      else
-        events << :"#{type}state" << :"#{type}action"
+      case name
+      when *state_names then events << :"#{type}state"
+      when *event_names then events << :"#{type}action"
+      else events << :"#{type}state" << :"#{type}action"
       end
       events.each { |event| on(Event.send(event), *args, &callback) }
     end
@@ -149,8 +147,7 @@ module FiniteMachine
         result = callable.call(trans_event, *data)
       end
 
-      transition = event.transition
-      transition.cancelled = (result == CANCELLED)
+      event.transition.cancelled = (result == CANCELLED)
     end
 
     # Set of all state names
@@ -158,7 +155,7 @@ module FiniteMachine
     # @return [Set]
     #
     # @api private
-    def state_callback_names
+    def state_names
       @names = Set.new
       @names.merge machine.states
       @names.merge [ANY_STATE, ANY_STATE_HOOK]
@@ -169,14 +166,14 @@ module FiniteMachine
     # @return [Set]
     #
     # @api private
-    def event_callback_names
+    def event_names
       @names = Set.new
       @names.merge machine.event_names
       @names.merge [ANY_EVENT, ANY_EVENT_HOOK]
     end
 
     def callback_names
-      state_callback_names + event_callback_names
+      state_names + event_names
     end
 
     def ensure_valid_callback_name!(name)
