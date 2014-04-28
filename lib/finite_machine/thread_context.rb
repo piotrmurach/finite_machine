@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A mixin to allow sharing of thread context
   module ThreadContext
 

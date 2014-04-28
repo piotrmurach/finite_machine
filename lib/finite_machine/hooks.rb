@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A class reponsible for registering callbacks
   class Hooks
     include Threadable
@@ -71,6 +70,5 @@ module FiniteMachine
         yield hook
       end
     end
-
   end # Hooks
 end # FiniteMachine

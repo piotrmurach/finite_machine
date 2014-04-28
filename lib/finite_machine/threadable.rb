@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 module FiniteMachine
-
   # A mixin to allow instance methods to be synchronized
   module Threadable
     module InstanceMethods
@@ -78,6 +77,5 @@ module FiniteMachine
         end
       end
     end
-
   end # Threadable
 end # FiniteMachine

@@ -73,6 +73,5 @@ module FiniteMachine
       @subscribers.clear
       self
     end
-
   end # Subscribers
 end # FiniteMachine
