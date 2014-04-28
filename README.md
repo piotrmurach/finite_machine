@@ -23,7 +23,7 @@ A minimal finite state machine with a straightforward and intuitive syntax. You 
 * ability to check for terminal state
 * conditional transitions
 * sync and async transitions
-* sync and async callbacks (TODO - only sync)
+* sync and async callbacks
 * nested/composable states (TODO)
 
 ## Installation
@@ -70,7 +70,8 @@ Or install it yourself as:
     * [4.7 Fluid callbacks](#47-fluid-callbacks)
     * [4.8 Executing methods inside callbacks](#48-executing-methods-inside-callbacks)
     * [4.9 Defining callbacks](#49-defining-callbacks)
-    * [4.10 Cancelling inside callbacks](#410-cancelling-inside-callbacks)
+    * [4.10 Asynchronous callbacks](#410-asynchronous-callbacks)
+    * [4.11 Cancelling inside callbacks](#411-cancelling-inside-callbacks)
 * [5. Errors](#5-errors)
     * [5.1 Using target](#51-using-target)
 * [6. Integration](#6-integration)
@@ -92,14 +93,26 @@ fm = FiniteMachine.define do
   }
 
   callbacks {
-    on_enter :ready { |event| ... }
-    on_enter :go    { |event| ... }
-    on_enter :stop  { |event| ... }
+    on_enter(:ready) { |event| ... }
+    on_exit(:go)     { |event| ... }
+    on_enter(:stop)  { |event| ... }
   }
 end
 ```
 
 As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#2-transitions) and [Callbacks](#4-callbacks) sections for more details.
+
+Alternatively, you can construct the machine like a regular object without using the DSL. The same machine could be reimplemented as follows:
+
+```ruby
+fm = FiniteMachine.new initial: :red
+fm.event(:ready, :red    => :yellow)
+fm.event(:go,    :yellow => :green)
+fm.event(:stop,  :green  => :red)
+fm.on_enter(:ready) { |event| ... }
+fm.on_exit(:go)     { |event| ... }
+fm.on_enter(:stop)  { |event| ...}
+```
 
 ### 1.1 current
 
@@ -142,6 +155,14 @@ fm = FiniteMachine.define do
 end
 
 fm.current # => :green
+```
+
+or by passing named argument `:initial` like so
+
+```ruby
+fm = FiniteMachine.define initial: :green do
+  ...
+end
 ```
 
 If you want to defer setting the initial state, pass the `:defer` option to the `initial` helper. By default **FiniteMachine** will create `init` event that will allow to transition from `:none` state to the new state.
@@ -279,6 +300,25 @@ end
 ```
 
 For more complex example see [Integration](#6-integration) section.
+
+Finally, you can always reference an external context inside the **FiniteMachine** by simply calling `target`, for instance, to reference it inside a callback:
+
+car = Car.new
+
+fm = FiniteMachine.define do
+  initial :neutral
+
+  target car
+
+  events {
+    event :start, :neutral => :one, if: "engine_on?"
+  }
+  callbacks {
+    on_enter_start do |event|
+      target.turn_engine_on
+    end
+  }
+end
 
 ## 2 Transitions
 
@@ -687,7 +727,23 @@ fm.on_enter_yellow do |event|
 end
 ```
 
-### 4.10 Cancelling inside callbacks
+### 4.10 Asynchronous callbacks
+
+By default all callbacks are run synchronosuly. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
+
+```ruby
+  on_enter :green, :async do |event| ... end
+```
+
+or
+
+```ruby
+  on_enter_green(:async) { |event| }
+```
+
+This will ensure that when the callback is fired it will run in seperate thread outside of the main execution thread.
+
+### 4.11 Cancelling inside callbacks
 
 Preferred way to handle cancelling transitions is to use [3 Conditional transitions](#3-conditional-transitions). However if the logic is more than one liner you can cancel the event, hence the transition by returning `FiniteMachine::CANCELLED` constant from the callback scope. The two ways you can affect the event are
 
