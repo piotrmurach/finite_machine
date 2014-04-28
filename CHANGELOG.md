@@ -1,3 +1,14 @@
+0.5.0 (April 28, 2014)
+
+* Change to allow for machine to be constructed as plain object
+* Allow for :initial, :terminal and :target to be machine parameters
+* Add generic Listener interface
+* Change EventQueue to allow for subscription
+* Increase test coverage to 98%
+* Change to allow access to target inside machine dsl
+* Add ability to fire callbacks asynchronously
+* Add initial state storage
+
 0.4.0 (April 13, 2014)
 
 * Change initial state to stop firing event notification
