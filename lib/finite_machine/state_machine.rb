@@ -140,7 +140,7 @@ module FiniteMachine
     #
     # @api public
     def states
-      st = event_names.map { |event| transitions[event].to_a }.flatten.map do |e|
+      event_names.map { |event| transitions[event].to_a }.flatten.map do |e|
         e.is_a?(Hash) ? e[:target] : e
       end.uniq
     end
@@ -227,7 +227,7 @@ module FiniteMachine
         notify :enteraction, _transition, *args
 
         begin
-          _transition.call *args
+          _transition.call(*args)
 
           notify :transitionstate, _transition, *args
           notify :transitionaction, _transition, *args
