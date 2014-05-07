@@ -74,7 +74,8 @@ module FiniteMachine
     # @api private
     def define
       from.each do |from|
-        machine.transitions[name][from] = to || from
+        machine.transitions[name][from] = [] unless machine.transitions[name].has_key? from
+        machine.transitions[name][from] << { target: ( to || from ), cond: @conditions }
       end
     end
 
@@ -128,7 +129,7 @@ module FiniteMachine
     def define_event_bang(name)
       machine.send(:define_singleton_method, "#{name}!") do
         transitions   = machine.transitions[name]
-        machine.state = transitions.values[0]
+        machine.state = transitions.values[0][0][:target]
       end
     end
 
@@ -137,12 +138,21 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def call
+    def call(*args)
       sync_exclusive do
         return if cancelled
         transitions     = machine.transitions[name]
         self.from_state = machine.state
-        machine.state   = transitions[machine.state] || transitions[ANY_STATE] || name
+        #machine.state   = transitions[machine.state].first[:target] || transitions[ANY_STATE].first[:target] || name
+        _state = transitions[machine.state].select do |trans|
+          if trans[:cond].any?
+            trans if trans[:cond].all? { |condition| condition.call(machine.env.target, *args) } 
+          else
+            trans
+          end
+        end.first[:target] if transitions[machine.state].respond_to? :select
+
+        machine.state = _state || transitions[ANY_STATE].first[:target] || name
         machine.initial_state = machine.state if from_state == DEFAULT_STATE
       end
     end

@@ -7,6 +7,8 @@ Gemfile.lock
 InstalledFiles
 _yardoc
 coverage
+.ruby-gemset
+.ruby-version
 doc/
 lib/bundler/man
 pkg

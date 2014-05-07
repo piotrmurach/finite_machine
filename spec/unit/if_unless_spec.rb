@@ -118,6 +118,44 @@ describe FiniteMachine, ':if, :unless' do
     ])
   end
 
+  context "conditional branches" do
+    it "allow to follow positive state branch" do
+      car = Car.new
+
+      fsm = FiniteMachine.define do
+        initial :green
+
+        target car
+
+        events {
+          event :follow, :green => :positive, if: ->(_target, param) { param } 
+          event :follow, :green => :negative, unless: ->(_target, param) { param }
+        }
+      end
+      
+      fsm.follow(true)
+      expect(fsm.current).to eql(:positive)
+    end
+
+    it "allow to follow negative state branch" do
+      car = Car.new
+
+      fsm = FiniteMachine.define do
+        initial :green
+
+        target car 
+
+        events {
+          event :follow, :green => :positive, if: ->(_target, param)  { param } 
+          event :follow, :green => :negative, unless: ->(_target, param) { param }
+        }
+      end
+
+      fsm.follow(false)
+      expect(fsm.current).to eql(:negative)
+    end
+  end
+
   context 'when proc' do
     it "specifies :if and :unless" do
       car = Car.new

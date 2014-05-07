@@ -140,7 +140,9 @@ module FiniteMachine
     #
     # @api public
     def states
-      event_names.map { |event| transitions[event].to_a }.flatten.uniq
+      event_names.map { |event| transitions[event].to_a }.flatten.map do |e|
+        e.is_a?(Hash) ? e[:target] : e
+      end.uniq
     end
 
     # Retireve all event names
@@ -216,9 +218,18 @@ module FiniteMachine
     def transition(_transition, *args, &block)
       return CANCELLED if valid_state?(_transition)
 
-      return CANCELLED unless _transition.conditions.all? do |condition|
-                                condition.call(env.target, *args)
-                              end
+      valid_conditions = if transitions[_transition.name][state]
+        transitions[_transition.name][state].any? do |t|
+          t[:cond].all? { |c| c.call(env.target, *args) }
+        end
+      else
+        _transition.conditions.all? do |condition|
+          condition.call(env.target, *args)
+        end
+      end
+
+      return CANCELLED unless valid_conditions
+
       return NOTRANSITION if state == _transition.to
 
       sync_exclusive do
@@ -226,7 +237,7 @@ module FiniteMachine
         notify :enteraction, _transition, *args
 
         begin
-          _transition.call
+          _transition.call(*args)
 
           notify :transitionstate, _transition, *args
           notify :transitionaction, _transition, *args
