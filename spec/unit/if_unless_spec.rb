@@ -128,8 +128,8 @@ describe FiniteMachine, ':if, :unless' do
         target car
 
         events {
-          event :follow, :green => :positive, if: -> (_target, param) { param } 
-          event :follow, :green => :negative, unless: -> (_target, param) { param }
+          event :follow, :green => :positive, if: ->(_target, param) { param } 
+          event :follow, :green => :negative, unless: ->(_target, param) { param }
         }
       end
       
@@ -146,8 +146,8 @@ describe FiniteMachine, ':if, :unless' do
         target car 
 
         events {
-          event :follow, :green => :positive, if: -> (_target, param) { param } 
-          event :follow, :green => :negative, unless: -> (_target, param) { param }
+          event :follow, :green => :positive, if: ->(_target, param)  { param } 
+          event :follow, :green => :negative, unless: ->(_target, param) { param }
         }
       end
 
