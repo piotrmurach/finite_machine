@@ -16,12 +16,22 @@ describe FiniteMachine::Transition, 'parse_states' do
     end
   end
 
+  context 'with :to key only' do
+    let(:attrs) { { to: :red } }
+
+    it "groups states" do
+      expect(transition.from_states).to eq([:any])
+      expect(transition.to_states).to eq([:red])
+      expect(transition.map).to eql({any: :red})
+    end
+  end
+
   context 'with :from, :to keys' do
     let(:attrs) { {from: [:green, :yellow], to: :red} }
 
     it "groups states" do
-      expect(transition.from).to eql(attrs[:from])
-      expect(transition.to).to eql(attrs[:to])
+      expect(transition.from_states).to match_array(attrs[:from])
+      expect(transition.to_states).to match_array([:red, :red])
     end
   end
 
@@ -29,17 +39,21 @@ describe FiniteMachine::Transition, 'parse_states' do
     let(:attrs) { {[:green, :yellow] => :red} }
 
     it "groups states" do
-      expect(transition.from).to eql([:green, :yellow])
-      expect(transition.to).to eql(:red)
+      expect(transition.from_states).to match_array([:green, :yellow])
+      expect(transition.to_states).to eql([:red, :red])
     end
   end
 
   context 'when hash of states' do
-    let(:attrs) { { :green => :red, :yellow => :red} }
+    let(:attrs) {
+      { :initial => :low,
+        :low     => :medium,
+        :medium  => :high }
+     }
 
     it "groups states" do
-      expect(transition.from).to eql([:green, :yellow])
-      expect(transition.to).to eql(:red)
+      expect(transition.from_states).to match_array([:initial, :low, :medium])
+      expect(transition.to_states).to eql([:low, :medium, :high])
     end
   end
 end

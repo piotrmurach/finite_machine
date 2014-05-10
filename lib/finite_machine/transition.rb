@@ -8,10 +8,10 @@ module FiniteMachine
     attr_threadsafe :name
 
     # State transitioning from
-    attr_threadsafe :from
+    attr_threadsafe :from_states
 
     # State transitioning to
-    attr_threadsafe :to
+    attr_threadsafe :to_states
 
     # Predicates before transitioning
     attr_threadsafe :conditions
@@ -25,6 +25,9 @@ module FiniteMachine
     # Check if transition should be cancelled
     attr_threadsafe :cancelled
 
+    # All states for this transition event
+    attr_threadsafe :map
+
     # Initialize a Transition
     #
     # @param [StateMachine] machine
@@ -32,14 +35,25 @@ module FiniteMachine
     #
     # @api public
     def initialize(machine, attrs = {})
-      @machine    = machine
-      @name       = attrs.fetch(:name, DEFAULT_STATE)
-      @from, @to  = *parse_states(attrs)
-      @from_state = @from.first
-      @if         = Array(attrs.fetch(:if, []))
-      @unless     = Array(attrs.fetch(:unless, []))
-      @conditions = make_conditions
-      @cancelled  = false
+      @machine     = machine
+      @name        = attrs.fetch(:name, DEFAULT_STATE)
+      @map         = FiniteMachine::StateParser.new(attrs).parse_states
+      @from_states = @map.keys
+      @to_states   = @map.values
+      @from_state  = @from_states.first
+      @if          = Array(attrs.fetch(:if, []))
+      @unless      = Array(attrs.fetch(:unless, []))
+      @conditions  = make_conditions
+      @cancelled   = false
+    end
+
+    # Decide :to state from available transitions for this event
+    #
+    # @return [Symbol]
+    #
+    # @api public
+    def to_state
+      machine.transitions[name][from_state]
     end
 
     # Reduce conditions
@@ -50,21 +64,16 @@ module FiniteMachine
         @unless.map { |c| Callable.new(c).invert }
     end
 
-    # Extract states from attributes
+    # Check if moved to different state
     #
-    # @param [Hash] attrs
+    # @param [Symbol] state
+    #   the current state name
     #
-    # @api private
-    def parse_states(attrs)
-      _attrs = attrs.dup
-      [:name, :if, :unless].each { |key| _attrs.delete(key) }
-      raise_not_enough_transitions(attrs) unless _attrs.any?
-
-      if [:from, :to].any? { |key| attrs.keys.include?(key) }
-        [Array(_attrs[:from] || ANY_STATE), _attrs[:to]]
-      else
-        [(keys = _attrs.keys).flatten, _attrs[keys.first]]
-      end
+    # @return [Boolean]
+    #
+    # @api public
+    def different?(state)
+      map[state] == state || map[ANY_STATE] == state
     end
 
     # Add transition to the machine
@@ -73,8 +82,8 @@ module FiniteMachine
     #
     # @api private
     def define
-      from.each do |from|
-        machine.transitions[name][from] = to || from
+      from_states.each do |from|
+        machine.transitions[name][from] = map[from] || ANY_STATE
       end
     end
 
@@ -82,7 +91,7 @@ module FiniteMachine
     #
     # @api private
     def define_state_methods
-      from.concat([to]).each { |state| define_state_method(state) }
+      from_states.concat(to_states).each { |state| define_state_method(state) }
     end
 
     # Define state helper method
@@ -160,24 +169,8 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      "<#{self.class} name: #{@name}, transitions: #{@from} => #{@to}, when: #{@conditions}>"
-    end
-
-    private
-
-    # Raise error when not enough transitions are provided
-    #
-    # @param [Hash] attrs
-    #
-    # @raise [NotEnoughTransitionsError]
-    #   if the event has not enough transition arguments
-    #
-    # @return [nil]
-    #
-    # @api private
-    def raise_not_enough_transitions(attrs)
-      fail NotEnoughTransitionsError, "please provide state transitions for" \
-           " '#{attrs.inspect}'"
+      transitions = @map.map { |from, to| "#{from} -> #{to}" }.join(', ')
+      "<##{self.class} @name=#{@name}, @transitions=#{transitions}, @when=#{@conditions}>"
     end
   end # Transition
 end # FiniteMachine

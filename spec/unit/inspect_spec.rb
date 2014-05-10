@@ -8,10 +8,10 @@ describe FiniteMachine::Transition, 'inspect' do
   subject(:transition) { described_class.new(machine, attrs) }
 
   context 'when inspecting' do
-    let(:attrs) { {name: :start, :foo => :bar } }
+    let(:attrs) { {name: :start, :foo => :bar, :baz => :daz} }
 
     it "displays name and transitions" do
-      expect(transition.inspect).to eql("<FiniteMachine::Transition name: start, transitions: [:foo] => bar, when: []>")
+      expect(transition.inspect).to eql("<#FiniteMachine::Transition @name=start, @transitions=foo -> bar, baz -> daz, @when=[]>")
     end
   end
 
