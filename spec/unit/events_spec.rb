@@ -247,9 +247,7 @@ describe FiniteMachine, 'events' do
     end
 
     expect(fsm.current).to eql(:green)
-
     expect(fsm.can?(:stop)).to be_true
-
     fsm.stop
     expect(fsm.current).to eql(:yellow)
     fsm.stop
@@ -260,6 +258,26 @@ describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:green)
     fsm.stop
     expect(fsm.current).to eql(:yellow)
+  end
+
+  it "groups transitions under one event name" do
+    fsm = FiniteMachine.define do
+      initial :initial
+
+      events {
+        event :bump, :initial => :low,
+                     :low     => :medium,
+                     :medium  => :high
+      }
+    end
+
+    expect(fsm.current).to eq(:initial)
+    fsm.bump
+    expect(fsm.current).to eq(:low)
+    fsm.bump
+    expect(fsm.current).to eq(:medium)
+    fsm.bump
+    expect(fsm.current).to eq(:high)
   end
 
   it "returns values for events" do
