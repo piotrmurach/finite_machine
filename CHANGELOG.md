@@ -1,3 +1,7 @@
+0.6.1 (May 10, 2014)
+
+* Fix stdlib requirement
+
 0.6.0 (May 10, 2014)
 
 * Add StateParser to allow for grouping transition under same event name
