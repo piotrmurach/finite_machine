@@ -1,3 +1,10 @@
+0.6.0 (May 10, 2014)
+
+* Add StateParser to allow for grouping transition under same event name
+* Change Transition to store a map of transition for a given event
+* Add abilility to correctly extract :to state for Transition instance
+* Fix bug #6 with incorrect TransitionEvent payload information
+
 0.5.0 (April 28, 2014)
 
 * Change to allow for machine to be constructed as plain object
