@@ -20,6 +20,7 @@ require "finite_machine/transition_event"
 require "finite_machine/dsl"
 require "finite_machine/state_machine"
 require "finite_machine/subscribers"
+require "finite_machine/state_parser"
 require "finite_machine/observer"
 require "finite_machine/listener"
 
