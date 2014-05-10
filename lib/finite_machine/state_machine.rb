@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'forwardable'
+
 module FiniteMachine
   # Base class for state machine
   class StateMachine
