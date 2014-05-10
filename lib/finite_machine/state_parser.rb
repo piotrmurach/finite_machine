@@ -67,7 +67,7 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      attributes = @attrs.map { |k, v| "#{k}: #{v}" }.join(', ')
+      attributes = @attrs.map { |k, v| "#{k}:#{v}" }.join(', ')
       "<##{self.class} @attrs=#{attributes}>"
     end
 
