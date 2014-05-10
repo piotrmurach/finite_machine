@@ -223,11 +223,10 @@ module FiniteMachine
 
       sync_exclusive do
         notify :exitstate, _transition, *args
-        notify :enteraction, _transition, *args
 
         begin
           _transition.call
-
+          notify :enteraction, _transition, *args
           notify :transitionstate, _transition, *args
           notify :transitionaction, _transition, *args
         rescue Exception => e

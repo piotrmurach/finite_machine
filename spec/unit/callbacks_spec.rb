@@ -608,7 +608,7 @@ describe FiniteMachine, 'callbacks' do
       }
 
       callbacks {
-        on_enter :slow do |event|
+        on_exit :green do |event|
           FiniteMachine::CANCELLED
         end
       }
@@ -620,4 +620,92 @@ describe FiniteMachine, 'callbacks' do
   end
 
   xit "groups callbacks"
+
+  it "groups states from separate events with the same name" do
+    callbacks = []
+    fsm = FiniteMachine.define do
+      initial :initial
+
+      events {
+        event :bump, :initial => :low
+        event :bump, :low     => :medium
+        event :bump, :medium  => :high
+      }
+
+      callbacks {
+        on_enter_state do |event|
+          callbacks << "enter_state_#{event.name}_#{event.from}_#{event.to}"
+        end
+        on_enter_event do |event|
+          callbacks << "enter_event_#{event.name}_#{event.from}_#{event.to}"
+        end
+      }
+    end
+    expect(fsm.current).to eq(:initial)
+    fsm.bump
+    expect(callbacks).to eq([
+      'enter_event_bump_initial_low',
+      'enter_state_bump_initial_low'
+    ])
+    fsm.bump
+    expect(callbacks).to eq([
+      'enter_event_bump_initial_low',
+      'enter_state_bump_initial_low',
+      'enter_event_bump_low_medium',
+      'enter_state_bump_low_medium'
+    ])
+    fsm.bump
+    expect(callbacks).to eq([
+      'enter_event_bump_initial_low',
+      'enter_state_bump_initial_low',
+      'enter_event_bump_low_medium',
+      'enter_state_bump_low_medium',
+      'enter_event_bump_medium_high',
+      'enter_state_bump_medium_high'
+    ])
+  end
+
+  it "groups states under event name" do
+    callbacks = []
+    fsm = FiniteMachine.define do
+      initial :initial
+
+      events {
+        event :bump, :initial => :low,
+                     :low     => :medium,
+                     :medium  => :high
+      }
+
+      callbacks {
+        on_enter_state do |event|
+          callbacks << "enter_state_#{event.name}_#{event.from}_#{event.to}"
+        end
+        on_enter_event do |event|
+          callbacks << "enter_event_#{event.name}_#{event.from}_#{event.to}"
+        end
+      }
+    end
+    expect(fsm.current).to eq(:initial)
+    fsm.bump
+    expect(callbacks).to eq([
+      'enter_event_bump_initial_low',
+      'enter_state_bump_initial_low'
+    ])
+    fsm.bump
+    expect(callbacks).to eq([
+      'enter_event_bump_initial_low',
+      'enter_state_bump_initial_low',
+      'enter_event_bump_low_medium',
+      'enter_state_bump_low_medium'
+    ])
+    fsm.bump
+    expect(callbacks).to eq([
+      'enter_event_bump_initial_low',
+      'enter_state_bump_initial_low',
+      'enter_event_bump_low_medium',
+      'enter_state_bump_low_medium',
+      'enter_event_bump_medium_high',
+      'enter_state_bump_medium_high'
+    ])
+  end
 end

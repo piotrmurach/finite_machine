@@ -12,14 +12,16 @@ module FiniteMachine
 
     # Build a transition event
     #
+    # @param [FiniteMachine::Transition] transition
+    #
     # @return [self]
     #
     # @api private
     def self.build(transition)
       instance = new
-      instance.from = transition.from_state
-      instance.to   = transition.to
       instance.name = transition.name
+      instance.from = transition.from_state
+      instance.to   = transition.to_state
       instance
     end
   end # TransitionEvent
