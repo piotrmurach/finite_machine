@@ -10,7 +10,7 @@ describe FiniteMachine::StateParser, '#inspect' do
   context 'when no attributes' do
     let(:attrs) { { } }
 
-    it "" do
+    it "raises error for no transitions" do
       expect {
         parser.parse_states
       }.to raise_error(FiniteMachine::NotEnoughTransitionsError)

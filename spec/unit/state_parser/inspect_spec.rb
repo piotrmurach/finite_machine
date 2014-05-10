@@ -11,7 +11,6 @@ describe FiniteMachine::StateParser, "#inspect" do
     let(:attrs) { { green: :yellow } }
 
     it "inspects parser" do
-      print 'YEAH CALLLED -------------------------------1'
       expect(parser.inspect).to eq("<#FiniteMachine::StateParser @attrs=green:yellow>")
     end
   end
