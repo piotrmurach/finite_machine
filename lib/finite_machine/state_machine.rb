@@ -219,7 +219,7 @@ module FiniteMachine
       return CANCELLED unless _transition.conditions.all? do |condition|
                                 condition.call(env.target, *args)
                               end
-      return NOTRANSITION if state == _transition.to
+      return NOTRANSITION if _transition.different?(state)
 
       sync_exclusive do
         notify :exitstate, _transition, *args
