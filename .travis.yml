@@ -16,6 +16,8 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+    - rvm: jruby-20mode
+    - rvm: jruby-21mode
     - rvm: rbx
   fast_finish: true
 branches:
