@@ -225,7 +225,6 @@ module FiniteMachine
       return CANCELLED unless _transition.conditions.all? do |condition|
                                 condition.call(env.target, *args)
                               end
-      return NOTRANSITION if _transition.different?(state)
 
       sync_exclusive do
         notify :exitstate, _transition, *args
@@ -245,7 +244,7 @@ module FiniteMachine
         notify :exitaction, _transition, *args
       end
 
-      SUCCEEDED
+      _transition.same?(state) ? NOTRANSITION : SUCCEEDED
     end
 
     # Forward the message to target, observer or self

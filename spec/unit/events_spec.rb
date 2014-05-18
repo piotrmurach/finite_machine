@@ -302,4 +302,35 @@ describe FiniteMachine, 'events' do
     expect(fsm.stop).to eql(FiniteMachine::SUCCEEDED)
     expect(fsm.stop).to eql(FiniteMachine::NOTRANSITION)
   end
+
+  it "allows for self transition events" do
+    digits = []
+    callbacks = []
+    phone = FiniteMachine.define do
+      initial :on_hook
+
+      events {
+        event :digit,    :on_hook => :dialing
+        event :digit,    :dialing => :dialing
+        event :off_hook, :dialing => :alerting
+      }
+
+      callbacks {
+        on_enter_digit { |event, digit| digits << digit}
+        on_enter_off_hook { |event| callbacks << "dialing #{digits.join}" }
+      }
+    end
+
+    expect(phone.current).to eq(:on_hook)
+    phone.digit(9)
+    expect(phone.current).to eq(:dialing)
+    phone.digit(1)
+    expect(phone.current).to eq(:dialing)
+    phone.digit(1)
+    expect(phone.current).to eq(:dialing)
+    phone.off_hook
+    expect(phone.current).to eq(:alerting)
+    expect(digits).to match_array(digits)
+    expect(callbacks).to match_array(["dialing 911"])
+  end
 end
