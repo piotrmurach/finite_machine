@@ -81,7 +81,7 @@ module FiniteMachine
     # @return [Transition]
     #
     # @api private
-    def define
+    def update_transitions
       from_states.each do |from|
         machine.transitions[name][from] = map[from] || ANY_STATE
       end
@@ -110,24 +110,25 @@ module FiniteMachine
     #
     # @api private
     def define_event
-      _name       = name
-      bang_name   = "#{_name}!"
-
-      machine.singleton_class.class_eval do
-        undef_method(_name)     if method_defined?(_name)
-        undef_method(bang_name) if method_defined?(bang_name)
+      # TODO: raise error if redefining core methods!
+      if machine.singleton_class.send(:method_defined?, name)
+        machine.events_chain[name] << self
+      else
+        define_event_transition(name)
+        define_event_bang(name)
       end
-      define_transition(name)
-      define_event_bang(name)
     end
 
     # Define transition event
     #
     # @api private
-    def define_transition(name)
-      _transition = self
+    def define_event_transition(name)
+      _event = FiniteMachine::Event.new(machine, name: name)
+      _event << self
+      machine.events_chain[name] = _event
+
       machine.send(:define_singleton_method, name) do |*args, &block|
-        transition(_transition, *args, &block)
+        _event.call(*args, &block)
       end
     end
 
@@ -157,6 +158,8 @@ module FiniteMachine
     end
 
     # Return transition name
+    #
+    # @return [String]
     #
     # @api public
     def to_s
