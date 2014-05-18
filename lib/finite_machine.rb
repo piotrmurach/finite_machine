@@ -6,6 +6,7 @@ require "sync"
 
 require "finite_machine/version"
 require "finite_machine/threadable"
+require "finite_machine/safety"
 require "finite_machine/thread_context"
 require "finite_machine/callable"
 require "finite_machine/catchable"
