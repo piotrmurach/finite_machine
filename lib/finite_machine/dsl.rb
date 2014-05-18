@@ -185,7 +185,7 @@ module FiniteMachine
     def event(name, attrs = {}, &block)
       sync_exclusive do
         _transition = Transition.new(machine, attrs.merge!(name: name))
-        _transition.define
+        _transition.update_transitions
         _transition.define_state_methods
         _transition.define_event
       end
