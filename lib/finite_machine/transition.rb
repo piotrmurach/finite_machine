@@ -4,6 +4,7 @@ module FiniteMachine
   # Class describing a transition associated with a given event
   class Transition
     include Threadable
+    include Safety
 
     attr_threadsafe :name
 
@@ -110,7 +111,7 @@ module FiniteMachine
     #
     # @api private
     def define_event
-      # TODO: raise error if redefining core methods!
+      detect_event_conflict!(name)
       if machine.singleton_class.send(:method_defined?, name)
         machine.events_chain[name] << self
       else

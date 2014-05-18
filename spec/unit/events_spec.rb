@@ -333,4 +333,12 @@ describe FiniteMachine, 'events' do
     expect(digits).to match_array(digits)
     expect(callbacks).to match_array(["dialing 911"])
   end
+
+  it "detects dangerous event names" do
+    expect { FiniteMachine.define do
+      events {
+        event :transition, :a => :b
+      }
+    end }.to raise_error(FiniteMachine::AlreadyDefinedError)
+  end
 end
