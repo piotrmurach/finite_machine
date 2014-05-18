@@ -2,15 +2,15 @@
 
 module FiniteMachine
   # A class responsible for event notification
-  class Event
+  class HookEvent
     include Threadable
 
     MESSAGE = :trigger
 
-    # Event state
+    # HookEvent state
     attr_threadsafe :state
 
-    # Event type
+    # HookEvent type
     attr_threadsafe :type
 
     # Data associated with the event
@@ -32,7 +32,7 @@ module FiniteMachine
       end
     end
 
-    class Anystate < Event; end
+    class Anystate < HookEvent; end
 
     class Enterstate < Anystate; end
 
@@ -40,7 +40,7 @@ module FiniteMachine
 
     class Exitstate < Anystate; end
 
-    class Anyaction < Event; end
+    class Anyaction < HookEvent; end
 
     class Enteraction < Anyaction; end
 
@@ -64,5 +64,5 @@ module FiniteMachine
         define_method(event.event_name) { event }
       end
     end
-  end # Event
+  end # HookEvent
 end # FiniteMachine

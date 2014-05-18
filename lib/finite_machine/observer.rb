@@ -31,12 +31,12 @@ module FiniteMachine
 
     # Register callback for a given event type
     #
-    # @param [Symbol, FiniteMachine::Event] event_type
+    # @param [Symbol, FiniteMachine::HookEvent] event_type
     # @param [Array] args
     # @param [Proc]  callback
     #
     # @api public
-    def on(event_type = Event, *args, &callback)
+    def on(event_type = HookEvent, *args, &callback)
       sync_exclusive do
         name, async, _ = args
         name = ANY_EVENT if name.nil?
@@ -68,7 +68,7 @@ module FiniteMachine
       when *event_names then events << :"#{type}action"
       else events << :"#{type}state" << :"#{type}action"
       end
-      events.each { |event| on(Event.send(event), *args, &callback) }
+      events.each { |event| on(HookEvent.send(event), *args, &callback) }
     end
 
     def on_enter(*args, &callback)

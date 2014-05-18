@@ -75,8 +75,8 @@ module FiniteMachine
     # @api public
     def notify(event_type, _transition, *data)
       sync_shared do
-        event_class     = Event.const_get(event_type.capitalize.to_s)
-        state_or_action = event_class < Event::Anystate ? state : _transition.name
+        event_class     = HookEvent.const_get(event_type.capitalize.to_s)
+        state_or_action = event_class < HookEvent::Anystate ? state : _transition.name
         _event          = event_class.new(state_or_action, _transition, *data)
         subscribers.visit(_event)
       end
