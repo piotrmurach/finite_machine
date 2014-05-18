@@ -223,4 +223,32 @@ describe FiniteMachine, ':if, :unless' do
       expect(fsm.current).to eql(:one)
     end
   end
+
+  context 'when same event name' do
+    class Bug
+      def pending?
+        false
+      end
+    end
+
+    it "preservers conditions for the same named event" do
+      bug = Bug.new
+      fsm = FiniteMachine.define do
+        initial :initial
+
+        target bug
+
+        events {
+          event :bump, :initial => :low
+          event :bump, :low     => :medium, if: :pending?
+          event :bump, :medium  => :high
+        }
+      end
+      expect(fsm.current).to eq(:initial)
+      fsm.bump
+      expect(fsm.current).to eq(:low)
+      fsm.bump
+      expect(fsm.current).to eq(:low)
+    end
+  end
 end
