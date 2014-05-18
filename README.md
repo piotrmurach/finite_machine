@@ -413,6 +413,19 @@ fm = FiniteMachine.define do
   }
 ```
 
+The same can be more naturally rewritten also as:
+
+```ruby
+fm = FiniteMachine.define do
+  initial :initial
+
+  events {
+    event :bump, :initial => :low
+    event :bump, :low     => :medium
+    event :bump, :medium  => :high
+  }
+```
+
 ## 3 Conditional transitions
 
 Each event takes an optional `:if` and `:unless` options which act as a predicate for the transition. The `:if` and `:unless` can take a symbol, a string, a Proc or an array. Use `:if` option when you want to specify when the transition **should** happen. If you want to specify when the transition **should not** happen then use `:unless` option.
