@@ -68,6 +68,9 @@ module FiniteMachine
   # Raised when event queue is already dead
   EventQueueDeadError = Class.new(::StandardError)
 
+  # Raised when argument is already defined
+  AlreadyDefinedError = Class.new(::ArgumentError)
+
   Environment = Struct.new(:target)
 
   class << self
