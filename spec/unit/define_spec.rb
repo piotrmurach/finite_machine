@@ -46,7 +46,9 @@ describe FiniteMachine, 'define' do
 
       expect(fsm.current).to eql(:green)
       fsm.slow
+      expect(fsm.current).to eql(:yellow)
       fsm.ready
+      expect(fsm.current).to eql(:yellow)
       expect(called).to match_array(['on_enter_yellow', 'error_handler'])
     end
   end
