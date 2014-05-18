@@ -73,7 +73,7 @@ module FiniteMachine
         machine.initial_state = state
       end
       event = proc { event name, from: FiniteMachine::DEFAULT_STATE, to: state }
-      machine.events.call(&event)
+      machine.events_dsl.call(&event)
     end
 
     # Attach state machine to an object
@@ -117,7 +117,7 @@ module FiniteMachine
     #
     # @api public
     def events(&block)
-      machine.events.call(&block)
+      machine.events_dsl.call(&block)
     end
 
     # Define state machine callbacks

@@ -20,7 +20,7 @@ module FiniteMachine
     attr_threadsafe :state
 
     # Events DSL
-    attr_threadsafe :events
+    attr_threadsafe :events_dsl
 
     # Errors DSL
     attr_threadsafe :errors
@@ -40,23 +40,27 @@ module FiniteMachine
     # The state machine environment
     attr_threadsafe :env
 
+    # The state machine event definitions
+    attr_threadsafe :events_chain
+
     def_delegators :@dsl, :initial, :terminal, :target
 
-    def_delegator :@events, :event
+    def_delegator :@events_dsl, :event
 
     # Initialize state machine
     #
     # @api private
     def initialize(*args, &block)
-      attributes   = args.last.is_a?(Hash) ? args.pop : {}
+      attributes     = args.last.is_a?(Hash) ? args.pop : {}
       @initial_state = DEFAULT_STATE
-      @subscribers = Subscribers.new(self)
-      @events      = EventsDSL.new(self)
-      @errors      = ErrorsDSL.new(self)
-      @observer    = Observer.new(self)
-      @transitions = Hash.new { |hash, name| hash[name] = Hash.new }
-      @env         = Environment.new(target: self)
-      @dsl         = DSL.new(self, attributes)
+      @subscribers   = Subscribers.new(self)
+      @events_dsl    = EventsDSL.new(self)
+      @errors        = ErrorsDSL.new(self)
+      @observer      = Observer.new(self)
+      @transitions   = Hash.new { |hash, name| hash[name] = Hash.new }
+      @events_chain  = {}
+      @env           = Environment.new(target: self)
+      @dsl           = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
     end
