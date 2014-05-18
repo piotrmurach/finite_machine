@@ -64,7 +64,7 @@ module FiniteMachine
         @unless.map { |c| Callable.new(c).invert }
     end
 
-    # Check if moved to different state
+    # Check if moved to different state or not
     #
     # @param [Symbol] state
     #   the current state name
@@ -72,8 +72,8 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def different?(state)
-      map[state] == state || map[ANY_STATE] == state
+    def same?(state)
+      map[state] == state || (map[ANY_STATE] == state && from_state == state)
     end
 
     # Add transition to the machine
