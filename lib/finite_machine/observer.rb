@@ -196,7 +196,7 @@ module FiniteMachine
     # @api private
     def method_missing(method_name, *args, &block)
       _, event_name, callback_name = *method_name.to_s.match(/^(\w*?on_\w+?)_(\w+)$/)
-      if callback_names.include?(callback_name.to_sym)
+      if callback_name && callback_names.include?(callback_name.to_sym)
         public_send(event_name, :"#{callback_name}", *args, &block)
       else
         super
