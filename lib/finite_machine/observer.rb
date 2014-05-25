@@ -214,7 +214,7 @@ module FiniteMachine
     # @api private
     def respond_to_missing?(method_name, include_private = false)
       *_, callback_name = *method_name.to_s.match(/^(\w*?on_\w+?)_(\w+)$/)
-      callback_names.include?(:"#{callback_name}")
+      callback_name && callback_names.include?(:"#{callback_name}")
     end
   end # Observer
 end # FiniteMachine
