@@ -13,7 +13,7 @@ module FiniteMachine
     #   Hoosk.new(machine)
     #
     # @api public
-    def initialize(machine)
+    def initialize
       @collection = Hash.new do |events_hash, event_type|
         events_hash[event_type] = Hash.new do |state_hash, name|
           state_hash[name] = []
@@ -69,6 +69,15 @@ module FiniteMachine
       @collection[event_type][event_state].each do |hook|
         yield hook
       end
+    end
+
+    # Check if collection has any elements
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def empty?
+      collection.empty?
     end
 
     # String representation
