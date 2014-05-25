@@ -389,7 +389,27 @@ describe FiniteMachine, 'callbacks' do
           on_enter(:magic) { |event| called << 'on_enter'}
         }
       end
-    }.to raise_error(FiniteMachine::InvalidCallbackNameError, /magic is not a valid callback name/)
+    }.to raise_error(FiniteMachine::InvalidCallbackNameError, /\"magic\" is not a valid callback name/)
+  end
+
+  it "doesn't allow to mix state callback with event name" do
+    expect {
+      FiniteMachine.define do
+        events { event :slow,  :green  => :yellow }
+
+        callbacks { on_enter_slow do |event| end }
+      end
+    }.to raise_error(FiniteMachine::InvalidCallbackNameError, "\"on_enter\" callback is a state listener and cannot be used with \"slow\" event name. Please use on_before or on_after instead.")
+  end
+
+  it "doesn't allow to mix event callback with state name" do
+    expect {
+      FiniteMachine.define do
+        events { event :slow,  :green  => :yellow }
+
+        callbacks { on_before_green do |event| end }
+      end
+    }.to raise_error(FiniteMachine::InvalidCallbackNameError, '"on_before" callback is an event listener and cannot be used with "green" state name. Please use on_enter, on_transition or on_exit instead.')
   end
 
   it "propagates exceptions raised inside callback" do
