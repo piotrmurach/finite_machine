@@ -70,5 +70,23 @@ module FiniteMachine
         yield hook
       end
     end
+
+    # String representation
+    #
+    # @return [String]
+    #
+    # @api public
+    def to_s
+      self.inspect
+    end
+
+    # String representation
+    #
+    # @return [String]
+    #
+    # @api public
+    def inspect
+      "<##{self.class}:0x#{object_id.to_s(16)} @collection=#{collection.inspect}>"
+    end
   end # Hooks
 end # FiniteMachine
