@@ -291,8 +291,8 @@ describe FiniteMachine, 'events' do
       }
 
       callbacks {
-        on_enter(:drive) { }
-        on_exit(:stop)   { }
+        on_before(:drive) { }
+        on_after(:stop)   { }
       }
     end
 
