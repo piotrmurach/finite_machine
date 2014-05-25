@@ -19,7 +19,7 @@ module FiniteMachine
     def initialize(machine)
       @machine = machine
       @machine.subscribe(self)
-      @hooks = FiniteMachine::Hooks.new(machine)
+      @hooks = FiniteMachine::Hooks.new
     end
 
     # Evaluate in current context
@@ -110,7 +110,7 @@ module FiniteMachine
         [event.type, ANY_EVENT].each do |event_type|
           [event.state, ANY_STATE,
            ANY_STATE_HOOK, ANY_EVENT_HOOK].each do |event_state|
-            hooks.call(event_type, event_state, event) do |hook|
+            hooks.call(event_type, event_state) do |hook|
               handle_callback(hook, event)
               off(event_type, event_state, &hook) if hook.is_a?(Once)
             end
