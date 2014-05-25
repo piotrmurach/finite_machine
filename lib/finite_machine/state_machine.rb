@@ -79,9 +79,8 @@ module FiniteMachine
     # @api public
     def notify(event_type, _transition, *data)
       sync_shared do
-        event_class     = HookEvent.const_get(event_type.capitalize.to_s)
-        state_or_action = event_class < HookEvent::Anystate ? state : _transition.name
-        _event          = event_class.new(state_or_action, _transition, *data)
+        state_or_action = event_type < HookEvent::Anystate ? state : _transition.name
+        _event          = event_type.new(state_or_action, _transition, *data)
         subscribers.visit(_event)
       end
     end
@@ -239,21 +238,21 @@ module FiniteMachine
                               end
 
       sync_exclusive do
-        notify :exitstate, _transition, *args
+        notify HookEvent::Exit, _transition, *args
 
         begin
           _transition.call
-          notify :enteraction, _transition, *args
-          notify :transitionstate, _transition, *args
-          notify :transitionaction, _transition, *args
+
+          notify HookEvent::Before, _transition, *args
+          notify HookEvent::Transition, _transition, *args
         rescue Exception => e
           catch_error(e) ||
             raise(TransitionError, "#(#{e.class}): #{e.message}\n" \
               "occured at #{e.backtrace.join("\n")}")
         end
 
-        notify :enterstate, _transition, *args
-        notify :exitaction, _transition, *args
+        notify HookEvent::Enter, _transition, *args
+        notify HookEvent::After, _transition, *args
       end
 
       _transition.same?(state) ? NOTRANSITION : SUCCEEDED
