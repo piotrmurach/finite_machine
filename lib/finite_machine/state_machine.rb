@@ -195,6 +195,18 @@ module FiniteMachine
       is?(final_state)
     end
 
+    # String representation of this machine
+    #
+    # @return [String]
+    #
+    # @api public
+    def inspect
+      sync_shared do
+        "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
+        "@events=#{event_names}, @transitions=#{transitions.inspect}>"
+      end
+    end
+
     private
 
     # Check if state is reachable
@@ -236,7 +248,7 @@ module FiniteMachine
           notify :transitionaction, _transition, *args
         rescue Exception => e
           catch_error(e) ||
-            raise(TransitionError, "#(#{e.class}): #{e.message}\n" +
+            raise(TransitionError, "#(#{e.class}): #{e.message}\n" \
               "occured at #{e.backtrace.join("\n")}")
         end
 
