@@ -92,7 +92,23 @@ module FiniteMachine
     end
 
     def once_on_exit(*args, &callback)
-      listen_on :exit, *args, &callback.extend(Once)
+      on HookEvent::Exit, *args, &callback.extend(Once)
+    end
+
+    def on_before(*args, &callback)
+      on HookEvent::Before, *args, &callback
+    end
+
+    def on_after(*args, &callback)
+      on HookEvent::After, *args, &callback
+    end
+
+    def once_on_before(*args, &callback)
+      on HookEvent::Before, *args, &callback.extend(Once)
+    end
+
+    def once_on_after(*args, &callback)
+      on HookEvent::After, *args, &callback.extend(Once)
     end
 
     # Trigger all listeners
