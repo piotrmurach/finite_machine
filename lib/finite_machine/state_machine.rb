@@ -276,7 +276,9 @@ module FiniteMachine
     #
     # @api private
     def respond_to_missing?(method_name, include_private = false)
-      env.target.respond_to?(method_name.to_sym)
+      env.target.respond_to?(method_name.to_sym) ||
+        observer.respond_to?(method_name.to_sym) ||
+        super
     end
   end # StateMachine
 end # FiniteMachine
