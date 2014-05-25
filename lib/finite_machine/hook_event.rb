@@ -23,7 +23,7 @@ module FiniteMachine
       @state = state
       @transition = transition
       @data  = *data
-      @type  = self.class.event_name
+      @type  = self.class
     end
 
     def notify(subscriber, *args, &block)
