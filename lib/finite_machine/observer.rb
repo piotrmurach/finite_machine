@@ -72,23 +72,23 @@ module FiniteMachine
     end
 
     def on_enter(*args, &callback)
-      listen_on :enter, *args, &callback
+      on HookEvent::Enter, *args, &callback
     end
 
     def on_transition(*args, &callback)
-      listen_on :transition, *args, &callback
+      on HookEvent::Transition, *args, &callback
     end
 
     def on_exit(*args, &callback)
-      listen_on :exit, *args, &callback
+      on HookEvent::Exit, *args, &callback
     end
 
     def once_on_enter(*args, &callback)
-      listen_on :enter, *args, &callback.extend(Once)
+      on HookEvent::Enter, *args, &callback.extend(Once)
     end
 
     def once_on_transition(*args, &callback)
-      listen_on :transition, *args, &callback.extend(Once)
+      on HookEvent::Transition, *args, &callback.extend(Once)
     end
 
     def once_on_exit(*args, &callback)
