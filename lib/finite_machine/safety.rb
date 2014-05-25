@@ -9,6 +9,19 @@ module FiniteMachine
       "generate \"%{type}\" method \"%{method}\", which is already defined " \
       "by %{source}"
 
+    STATE_CALLBACK_CONFLICT_MESSAGE = \
+      "\"%{type}\" callback is a state listener and cannot be used " \
+      "with \"%{name}\" event name. Please use on_before or on_after instead."
+
+    EVENT_CALLBACK_CONFLICT_MESSAGE = \
+      "\"%{type}\" callback is an event listener and cannot be used " \
+      "with \"%{name}\" state name. Please use on_enter, on_transition or " \
+      "on_exit instead."
+
+    CALLBACK_INVALID_MESSAGE = \
+      "\"%{name}\" is not a valid callback name. " \
+      "Valid callback names are \"%{callbacks}"
+
     # Raise error when the method is already defined
     #
     # @example
@@ -30,7 +43,44 @@ module FiniteMachine
       end
     end
 
+    # Raise error when the callback name is not valid
+    #
+    # @example
+    #   ensure_valid_callback_name!(HookEvent::Enter, ":state_name")
+    #
+    # @raise [FiniteMachine::InvalidCallbackNameError]
+    #
+    # @return [nil]
+    #
+    # @api public
+    def ensure_valid_callback_name!(event_type, name)
+      message = if state_names.include?(name) && event_type < HookEvent::Anyaction
+        EVENT_CALLBACK_CONFLICT_MESSAGE % {
+          type: "on_#{event_type.to_s}",
+          name: name
+        }
+      elsif event_names.include?(name) && event_type < HookEvent::Anystate
+        STATE_CALLBACK_CONFLICT_MESSAGE % {
+          type: "on_#{event_type.to_s}",
+          name: name
+        }
+      elsif !callback_names.include?(name)
+        CALLBACK_INVALID_MESSAGE % {
+          name: name,
+          callbacks: callback_names.to_a.inspect
+        }
+      else
+        nil
+      end
+      message && fail_invalid_callback_error(message)
+    end
+
     private
+
+    def fail_invalid_callback_error(message)
+      exception = InvalidCallbackNameError
+      machine.catch_error(exception) || fail(exception, message)
+    end
 
     # Check if method is already implemented inside StateMachine
     #
