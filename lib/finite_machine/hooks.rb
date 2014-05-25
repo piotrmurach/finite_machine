@@ -28,13 +28,13 @@ module FiniteMachine
     # @param [Proc]   callback
     #
     # @example
-    #   hooks.register :enterstate, :green do ... end
+    #   hooks.register HookEvent::Enter, :green do ... end
     #
     # @return [Hash]
     #
     # @api public
     def register(event_type, name, callback)
-      @collection[event_type][name] << callback
+      collection[event_type][name] << callback
     end
 
     # Unregister callback
@@ -44,13 +44,14 @@ module FiniteMachine
     # @param [Proc]   callback
     #
     # @example
-    #   hooks.unregister :enterstate, :green do ... end
+    #   hooks.unregister HookEvent::Enter, :green do ... end
     #
     # @return [Hash]
     #
     # @api public
     def unregister(event_type, name, callback)
-      @collection[event_type][name].shift
+      callbacks = collection[event_type][name]
+      callbacks.delete(callback)
     end
 
     # Return all hooks matching event and state
