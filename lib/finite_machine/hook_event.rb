@@ -34,22 +34,19 @@ module FiniteMachine
 
     class Anystate < HookEvent; end
 
-    class Enterstate < Anystate; end
+    class Enter < Anystate; end
 
-    class Transitionstate < Anystate; end
+    class Transition < Anystate; end
 
-    class Exitstate < Anystate; end
+    class Exit < Anystate; end
 
     class Anyaction < HookEvent; end
 
-    class Enteraction < Anyaction; end
+    class Before < Anyaction; end
 
-    class Transitionaction < Anyaction; end
+    class After < Anyaction; end
 
-    class Exitaction < Anyaction; end
-
-    EVENTS = Anystate, Enterstate, Transitionstate, Exitstate,
-             Anyaction, Enteraction, Transitionaction, Exitaction
+    EVENTS = Anystate, Enter, Transition, Exit, Anyaction, Before, After
 
     def self.event_name
       name.split('::').last.downcase.to_sym
