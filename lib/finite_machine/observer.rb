@@ -45,7 +45,7 @@ module FiniteMachine
         async = false if async.nil?
         ensure_valid_callback_name!(name)
         callback.extend(Async) if async == :async
-        hooks.register event_type.to_s, name, callback
+        hooks.register event_type, name, callback
       end
     end
 
