@@ -316,8 +316,8 @@ describe FiniteMachine, 'events' do
       }
 
       callbacks {
-        on_enter_digit { |event, digit| digits << digit}
-        on_enter_off_hook { |event| callbacks << "dialing #{digits.join}" }
+        on_before_digit { |event, digit| digits << digit}
+        on_before_off_hook { |event| callbacks << "dialing #{digits.join}" }
       }
     end
 
