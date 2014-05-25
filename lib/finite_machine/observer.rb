@@ -36,6 +36,8 @@ module FiniteMachine
     # @param [Proc]  callback
     #
     # @api public
+    # TODO: throw error if event type isn't handled
+    # TODO: check type vs name i.e. transition should only accept state
     def on(event_type = HookEvent, *args, &callback)
       sync_exclusive do
         name, async, _ = args
@@ -59,17 +61,6 @@ module FiniteMachine
     module Once; end
 
     module Async; end
-
-    def listen_on(type, *args, &callback)
-      name   = args.first
-      events = []
-      case name
-      when *state_names then events << :"#{type}state"
-      when *event_names then events << :"#{type}action"
-      else events << :"#{type}state" << :"#{type}action"
-      end
-      events.each { |event| on(HookEvent.send(event), *args, &callback) }
-    end
 
     def on_enter(*args, &callback)
       on HookEvent::Enter, *args, &callback
