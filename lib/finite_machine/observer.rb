@@ -6,6 +6,7 @@ module FiniteMachine
   # A class responsible for observing state changes
   class Observer
     include Threadable
+    include Safety
 
     # The current state machine
     attr_threadsafe :machine
@@ -37,13 +38,12 @@ module FiniteMachine
     #
     # @api public
     # TODO: throw error if event type isn't handled
-    # TODO: check type vs name i.e. transition should only accept state
     def on(event_type = HookEvent, *args, &callback)
       sync_exclusive do
         name, async, _ = args
         name = ANY_EVENT if name.nil?
         async = false if async.nil?
-        ensure_valid_callback_name!(name)
+        ensure_valid_callback_name!(event_type, name)
         callback.extend(Async) if async == :async
         hooks.register event_type, name, callback
       end
@@ -181,15 +181,6 @@ module FiniteMachine
 
     def callback_names
       state_names + event_names
-    end
-
-    def ensure_valid_callback_name!(name)
-      unless callback_names.include?(name)
-        exception = InvalidCallbackNameError
-        machine.catch_error(exception) ||
-        raise(exception, "#{name} is not a valid callback name." +
-        " Valid callback names are #{callback_names.to_a.inspect}")
-      end
     end
 
     # Forward the message to observer
