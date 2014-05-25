@@ -133,7 +133,7 @@ describe FiniteMachine, '#target' do
               turn_reverse_lights_on
               forward('Piotr!')
             end
-            on_enter :forward do |event, name|
+            on_before :forward do |event, name|
               called << "on_enter_forward with #{name}"
             end
           }
