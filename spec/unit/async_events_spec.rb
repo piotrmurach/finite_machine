@@ -79,10 +79,10 @@ describe FiniteMachine, 'async_events' do
       }
 
       callbacks {
-        on_enter :green,  :async  do |event| called << 'on_enter_green' end
-        on_enter :slow,   :async  do |event| called << 'on_enter_slow'  end
-        on_exit  :yellow, :async  do |event| called << 'on_exit_yellow' end
-        on_exit  :go,     :async  do |event| called << 'on_exit_go'     end
+        on_enter  :green,  :async  do |event| called << 'on_enter_green' end
+        on_before :slow,   :async  do |event| called << 'on_before_slow'  end
+        on_exit   :yellow, :async  do |event| called << 'on_exit_yellow' end
+        on_after  :go,     :async  do |event| called << 'on_after_go'     end
       }
     end
     fsm.slow
@@ -90,8 +90,8 @@ describe FiniteMachine, 'async_events' do
     sleep 0.1
     expect(called).to match_array([
       'on_enter_green',
-      'on_enter_slow',
-      'on_exit_go',
+      'on_before_slow',
+      'on_after_go',
       'on_exit_yellow'
     ])
   end
