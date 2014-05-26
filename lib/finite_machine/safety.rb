@@ -34,7 +34,7 @@ module FiniteMachine
     # @api public
     def detect_event_conflict!(event_name, method_name = event_name)
       if method_already_implemented?(method_name)
-        raise FiniteMachine::AlreadyDefinedError, EVENT_CONFLICT_MESSAGE % {
+        fail FiniteMachine::AlreadyDefinedError, EVENT_CONFLICT_MESSAGE % {
           name: event_name,
           type: :instance,
           method: method_name,
@@ -54,12 +54,14 @@ module FiniteMachine
     #
     # @api public
     def ensure_valid_callback_name!(event_type, name)
-      message = if state_names.include?(name) && event_type < HookEvent::Anyaction
+      message = if machine.states.include?(name) &&
+                   event_type < HookEvent::Anyaction
         EVENT_CALLBACK_CONFLICT_MESSAGE % {
           type: "on_#{event_type.to_s}",
           name: name
         }
-      elsif event_names.include?(name) && event_type < HookEvent::Anystate
+      elsif machine.event_names.include?(name) &&
+            event_type < HookEvent::Anystate
         STATE_CALLBACK_CONFLICT_MESSAGE % {
           type: "on_#{event_type.to_s}",
           name: name
