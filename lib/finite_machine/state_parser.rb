@@ -21,18 +21,21 @@ module FiniteMachine
 
     # Extract states from attributes
     #
+    # @param [Proc] block
+    #
     # @example
     #   StateParpser.new(attr).parase_states
     #
     # @return [Hash[Symbol]] states
     #
     # @api public
-    def parse_states
-      if contains_from_to_keys?
+    def parse_states(&block)
+      transitions = if contains_from_to_keys?
         convert_from_to_attributes_to_states_hash
       else
         convert_attributes_to_states_hash
       end
+      block ? transitions.each(&block) : transitions
     end
 
     # Check if attributes contain :from or :to key
