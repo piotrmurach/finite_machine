@@ -2,22 +2,13 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Transition, 'parse_states' do
-
-  let(:machine) { double }
+describe FiniteMachine::Transition, 'parsed_states' do
+  let(:machine) { double(:machine) }
 
   subject(:transition) { described_class.new(machine, attrs) }
 
-  context 'without transitions' do
-    let(:attrs) { { } }
-
-    it "raises exception" do
-      expect { transition }.to raise_error(FiniteMachine::NotEnoughTransitionsError)
-    end
-  end
-
   context 'with :to key only' do
-    let(:attrs) { { to: :red } }
+    let(:attrs) { { parsed_states: { any: :red } } }
 
     it "groups states" do
       expect(transition.from_states).to eq([:any])
@@ -26,17 +17,8 @@ describe FiniteMachine::Transition, 'parse_states' do
     end
   end
 
-  context 'with :from, :to keys' do
-    let(:attrs) { {from: [:green, :yellow], to: :red} }
-
-    it "groups states" do
-      expect(transition.from_states).to match_array(attrs[:from])
-      expect(transition.to_states).to match_array([:red, :red])
-    end
-  end
-
   context 'when from array' do
-    let(:attrs) { {[:green, :yellow] => :red} }
+    let(:attrs) { {parsed_states: { :green => :red, :yellow => :red} } }
 
     it "groups states" do
       expect(transition.from_states).to match_array([:green, :yellow])
@@ -46,9 +28,10 @@ describe FiniteMachine::Transition, 'parse_states' do
 
   context 'when hash of states' do
     let(:attrs) {
-      { :initial => :low,
-        :low     => :medium,
-        :medium  => :high }
+      { parsed_states:
+        { :initial => :low,
+          :low     => :medium,
+          :medium  => :high } }
      }
 
     it "groups states" do
