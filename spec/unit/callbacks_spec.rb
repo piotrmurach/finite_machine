@@ -719,4 +719,30 @@ describe FiniteMachine, 'callbacks' do
       'enter_bump_medium_high'
     ])
   end
+
+  it "permits state and event with the same name" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :on_hook
+
+      events {
+        event :off_hook, :on_hook => :off_hook
+        event :on_hook,  :off_hook => :on_hook
+      }
+
+      callbacks {
+        on_before(:on_hook) { |event| called << "on_before_#{event.name}"}
+        on_enter(:on_hook)  { |event| called << "on_enter_#{event.to}"}
+      }
+    end
+    expect(fsm.current).to eq(:on_hook)
+    expect(called).to be_empty
+    fsm.off_hook
+    expect(fsm.current).to eq(:off_hook)
+    fsm.on_hook
+    expect(called).to eq([
+      'on_before_on_hook',
+      'on_enter_on_hook'
+    ]);
+  end
 end
