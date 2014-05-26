@@ -38,7 +38,7 @@ module FiniteMachine
     def initialize(machine, attrs = {})
       @machine     = machine
       @name        = attrs.fetch(:name, DEFAULT_STATE)
-      @map         = FiniteMachine::StateParser.new(attrs).parse_states
+      @map         = attrs.fetch(:parsed_states, {})
       @from_states = @map.keys
       @to_states   = @map.values
       @from_state  = @from_states.first
@@ -46,6 +46,25 @@ module FiniteMachine
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
       @cancelled   = false
+    end
+
+    # Create transition with associated helper methods
+    #
+    # @param [FiniteMachine::StateMachine] machine
+    # @param [Hash] attrs
+    #
+    # @example
+    #   Transition.create(machine, {})
+    #
+    # @return [FiniteMachine::Transition]
+    #
+    # @api public
+    def self.create(machine, attrs = {})
+      _transition = self.new(machine, attrs)
+      _transition.update_transitions
+      _transition.define_state_methods
+      _transition.define_event
+      _transition
     end
 
     # Decide :to state from available transitions for this event
