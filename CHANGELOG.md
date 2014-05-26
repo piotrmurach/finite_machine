@@ -1,3 +1,20 @@
+0.7.0 (May 26, 2014)
+
+* Change Event to EventHook for callback events
+* Add Event to hold the logic for event specification
+* Fix issue #8 to preserve conditionals between event specifications
+* Change to allow for self-transition - fixes issue #9
+* Change to detect attempt to overwrite already defined method - fixes issue #10
+* Fix #respond_to on state machine to include observer
+* Add string inspection to hooks
+* Fix observer missing methods resolution
+* Change to separate state and event callbacks. Introduced on_enter, on_before,
+  once_on_enter, once_on_before new event callbacks.
+* Change generic callbacks to default to any state for on_enter, on_transition,
+  on_exit and any event for on_before and on_after
+* Add check for callback name conflicts
+* Ensure proper callback lifecycle
+
 0.6.1 (May 10, 2014)
 
 * Fix stdlib requirement
