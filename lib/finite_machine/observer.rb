@@ -108,8 +108,7 @@ module FiniteMachine
     def trigger(event, *args, &block)
       sync_exclusive do
         [event.type, ANY_EVENT].each do |event_type|
-          [event.state, ANY_STATE,
-           ANY_STATE_HOOK, ANY_EVENT_HOOK].each do |event_state|
+          [event.state, ANY_STATE].each do |event_state|
             hooks.call(event_type, event_state) do |hook|
               handle_callback(hook, event)
               off(event_type, event_state, &hook) if hook.is_a?(Once)
@@ -157,30 +156,14 @@ module FiniteMachine
       event.transition.cancelled = (result == CANCELLED)
     end
 
-    # Set of all state names
+    # Callback names including all states and events
     #
-    # @return [Set]
-    #
-    # @api private
-    def state_names
-      @names = Set.new
-      @names.merge machine.states
-      @names.merge [ANY_STATE, ANY_STATE_HOOK]
-    end
-
-    # Set of all event names
-    #
-    # @return [Set]
+    # @return [Array[Symbol]]
+    #   valid callback names
     #
     # @api private
-    def event_names
-      @names = Set.new
-      @names.merge machine.event_names
-      @names.merge [ANY_EVENT, ANY_EVENT_HOOK]
-    end
-
     def callback_names
-      state_names + event_names
+      machine.states + machine.event_names + [ANY_EVENT]
     end
 
     # Forward the message to observer
