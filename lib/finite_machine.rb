@@ -36,10 +36,6 @@ module FiniteMachine
 
   ANY_EVENT = :any
 
-  ANY_STATE_HOOK = :state
-
-  ANY_EVENT_HOOK = :event
-
   # Returned when transition has successfully performed
   SUCCEEDED = 1
 
