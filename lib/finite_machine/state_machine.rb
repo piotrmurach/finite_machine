@@ -233,17 +233,17 @@ module FiniteMachine
     #
     # @api private
     def transition(_transition, *args, &block)
-      return CANCELLED if valid_state?(_transition)
-
-      return CANCELLED unless _transition.valid?(*args, &block)
-
       sync_exclusive do
+        notify HookEvent::Before, _transition, *args
+
+        return CANCELLED if valid_state?(_transition)
+        return CANCELLED unless _transition.valid?(*args, &block)
+
         notify HookEvent::Exit, _transition, *args
 
         begin
           _transition.call
 
-          notify HookEvent::Before, _transition, *args
           notify HookEvent::Transition, _transition, *args
         rescue Exception => e
           catch_error(e) || raise_transition_error(e)
@@ -251,9 +251,9 @@ module FiniteMachine
 
         notify HookEvent::Enter, _transition, *args
         notify HookEvent::After, _transition, *args
-      end
 
-      _transition.same?(state) ? NOTRANSITION : SUCCEEDED
+        _transition.same?(state) ? NOTRANSITION : SUCCEEDED
+      end
     end
 
     # Raise when failed to transition between states
