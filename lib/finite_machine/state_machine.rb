@@ -235,9 +235,7 @@ module FiniteMachine
     def transition(_transition, *args, &block)
       return CANCELLED if valid_state?(_transition)
 
-      return CANCELLED unless _transition.conditions.all? do |condition|
-                                condition.call(target, *args)
-                              end
+      return CANCELLED unless _transition.valid?(*args, &block)
 
       sync_exclusive do
         notify HookEvent::Exit, _transition, *args

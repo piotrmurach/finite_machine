@@ -77,6 +77,21 @@ module FiniteMachine
       map[state] == state || (map[ANY_STATE] == state && from_state == state)
     end
 
+    # Check if transition can be performed according to constraints
+    #
+    # @param [Array] args
+    #
+    # @param [Proc] block
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def valid?(*args, &block)
+      conditions.all? do |condition|
+        condition.call(machine.target, *args, &block)
+      end
+    end
+
     # Add transition to the machine
     #
     # @return [Transition]
