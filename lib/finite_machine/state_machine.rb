@@ -145,7 +145,9 @@ module FiniteMachine
     #
     # @api public
     def states
-      event_names.map { |event| transitions[event].to_a }.flatten.uniq
+      sync_shared do
+        event_names.map { |event| transitions[event].to_a }.flatten.uniq
+      end
     end
 
     # Retireve all event names
@@ -154,7 +156,7 @@ module FiniteMachine
     #
     # @api public
     def event_names
-      transitions.keys
+      sync_shared { transitions.keys }
     end
 
     # Checks if event can be triggered
