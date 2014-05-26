@@ -34,9 +34,9 @@ describe FiniteMachine, ':if, :unless' do
 
       callbacks {
         # generic callbacks
-        on_enter_state      do |event| called << 'on_enter_state' end
-        on_transition_state do |event| called << 'on_transition_state' end
-        on_exit_state       do |event| called << 'on_exit_state' end
+        on_enter      do |event| called << 'on_enter' end
+        on_transition do |event| called << 'on_transition' end
+        on_exit       do |event| called << 'on_exit' end
 
         # state callbacks
         on_enter :green do |event| called << 'on_enter_green' end
@@ -70,9 +70,9 @@ describe FiniteMachine, ':if, :unless' do
 
       callbacks {
         # generic callbacks
-        on_enter_state      do |event| called << 'on_enter_state' end
-        on_transition_state do |event| called << 'on_transition_state' end
-        on_exit_state       do |event| called << 'on_exit_state' end
+        on_enter      do |event| called << 'on_enter' end
+        on_transition do |event| called << 'on_transition' end
+        on_exit       do |event| called << 'on_exit' end
 
         # state callbacks
         on_enter :green do |event| called << 'on_enter_green' end
