@@ -159,6 +159,35 @@ describe FiniteMachine, 'callbacks' do
     ])
   end
 
+  it "maintains transition execution sequence from UML statechart" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :previous
+
+      events {
+        event :go, :previous => :next, if: -> { called << 'guard'; true}
+      }
+
+      callbacks {
+        on_exit   { |event| called << "exit_#{event.from}" }
+        on_before { |event| called << "before_#{event.name}" }
+        on_transition { |event| called << "transition_#{event.from}_#{event.to}"}
+        on_enter  { |event| called << "enter_#{event.to}"}
+        on_after  { |event| called << "after_#{event.name}" }
+      }
+    end
+    expect(fsm.current).to eq(:previous)
+    fsm.go
+    expect(called).to eq([
+      'before_go',
+      'guard',
+      'exit_previous',
+      'transition_previous_next',
+      'enter_next',
+      'after_go'
+    ])
+  end
+
   it "allows multiple callbacks for the same state" do
     called = []
     fsm = FiniteMachine.define do
