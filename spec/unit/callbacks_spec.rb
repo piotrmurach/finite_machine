@@ -11,13 +11,13 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic state callbacks
-        on_enter_state      do |event| called << 'on_enter_state' end
-        on_transition_state do |event| called << 'on_transition_state' end
-        on_exit_state       do |event| called << 'on_exit_state' end
+        on_enter      do |event| called << 'on_enter' end
+        on_transition do |event| called << 'on_transition' end
+        on_exit       do |event| called << 'on_exit' end
 
         # generic event callbacks
-        on_before_event do |event| called << 'on_before_event' end
-        on_after_event  do |event| called << 'on_after_event' end
+        on_before do |event| called << 'on_before' end
+        on_after  do |event| called << 'on_after' end
 
         # state callbacks
         on_enter :none  do |event| called << 'on_enter_none' end
@@ -39,15 +39,15 @@ describe FiniteMachine, 'callbacks' do
     fsm.init
     expect(called).to eql([
       'on_exit_none',
-      'on_exit_state',
+      'on_exit',
       'on_before_init',
-      'on_before_event',
+      'on_before',
       'on_transition_green',
-      'on_transition_state',
+      'on_transition',
       'on_enter_green',
-      'on_enter_state',
+      'on_enter',
       'on_after_init',
-      'on_after_event'
+      'on_after'
     ])
   end
 
@@ -65,12 +65,12 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic callbacks
-        on_enter_state      do |event| called << 'on_enter_state' end
-        on_transition_state do |event| called << 'on_transition_state' end
-        on_exit_state       do |event| called << 'on_exit_state' end
+        on_enter      do |event| called << 'on_enter' end
+        on_transition do |event| called << 'on_transition' end
+        on_exit       do |event| called << 'on_exit' end
 
-        on_before_event do |event| called << 'on_before_event' end
-        on_after_event  do |event| called << 'on_after_event' end
+        on_before do |event| called << 'on_before' end
+        on_after  do |event| called << 'on_after' end
 
         # state callbacks
         on_enter :green  do |event| called << 'on_enter_green' end
@@ -102,60 +102,60 @@ describe FiniteMachine, 'callbacks' do
     fsm.slow
     expect(called).to eql([
       'on_exit_green',
-      'on_exit_state',
+      'on_exit',
       'on_before_slow',
-      'on_before_event',
+      'on_before',
       'on_transition_yellow',
-      'on_transition_state',
+      'on_transition',
       'on_enter_yellow',
-      'on_enter_state',
+      'on_enter',
       'on_after_slow',
-      'on_after_event'
+      'on_after'
     ])
 
     called = []
     fsm.stop
     expect(called).to eql([
       'on_exit_yellow',
-      'on_exit_state',
+      'on_exit',
       'on_before_stop',
-      'on_before_event',
+      'on_before',
       'on_transition_red',
-      'on_transition_state',
+      'on_transition',
       'on_enter_red',
-      'on_enter_state',
+      'on_enter',
       'on_after_stop',
-      'on_after_event'
+      'on_after'
     ])
 
     called = []
     fsm.ready
     expect(called).to eql([
       'on_exit_red',
-      'on_exit_state',
+      'on_exit',
       'on_before_ready',
-      'on_before_event',
+      'on_before',
       'on_transition_yellow',
-      'on_transition_state',
+      'on_transition',
       'on_enter_yellow',
-      'on_enter_state',
+      'on_enter',
       'on_after_ready',
-      'on_after_event'
+      'on_after'
     ])
 
     called = []
     fsm.go
     expect(called).to eql([
       'on_exit_yellow',
-      'on_exit_state',
+      'on_exit',
       'on_before_go',
-      'on_before_event',
+      'on_before',
       'on_transition_green',
-      'on_transition_state',
+      'on_transition',
       'on_enter_green',
-      'on_enter_state',
+      'on_enter',
       'on_after_go',
-      'on_after_event'
+      'on_after'
     ])
   end
 
@@ -173,13 +173,13 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic state callbacks
-        on_enter_state      do |event| called << 'on_enter_state' end
-        on_transition_state do |event| called << 'on_transition_state' end
-        on_exit_state       do |event| called << 'on_exit_state' end
+        on_enter      do |event| called << 'on_enter' end
+        on_transition do |event| called << 'on_transition' end
+        on_exit       do |event| called << 'on_exit' end
 
         # generic event callbacks
-        on_before_event do |event| called << 'on_before_event' end
-        on_after_event  do |event| called << 'on_after_event' end
+        on_before do |event| called << 'on_before' end
+        on_after  do |event| called << 'on_after' end
 
         # state callbacks
         on_exit       :green  do |event| called << 'on_exit_green_1' end
@@ -203,19 +203,19 @@ describe FiniteMachine, 'callbacks' do
     expect(called).to eql([
       'on_exit_green_1',
       'on_exit_green_2',
-      'on_exit_state',
+      'on_exit',
       'on_before_slow_1',
       'on_before_slow_2',
-      'on_before_event',
+      'on_before',
       'on_transition_yellow_1',
       'on_transition_yellow_2',
-      'on_transition_state',
+      'on_transition',
       'on_enter_yellow_1',
       'on_enter_yellow_2',
-      'on_enter_state',
+      'on_enter',
       'on_after_slow_1',
       'on_after_slow_2',
-      'on_after_event'
+      'on_after'
     ])
   end
 
@@ -329,13 +329,13 @@ describe FiniteMachine, 'callbacks' do
 
       callbacks {
         # generic state callbacks
-        on_enter_state(&callback)
-        on_transition_state(&callback)
-        on_exit_state(&callback)
+        on_enter(&callback)
+        on_transition(&callback)
+        on_exit(&callback)
 
         # generic event callbacks
-        on_before_event(&callback)
-        on_after_event(&callback)
+        on_before(&callback)
+        on_after(&callback)
 
         # state callbacks
         on_enter :green,  &callback
@@ -597,35 +597,35 @@ describe FiniteMachine, 'callbacks' do
       }
 
       callbacks {
-        on_enter_state do |event|
-          callbacks << "enter_state_#{event.name}_#{event.from}_#{event.to}"
+        on_enter do |event|
+          callbacks << "enter_#{event.name}_#{event.from}_#{event.to}"
         end
-        on_before_event do |event|
-          callbacks << "before_event_#{event.name}_#{event.from}_#{event.to}"
+        on_before do |event|
+          callbacks << "before_#{event.name}_#{event.from}_#{event.to}"
         end
       }
     end
     expect(fsm.current).to eq(:initial)
     fsm.bump
     expect(callbacks).to eq([
-      'before_event_bump_initial_low',
-      'enter_state_bump_initial_low'
+      'before_bump_initial_low',
+      'enter_bump_initial_low'
     ])
     fsm.bump
     expect(callbacks).to eq([
-      'before_event_bump_initial_low',
-      'enter_state_bump_initial_low',
-      'before_event_bump_low_medium',
-      'enter_state_bump_low_medium'
+      'before_bump_initial_low',
+      'enter_bump_initial_low',
+      'before_bump_low_medium',
+      'enter_bump_low_medium'
     ])
     fsm.bump
     expect(callbacks).to eq([
-      'before_event_bump_initial_low',
-      'enter_state_bump_initial_low',
-      'before_event_bump_low_medium',
-      'enter_state_bump_low_medium',
-      'before_event_bump_medium_high',
-      'enter_state_bump_medium_high'
+      'before_bump_initial_low',
+      'enter_bump_initial_low',
+      'before_bump_low_medium',
+      'enter_bump_low_medium',
+      'before_bump_medium_high',
+      'enter_bump_medium_high'
     ])
   end
 
@@ -641,35 +641,35 @@ describe FiniteMachine, 'callbacks' do
       }
 
       callbacks {
-        on_enter_state do |event|
-          callbacks << "enter_state_#{event.name}_#{event.from}_#{event.to}"
+        on_enter do |event|
+          callbacks << "enter_#{event.name}_#{event.from}_#{event.to}"
         end
-        on_before_event do |event|
-          callbacks << "before_event_#{event.name}_#{event.from}_#{event.to}"
+        on_before do |event|
+          callbacks << "before_#{event.name}_#{event.from}_#{event.to}"
         end
       }
     end
     expect(fsm.current).to eq(:initial)
     fsm.bump
     expect(callbacks).to eq([
-      'before_event_bump_initial_low',
-      'enter_state_bump_initial_low'
+      'before_bump_initial_low',
+      'enter_bump_initial_low'
     ])
     fsm.bump
     expect(callbacks).to eq([
-      'before_event_bump_initial_low',
-      'enter_state_bump_initial_low',
-      'before_event_bump_low_medium',
-      'enter_state_bump_low_medium'
+      'before_bump_initial_low',
+      'enter_bump_initial_low',
+      'before_bump_low_medium',
+      'enter_bump_low_medium'
     ])
     fsm.bump
     expect(callbacks).to eq([
-      'before_event_bump_initial_low',
-      'enter_state_bump_initial_low',
-      'before_event_bump_low_medium',
-      'enter_state_bump_low_medium',
-      'before_event_bump_medium_high',
-      'enter_state_bump_medium_high'
+      'before_bump_initial_low',
+      'enter_bump_initial_low',
+      'before_bump_low_medium',
+      'enter_bump_low_medium',
+      'before_bump_medium_high',
+      'enter_bump_medium_high'
     ])
   end
 end
