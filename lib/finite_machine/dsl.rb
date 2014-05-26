@@ -184,16 +184,16 @@ module FiniteMachine
     # @api public
     def event(name, attrs = {}, &block)
       sync_exclusive do
-        _transition = Transition.new(machine, attrs.merge!(name: name))
-        _transition.update_transitions
-        _transition.define_state_methods
-        _transition.define_event
+        attributes = attrs.merge!(name: name)
+        FiniteMachine::StateParser.new(attrs).parse_states do |from, to|
+          attributes.merge!(parsed_states: { from => to })
+          Transition.create(machine, attributes)
+        end
       end
     end
   end # EventsDSL
 
   class ErrorsDSL < GenericDSL
-
     # Add error handler
     #
     # @param [Array] exceptions
