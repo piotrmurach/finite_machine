@@ -3,7 +3,6 @@
 module FiniteMachine
   # Module for responsible for safety checks against known methods
   module Safety
-
     EVENT_CONFLICT_MESSAGE = \
       "You tried to define an event named \"%{name}\", however this would " \
       "generate \"%{type}\" method \"%{method}\", which is already defined " \
@@ -54,14 +53,12 @@ module FiniteMachine
     #
     # @api public
     def ensure_valid_callback_name!(event_type, name)
-      message = if machine.states.include?(name) &&
-                   event_type < HookEvent::Anyaction
+      message = if wrong_event_name?(name, event_type)
         EVENT_CALLBACK_CONFLICT_MESSAGE % {
           type: "on_#{event_type.to_s}",
           name: name
         }
-      elsif machine.event_names.include?(name) &&
-            event_type < HookEvent::Anystate
+      elsif wrong_state_name?(name, event_type)
         STATE_CALLBACK_CONFLICT_MESSAGE % {
           type: "on_#{event_type.to_s}",
           name: name
@@ -78,6 +75,36 @@ module FiniteMachine
     end
 
     private
+
+    # Check if event name exists
+    #
+    # @param [Symbol] name
+    #
+    # @param [FiniteMachine::HookEvent] event_type
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    def wrong_event_name?(name, event_type)
+      machine.states.include?(name) &&
+      !machine.event_names.include?(name) &&
+      event_type < HookEvent::Anyaction
+    end
+
+    # Check if state name exists
+    #
+    # @param [Symbol] name
+    #
+    # @param [FiniteMachine::HookEvent] event_type
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    def wrong_state_name?(name, event_type)
+      machine.event_names.include?(name) &&
+      !machine.states.include?(name) &&
+      event_type < HookEvent::Anystate
+    end
 
     def fail_invalid_callback_error(message)
       exception = InvalidCallbackNameError
