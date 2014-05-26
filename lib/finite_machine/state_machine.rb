@@ -246,9 +246,7 @@ module FiniteMachine
           notify HookEvent::Before, _transition, *args
           notify HookEvent::Transition, _transition, *args
         rescue Exception => e
-          catch_error(e) ||
-            raise(TransitionError, "#(#{e.class}): #{e.message}\n" \
-              "occured at #{e.backtrace.join("\n")}")
+          catch_error(e) || raise_transition_error(e)
         end
 
         notify HookEvent::Enter, _transition, *args
@@ -256,6 +254,19 @@ module FiniteMachine
       end
 
       _transition.same?(state) ? NOTRANSITION : SUCCEEDED
+    end
+
+    # Raise when failed to transition between states
+    #
+    # @param [Exception] error
+    #   the error to describe
+    #
+    # @raise [FiniteMachine::TransitionError]
+    #
+    # @api private
+    def raise_transition_error(error)
+      fail(TransitionError, "#(#{error.class}): #{error.message}\n" \
+        "occured at #{error.backtrace.join("\n")}")
     end
 
     # Forward the message to target, observer or self
