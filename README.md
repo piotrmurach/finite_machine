@@ -68,13 +68,14 @@ Or install it yourself as:
     * [4.4 on_before](#44-on_before)
     * [4.5 on_after](#45-on_after)
     * [4.6 once_on](#46-once_on)
-    * [4.7 parameters](#47-parameters)
-    * [4.8 Same kind of callbacks](#48-same-kind-of-callbacks)
-    * [4.9 Fluid callbacks](#49-fluid-callbacks)
-    * [4.10 Executing methods inside callbacks](#410-executing-methods-inside-callbacks)
-    * [4.11 Defining callbacks](#411-defining-callbacks)
-    * [4.12 Asynchronous callbacks](#412-asynchronous-callbacks)
-    * [4.13 Cancelling inside callbacks](#413-cancelling-inside-callbacks)
+    * [4.7 Execution sequence](#47-execution-sequence)
+    * [4.8 Parameters](#48-parameters)
+    * [4.9 Same kind of callbacks](#49-same-kind-of-callbacks)
+    * [4.10 Fluid callbacks](#410-fluid-callbacks)
+    * [4.11 Executing methods inside callbacks](#411-executing-methods-inside-callbacks)
+    * [4.12 Defining callbacks](#412-defining-callbacks)
+    * [4.13 Asynchronous callbacks](#413-asynchronous-callbacks)
+    * [4.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
 * [5. Errors](#5-errors)
     * [5.1 Using target](#51-using-target)
 * [6. Integration](#6-integration)
@@ -552,14 +553,6 @@ You can watch state machine events and the information they provide by registeri
 * `on_before`
 * `on_after`
 
-In addition, you can listen for generic state changes or events fired by using the following 5 callbacks:
-
-* `on_enter_state`
-* `on_before_event`
-* `on_transition_state`
-* `on_exit_state`
-* `on_after_event`
-
 Use the `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered. Use the state or event name as a first parameter to the callback followed by a list arguments that you expect to receive.
 
 When you subscribe to the `:green` state change, the callback will be called whenever someone instruments change for that state. The same will happen on subscription to event `ready`, namely, the callback will be called each time the state transition method is called.
@@ -587,23 +580,23 @@ fm.go('Piotr!')
 
 ### 4.1 on_enter
 
-This method is executed before given state change is fired. You can further narrow down the listener to only watch enter state changes using `on_enter_state` callback.
+The `on_enter` callback is executed before given state change is fired. By passing state name you can narrow down the listener to only watch out for enter state changes. Otherwise, all enter state changes will be watched.
 
 ### 4.2 on_transition
 
-This method is executed when given state change happens. You can further narrow down the listener to only watch state transition changes using `on_transition_state` callback.
+The `on_transition` callback is executed when given state change happens. By passing state name you can narrow down the listener to only watch out for transition state changes. Otherwise, all transition state changes will be watched.
 
 ### 4.3 on_exit
 
-This method is executed after a given state change happens. You can further narrow down the listener to only watch state exit changes using `on_exit_state` callback.
+The `on_exit` callback is executed after a given state change happens. By passing state name you can narrow down the listener to only watch out for exit state changes. Otherwise, all exit state changes will be watched.
 
 ### 4.4 on_before
 
-This callback is executed before a given event happens. You can also listen out for all such events by registering `on_before_event` callback.
+The `on_before` callback is executed before a given event happens. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
 ### 4.5 on_after
 
-This callback is executed after a given event happened. You can also listen out for all such events by registering `on_after_event` callback.
+This callback is executed after a given event happened. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
 ### 4.6 once_on
 
@@ -615,7 +608,28 @@ This callback is executed after a given event happened. You can also listen out 
 * `once_before`
 * `once_after`
 
-### 4.7 Parameters
+### 4.7 Execution sequence
+
+Assuming we have the following event specified:
+
+```ruby
+event :go, :red => :yellow
+```
+
+then by calling `go` event the following callbacks in the following sequence will be executed:
+
+* `on_before :go` - callback before the `go` event
+* `on_before` - generic callback before `any` event
+* `on_exit :red` - callback for the `:red` state exit
+* `on_exit` - generic callback for exit from `any` state
+* `on_transition :yellow` - callback for the `:red` to `:yellow` transition
+* `on_transition` - callback for transition from `any` state to `any` state
+* `on_enter :yellow` - callback for the `:yellow` state entry
+* `on_enter` - generic callback for entry to `any` state
+* `on_after :go` - callback after the `go` event
+* `on_after` - generic callback after `any` event
+
+### 4.8 Parameters
 
 All callbacks get the `TransitionEvent` object with the following attributes.
 
@@ -643,7 +657,7 @@ end
 fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
 ```
 
-### 4.8 Same kind of callbacks
+### 4.9 Same kind of callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
 
@@ -663,7 +677,7 @@ end
 fm.slow # => will invoke both callbacks
 ```
 
-### 4.9 Fluid callbacks
+### 4.10 Fluid callbacks
 
 Callbacks can also be specified as full method calls.
 
@@ -685,7 +699,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 4.10 Executing methods inside callbacks
+### 4.11 Executing methods inside callbacks
 
 In order to execute method from another object use `target` helper.
 
@@ -744,7 +758,7 @@ fm.back   # => Go Piotr!
 
 For more complex example see [Integration](#6-integration) section.
 
-### 4.11 Defining callbacks
+### 4.12 Defining callbacks
 
 When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
 
@@ -764,7 +778,7 @@ fm.on_enter_yellow do |event|
 end
 ```
 
-### 4.12 Asynchronous callbacks
+### 4.13 Asynchronous callbacks
 
 By default all callbacks are run synchronosuly. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
 
@@ -780,7 +794,7 @@ or
 
 This will ensure that when the callback is fired it will run in seperate thread outside of the main execution thread.
 
-### 4.13 Cancelling inside callbacks
+### 4.14 Cancelling inside callbacks
 
 Preferred way to handle cancelling transitions is to use [3 Conditional transitions](#3-conditional-transitions). However if the logic is more than one liner you can cancel the event, hence the transition by returning `FiniteMachine::CANCELLED` constant from the callback scope. The two ways you can affect the event are
 
