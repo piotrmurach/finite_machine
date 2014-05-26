@@ -84,7 +84,7 @@ module FiniteMachine
     # @example
     #   FiniteMachine.define do
     #     target :red
-    #  end
+    #   end
     #
     # @param [Object] object
     #

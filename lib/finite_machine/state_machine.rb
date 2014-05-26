@@ -236,7 +236,7 @@ module FiniteMachine
       return CANCELLED if valid_state?(_transition)
 
       return CANCELLED unless _transition.conditions.all? do |condition|
-                                condition.call(env.target, *args)
+                                condition.call(target, *args)
                               end
 
       sync_exclusive do
@@ -270,8 +270,8 @@ module FiniteMachine
     #
     # @api private
     def method_missing(method_name, *args, &block)
-      if env.target.respond_to?(method_name.to_sym)
-        env.target.public_send(method_name.to_sym, *args, &block)
+      if target.respond_to?(method_name.to_sym)
+        target.public_send(method_name.to_sym, *args, &block)
       elsif observer.respond_to?(method_name.to_sym)
         observer.public_send(method_name.to_sym, *args, &block)
       else
