@@ -27,13 +27,16 @@ require "finite_machine/observer"
 require "finite_machine/listener"
 
 module FiniteMachine
-
+  # Default state name
   DEFAULT_STATE = :none
 
+  # Initial default event name
   DEFAULT_EVENT_NAME = :init
 
+  # Describe any state transition
   ANY_STATE = :any
 
+  # Describe any event name
   ANY_EVENT = :any
 
   # Returned when transition has successfully performed
@@ -75,6 +78,15 @@ module FiniteMachine
 
     # TODO: this should instantiate system not the state machine
     # and then delegate calls to StateMachine instance etc...
+    #
+    # @example
+    #   FiniteMachine.define do
+    #     ...
+    #   end
+    #
+    # @return [FiniteMachine::StateMachine]
+    #
+    # @api public
     def define(*args, &block)
       StateMachine.new(*args, &block)
     end
