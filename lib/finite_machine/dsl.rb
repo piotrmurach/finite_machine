@@ -68,12 +68,17 @@ module FiniteMachine
     # @api public
     def initial(value)
       state, name, self.defer = parse(value)
-      unless defer
-        machine.state         = state
-        machine.initial_state = state
-      end
-      event = proc { event name, from: FiniteMachine::DEFAULT_STATE, to: state }
-      machine.events_dsl.call(&event)
+      self.initial_event      = name
+      machine.event(name, from: FiniteMachine::DEFAULT_STATE, to: state)
+    end
+
+    # Trigger initial event
+    #
+    # @return [nil]
+    #
+    # @api private
+    def trigger_init
+      machine.send(:"#{initial_event}") unless defer
     end
 
     # Attach state machine to an object
