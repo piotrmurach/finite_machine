@@ -43,7 +43,7 @@ module FiniteMachine
     # The state machine event definitions
     attr_threadsafe :events_chain
 
-    def_delegators :@dsl, :initial, :terminal, :target
+    def_delegators :@dsl, :initial, :terminal, :target, :trigger_init
 
     def_delegator :@events_dsl, :event
 
@@ -63,6 +63,7 @@ module FiniteMachine
       @dsl           = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
+      trigger_init
     end
 
     # @example
