@@ -1,3 +1,8 @@
+0.7.1 (June 8, 2014)
+
+* Change to relax callback name checks to allow for duplicate state and event names
+* Change so that transition to initial state triggers callbacks
+
 0.7.0 (May 26, 2014)
 
 * Change Event to EventHook for callback events
