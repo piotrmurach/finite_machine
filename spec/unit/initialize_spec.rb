@@ -49,11 +49,15 @@ describe FiniteMachine, 'initialize' do
         event :stop, :yellow => :red
       }
       callbacks {
+        on_exit :none   do |event| called << 'on_exit_none' end
         on_enter :green do |event| called << 'on_enter_green' end
       }
     end
     expect(fsm.current).to eql(:green)
-    expect(called).to be_empty
+    expect(called).to eq([
+      'on_exit_none',
+      'on_enter_green'
+    ])
   end
 
   it "allows to specify initial state through parameter" do

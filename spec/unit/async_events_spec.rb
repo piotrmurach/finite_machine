@@ -91,8 +91,9 @@ describe FiniteMachine, 'async_events' do
     expect(called).to match_array([
       'on_enter_green',
       'on_before_slow',
-      'on_after_go',
-      'on_exit_yellow'
+      'on_exit_yellow',
+      'on_enter_green',
+      'on_after_go'
     ])
   end
 end

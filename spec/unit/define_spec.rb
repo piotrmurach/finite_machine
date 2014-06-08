@@ -43,7 +43,7 @@ describe FiniteMachine, 'define' do
       fsm.handle(FiniteMachine::InvalidStateError) { |exception|
         called << 'error_handler'
       }
-
+      fsm.init
       expect(fsm.current).to eql(:green)
       fsm.slow
       expect(fsm.current).to eql(:yellow)
