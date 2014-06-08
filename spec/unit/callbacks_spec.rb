@@ -98,6 +98,17 @@ describe FiniteMachine, 'callbacks' do
       }
     end
 
+    expect(fsm.current).to eq(:green)
+    expect(called).to eq([
+      'on_before',
+      'on_exit',
+      'on_transition_green',
+      'on_transition',
+      'on_enter_green',
+      'on_enter',
+      'on_after'
+    ])
+
     called = []
     fsm.slow
     expect(called).to eql([
@@ -179,6 +190,11 @@ describe FiniteMachine, 'callbacks' do
     expect(fsm.current).to eq(:previous)
     fsm.go
     expect(called).to eq([
+      'before_init',
+      'exit_none',
+      'transition_none_previous',
+      'enter_previous',
+      'after_init',
       'before_go',
       'guard',
       'exit_previous',
@@ -226,6 +242,14 @@ describe FiniteMachine, 'callbacks' do
       }
     end
 
+    expect(fsm.current).to eql(:green)
+    expect(called).to eql([
+      'on_before',
+      'on_exit',
+      'on_transition',
+      'on_enter',
+      'on_after'
+    ])
     called = []
     fsm.slow
     expect(fsm.current).to eql(:yellow)
@@ -539,14 +563,16 @@ describe FiniteMachine, 'callbacks' do
 
         once_on_transition_green do |event| called << 'once_on_transition_green' end
         once_on_transition_yellow do |event| called << 'once_on_transition_yellow' end
-
+        once_on_exit_none   do |event| called << 'once_on_exit_none' end
         once_on_exit_green  do |event| called << 'once_on_exit_green' end
         once_on_exit_yellow do |event| called << 'once_on_exit_yellow' end
 
         # event callbacks
+        once_on_before_init do |event| called << 'once_on_before_init' end
         once_on_before_slow do |event| called << 'once_on_before_slow' end
         once_on_before_go   do |event| called << 'once_on_before_go' end
 
+        once_on_after_init do |event| called << 'once_on_after_init' end
         once_on_after_slow do |event| called << 'once_on_after_slow' end
         once_on_after_go   do |event| called << 'once_on_after_go' end
       }
@@ -559,6 +585,11 @@ describe FiniteMachine, 'callbacks' do
     fsm.slow
     expect(fsm.current).to eql(:yellow)
     expect(called).to eql([
+      'once_on_before_init',
+      'once_on_exit_none',
+      'once_on_transition_green',
+      'once_on_enter_green',
+      'once_on_after_init',
       'once_on_before_slow',
       'once_on_exit_green',
       'once_on_transition_yellow',
@@ -566,8 +597,6 @@ describe FiniteMachine, 'callbacks' do
       'once_on_after_slow',
       'once_on_before_go',
       'once_on_exit_yellow',
-      'once_on_transition_green',
-      'once_on_enter_green',
       'once_on_after_go'
     ])
   end
@@ -643,6 +672,10 @@ describe FiniteMachine, 'callbacks' do
     expect(fsm.current).to eq(:initial)
     fsm.bump
     expect(callbacks).to eq([
+      'before_init_none_initial',
+      'exit_init_none_initial',
+      'enter_init_none_initial',
+      'after_init_none_initial',
       'before_bump_initial_low',
       'exit_bump_initial_low',
       'enter_bump_initial_low',
@@ -650,6 +683,10 @@ describe FiniteMachine, 'callbacks' do
     ])
     fsm.bump
     expect(callbacks).to eq([
+      'before_init_none_initial',
+      'exit_init_none_initial',
+      'enter_init_none_initial',
+      'after_init_none_initial',
       'before_bump_initial_low',
       'exit_bump_initial_low',
       'enter_bump_initial_low',
@@ -661,6 +698,10 @@ describe FiniteMachine, 'callbacks' do
     ])
     fsm.bump
     expect(callbacks).to eq([
+      'before_init_none_initial',
+      'exit_init_none_initial',
+      'enter_init_none_initial',
+      'after_init_none_initial',
       'before_bump_initial_low',
       'exit_bump_initial_low',
       'enter_bump_initial_low',
@@ -699,11 +740,15 @@ describe FiniteMachine, 'callbacks' do
     expect(fsm.current).to eq(:initial)
     fsm.bump
     expect(callbacks).to eq([
+      'before_init_none_initial',
+      'enter_init_none_initial',
       'before_bump_initial_low',
       'enter_bump_initial_low'
     ])
     fsm.bump
     expect(callbacks).to eq([
+      'before_init_none_initial',
+      'enter_init_none_initial',
       'before_bump_initial_low',
       'enter_bump_initial_low',
       'before_bump_low_medium',
@@ -711,6 +756,8 @@ describe FiniteMachine, 'callbacks' do
     ])
     fsm.bump
     expect(callbacks).to eq([
+      'before_init_none_initial',
+      'enter_init_none_initial',
       'before_bump_initial_low',
       'enter_bump_initial_low',
       'before_bump_low_medium',
@@ -736,11 +783,14 @@ describe FiniteMachine, 'callbacks' do
       }
     end
     expect(fsm.current).to eq(:on_hook)
-    expect(called).to be_empty
+    expect(called).to eq([
+      'on_enter_on_hook'
+    ])
     fsm.off_hook
     expect(fsm.current).to eq(:off_hook)
     fsm.on_hook
     expect(called).to eq([
+      'on_enter_on_hook',
       'on_before_on_hook',
       'on_enter_on_hook'
     ]);
