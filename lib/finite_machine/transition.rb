@@ -29,6 +29,9 @@ module FiniteMachine
     # All states for this transition event
     attr_threadsafe :map
 
+    # Silence callbacks
+    attr_threadsafe :silent
+
     # Initialize a Transition
     #
     # @param [StateMachine] machine
@@ -39,6 +42,7 @@ module FiniteMachine
       @machine     = machine
       @name        = attrs.fetch(:name, DEFAULT_STATE)
       @map         = attrs.fetch(:parsed_states, {})
+      @silent      = attrs.fetch(:silent, false)
       @from_states = @map.keys
       @to_states   = @map.values
       @from_state  = @from_states.first
@@ -158,7 +162,7 @@ module FiniteMachine
     #
     # @api private
     def define_event_transition(name)
-      _event = FiniteMachine::Event.new(machine, name: name)
+      _event = FiniteMachine::Event.new(machine, name: name, silent: silent)
       _event << self
       machine.events_chain[name] = _event
 
