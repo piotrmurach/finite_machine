@@ -128,7 +128,7 @@ The **FiniteMachine** allows you to query the current state by calling the `curr
 
 ### 1.2 initial
 
-There are number of ways to provide the initial state  **FiniteMachine** depending on your requirements.
+There are number of ways to provide the initial state in  **FiniteMachine** depending on your requirements.
 
 By default the **FiniteMachine** will be in the `:none` state and you will need to provide an event to transition out of this state.
 
@@ -200,6 +200,19 @@ end
 fm.current # => :none
 fm.start
 fm.current # => :green
+```
+
+By default the `initial` does not trigger any callbacks. If you need to fire callbacks and any event associated actions on initial transition, pass the `silent` option set to `false` like so
+
+```ruby
+fm = FiniteMachine.define do
+  initial state: :green, silent: false  # => callbacks are triggered
+
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red
+  }
+end
 ```
 
 ### 1.3 terminal
@@ -307,6 +320,7 @@ For more complex example see [Integration](#6-integration) section.
 
 Finally, you can always reference an external context inside the **FiniteMachine** by simply calling `target`, for instance, to reference it inside a callback:
 
+```ruby
 car = Car.new
 
 fm = FiniteMachine.define do
@@ -323,6 +337,7 @@ fm = FiniteMachine.define do
     end
   }
 end
+```
 
 ## 2 Transitions
 
