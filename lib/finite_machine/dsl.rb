@@ -67,9 +67,9 @@ module FiniteMachine
     #
     # @api public
     def initial(value)
-      state, name, self.defer = parse(value)
-      self.initial_event      = name
-      machine.event(name, from: FiniteMachine::DEFAULT_STATE, to: state)
+      state, name, self.defer, silent = parse(value)
+      self.initial_event = name
+      machine.event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
     end
 
     # Trigger initial event
@@ -158,12 +158,13 @@ module FiniteMachine
     #
     # @api private
     def parse(value)
-      unless value.is_a?(Hash)
-        [value, FiniteMachine::DEFAULT_EVENT_NAME, false]
-      else
+      if value.is_a?(Hash)
         [value.fetch(:state) { raise_missing_state },
          value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
-         value.fetch(:defer) { false }]
+         value.fetch(:defer) { false },
+         value.fetch(:silent) { true }]
+      else
+        [value, FiniteMachine::DEFAULT_EVENT_NAME, false, true]
       end
     end
 
@@ -176,8 +177,8 @@ module FiniteMachine
     end
   end # DSL
 
+  # A DSL for describing events
   class EventsDSL < GenericDSL
-
     # Create event and associate transition
     #
     # @example
@@ -198,6 +199,7 @@ module FiniteMachine
     end
   end # EventsDSL
 
+  # A DSL for describing error conditions
   class ErrorsDSL < GenericDSL
     # Add error handler
     #
