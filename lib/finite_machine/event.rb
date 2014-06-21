@@ -14,10 +14,16 @@ module FiniteMachine
     # The reference to the state machine for this event
     attr_threadsafe :machine
 
+    # The silent option for this transition
+    attr_threadsafe :silent
+
+    # Initialize an Event
+    #
     # @api private
     def initialize(machine, attrs = {})
       @machine = machine
       @name    = attrs.fetch(:name, DEFAULT_STATE)
+      @silent  = attrs.fetch(:silent, false)
       @state_transitions = []
       # TODO: add event conditions
     end
@@ -53,13 +59,23 @@ module FiniteMachine
 
     # Trigger this event
     #
+    # If silent option is passed the event will not fire any callbacks
+    #
+    # @example
+    #   transition = Transition.create(machine, {})
+    #   transition.call
+    #
     # @return [nil]
     #
     # @api public
     def call(*args, &block)
       sync_exclusive do
         _transition = next_transition
-        machine.send(:transition, _transition, *args, &block)
+        if silent
+          _transition.call
+        else
+          machine.send(:transition, _transition, *args, &block)
+        end
       end
     end
 
