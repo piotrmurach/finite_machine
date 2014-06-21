@@ -19,6 +19,12 @@ describe FiniteMachine, ':if, :unless' do
         !!@engine_on
       end
     end
+
+    class Bug
+      def pending?
+        false
+      end
+    end
   }
 
   it "allows to cancel event with :if option" do
@@ -225,11 +231,6 @@ describe FiniteMachine, ':if, :unless' do
   end
 
   context 'when same event name' do
-    class Bug
-      def pending?
-        false
-      end
-    end
 
     it "preservers conditions for the same named event" do
       bug = Bug.new

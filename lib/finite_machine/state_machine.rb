@@ -165,13 +165,19 @@ module FiniteMachine
     # @example
     #   fsm.can?(:go) # => true
     #
+    # @example
+    #   fsm.can?(:go, 'Piotr')  # checks condition with parameter 'Piotr'
+    #
     # @param [String] event
     #
     # @return [Boolean]
     #
     # @api public
-    def can?(event)
-      transitions[event].key?(current) || transitions[event].key?(ANY_STATE)
+    def can?(*args, &block)
+      event       = args.shift
+      valid_state = transitions[event].key?(current)
+      valid_state ||= transitions[event].key?(ANY_STATE)
+      valid_state &&= events_chain[event].next_transition.valid?(*args, &block)
     end
 
     # Checks if event cannot be triggered
@@ -184,8 +190,8 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def cannot?(event)
-      !can?(event)
+    def cannot?(*args, &block)
+      !can?(*args, &block)
     end
 
     # Checks if terminal state has been reached
