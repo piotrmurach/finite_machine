@@ -268,6 +268,25 @@ fm.cannot?(:ready) # => false
 fm.cannot?(:go)    # => true
 ```
 
+The `can?` and `cannot?` helper methods take into account the `:if` and `:unless` conditions applied to events. The set of values that `:if` or `:unless` conditiontakes as block parameter can be passed in directly via `can?` and `cannot?` methods, after the name of the event. For instance,
+
+```ruby
+fm = FiniteMachine.define do
+  initial :green
+
+  events {
+    event :slow,  :green  => :yellow
+    event :stop,  :yellow => :red, if: proc { |_, param| :breaks == param }
+  }
+end
+fm.can?(:slow) # => true
+fm.can?(:stop) # => false
+
+fm.slow
+fm.can?(:stop, :breaks)    # => true
+fm.can?(:stop, :no_breaks) # => false
+```
+
 ### 1.6 states
 
 You can use the `states` method to return an array of all the states for a given state machine.
