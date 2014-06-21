@@ -54,10 +54,7 @@ describe FiniteMachine, 'initialize' do
       }
     end
     expect(fsm.current).to eql(:green)
-    expect(called).to eq([
-      'on_exit_none',
-      'on_enter_green'
-    ])
+    expect(called).to be_empty
   end
 
   it "allows to specify initial state through parameter" do
@@ -188,5 +185,38 @@ describe FiniteMachine, 'initialize' do
     fsm.init
     expect(fsm.current).to eq(:green)
     expect(fsm.initial_state).to eq(:green)
+  end
+
+  it "allows to trigger callbacks on initial with :silent option" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial state: :green, silent: false
+
+      events {
+        event :slow, :green => :yellow
+      }
+      callbacks {
+        on_enter :green do |event| called << 'on_enter_green' end
+      }
+    end
+    expect(fsm.current).to eq(:green)
+    expect(called).to eq(['on_enter_green'])
+  end
+
+  it "allows to trigger callbacks on deferred initial state" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial state: :green, silent: false, defer: true
+
+      events {
+        event :slow, :green => :yellow
+      }
+      callbacks {
+        on_enter :green do |event| called << 'on_enter_green' end
+      }
+    end
+    expect(fsm.current).to eq(:none)
+    fsm.init
+    expect(called).to eq(['on_enter_green'])
   end
 end
