@@ -268,7 +268,7 @@ fm.cannot?(:ready) # => false
 fm.cannot?(:go)    # => true
 ```
 
-The `can?` and `cannot?` helper methods take into account the `:if` and `:unless` conditions applied to events. The set of values that `:if` or `:unless` conditiontakes as block parameter can be passed in directly via `can?` and `cannot?` methods, after the name of the event. For instance,
+The `can?` and `cannot?` helper methods take into account the `:if` and `:unless` conditions applied to events. The set of values that `:if` or `:unless` condition takes as block parameter can be passed in directly via `can?` and `cannot?` methods' arguments, after the name of the event. For instance,
 
 ```ruby
 fm = FiniteMachine.define do
