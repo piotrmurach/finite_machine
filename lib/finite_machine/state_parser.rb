@@ -7,6 +7,8 @@ module FiniteMachine
 
     attr_threadsafe :attrs
 
+    BLACKLIST = [:name, :if, :unless, :silent].freeze
+
     # Initialize a StateParser
     #
     # @example
@@ -83,7 +85,7 @@ module FiniteMachine
     # @api private
     def ensure_only_states!(attrs)
       _attrs = attrs.dup
-      [:name, :if, :unless].each { |key| _attrs.delete(key) }
+      BLACKLIST.each { |key| _attrs.delete(key) }
       raise_not_enough_transitions unless _attrs.any?
       _attrs
     end
