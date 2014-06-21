@@ -71,7 +71,7 @@ describe FiniteMachine, 'async_events' do
   it "permits async callback" do
     called = []
     fsm = FiniteMachine.define do
-      initial :green
+      initial state: :green, silent: false
 
       events {
         event :slow,  :green  => :yellow

@@ -7,7 +7,7 @@ describe FiniteMachine, 'callbacks' do
   it "triggers default init event" do
     called = []
     fsm = FiniteMachine.define do
-      initial state: :green, defer: true
+      initial state: :green, defer: true, silent: false
 
       callbacks {
         # generic state callbacks
@@ -54,7 +54,7 @@ describe FiniteMachine, 'callbacks' do
   it "executes callbacks in order" do
     called = []
     fsm = FiniteMachine.define do
-      initial :green
+      initial state: :green, silent: false
 
       events {
         event :slow,  :green  => :yellow
@@ -173,7 +173,7 @@ describe FiniteMachine, 'callbacks' do
   it "maintains transition execution sequence from UML statechart" do
     called = []
     fsm = FiniteMachine.define do
-      initial :previous
+      initial state: :previous, silent: false
 
       events {
         event :go, :previous => :next, if: -> { called << 'guard'; true}
@@ -207,7 +207,7 @@ describe FiniteMachine, 'callbacks' do
   it "allows multiple callbacks for the same state" do
     called = []
     fsm = FiniteMachine.define do
-      initial :green
+      initial state: :green, silent: false
 
       events {
         event :slow,  :green  => :yellow
@@ -549,7 +549,7 @@ describe FiniteMachine, 'callbacks' do
   it "triggers callbacks only once" do
     called = []
     fsm = FiniteMachine.define do
-      initial :green
+      initial state: :green, silent: false
 
       events {
         event :slow,  :green  => :yellow
@@ -646,7 +646,7 @@ describe FiniteMachine, 'callbacks' do
   it "groups states from separate events with the same name" do
     callbacks = []
     fsm = FiniteMachine.define do
-      initial :initial
+      initial state: :initial, silent: false
 
       events {
         event :bump, :initial => :low
@@ -720,7 +720,7 @@ describe FiniteMachine, 'callbacks' do
   it "groups states under event name" do
     callbacks = []
     fsm = FiniteMachine.define do
-      initial :initial
+      initial state: :initial, silent: false
 
       events {
         event :bump, :initial => :low,
@@ -770,7 +770,7 @@ describe FiniteMachine, 'callbacks' do
   it "permits state and event with the same name" do
     called = []
     fsm = FiniteMachine.define do
-      initial :on_hook
+      initial state: :on_hook, silent: false
 
       events {
         event :off_hook, :on_hook => :off_hook
@@ -794,5 +794,26 @@ describe FiniteMachine, 'callbacks' do
       'on_before_on_hook',
       'on_enter_on_hook'
     ]);
+  end
+
+  it "allows to selectively silence events" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :yellow
+
+      events {
+        event :go,   :yellow => :green, silent: true
+        event :stop, :green  => :red
+      }
+
+      callbacks {
+        on_enter :green do |event| called << 'on_enter_yellow' end
+        on_enter :red   do |event| called << 'on_enter_red' end
+      }
+    end
+    expect(fsm.current).to eq(:yellow)
+    fsm.go
+    fsm.stop
+    expect(called).to eq(['on_enter_red'])
   end
 end
