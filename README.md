@@ -50,7 +50,7 @@ Or install it yourself as:
     * [1.5 can? and cannot?](#15-can-and-cannot)
     * [1.6 states](#16-states)
     * [1.7 target](#17-target)
-    * [1.8 restore!](#18-restore!)
+    * [1.8 restore!](#18-restore)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Forcing transitions](#22-forcing-transitions)
@@ -106,7 +106,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#2-transitions) and [Callbacks](#4-callbacks) sections for more details.
+As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#2-transitions) and [Callbacks](#5-callbacks) sections for more details.
 
 Alternatively, you can construct the machine like a regular object without using the DSL. The same machine could be reimplemented as follows:
 
