@@ -192,8 +192,13 @@ module FiniteMachine
       sync_exclusive do
         attributes = attrs.merge!(name: name)
         FiniteMachine::StateParser.new(attrs).parse_states do |from, to|
-          attributes.merge!(parsed_states: { from => to })
-          Transition.create(machine, attributes)
+          if block_given?
+            merger = ChoiceMerger.new(self, attributes)
+            merger.instance_eval(&block)
+          else
+            attributes.merge!(parsed_states: { from => to })
+            Transition.create(machine, attributes)
+          end
         end
       end
     end
