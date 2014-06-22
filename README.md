@@ -536,7 +536,7 @@ fm.start(true)
 fm.current       # => :one
 ```
 
-When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [4.10 Cancelling inside callbacks](#410-cancelling-inside-callbacks)
+When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [5.10 Cancelling inside callbacks](#510-cancelling-inside-callbacks)
 
 ### 3.2 Using a Symbol
 
