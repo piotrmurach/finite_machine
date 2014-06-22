@@ -1,3 +1,13 @@
+0.8.0 (June 22, 2014)
+
+* Add silent option for state machine events to allow turning on/off
+  selectively callbacks
+* Ensure that can? & cannot? take into account conditionl logic applied
+  to transitions
+* Add restore! method to allow to set the state directly without callbacks
+* Add ability to do dynamic conditional branching using the choice DSL or
+  grouped events with different outgoing transitions [solves #13 and #6 issue]
+
 0.7.1 (June 8, 2014)
 
 * Change to relax callback name checks to allow for duplicate state and event names
