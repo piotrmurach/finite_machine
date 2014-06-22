@@ -64,7 +64,7 @@ module FiniteMachine
     #
     # @api public
     def self.create(machine, attrs = {})
-      _transition = self.new(machine, attrs)
+      _transition = new(machine, attrs)
       _transition.update_transitions
       _transition.define_state_methods
       _transition.define_event
@@ -76,8 +76,13 @@ module FiniteMachine
     # @return [Symbol]
     #
     # @api public
-    def to_state
-      machine.transitions[name][from_state]
+    def to_state(*args)
+      if machine.transitions[name][from_state].is_a? Array
+        found_trans = machine.events_chain[name].find_transition(*args)
+        found_trans.map[from_state]
+      else
+        machine.transitions[name][from_state]
+      end
     end
 
     # Reduce conditions
