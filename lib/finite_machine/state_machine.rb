@@ -203,6 +203,17 @@ module FiniteMachine
       is?(final_state)
     end
 
+    # Restore this machine to a known state
+    #
+    # @param [Symbol] state
+    #
+    # @return nil
+    #
+    # @api public
+    def restore!(state)
+      sync_exclusive { self.state = state }
+    end
+
     # String representation of this machine
     #
     # @return [String]
