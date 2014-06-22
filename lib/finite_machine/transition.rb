@@ -126,19 +126,27 @@ module FiniteMachine
     #
     # @api public
     def valid?(*args, &block)
-      conditions.all? do |condition|
-        condition.call(machine.target, *args, &block)
+      if machine.transitions[name][from_state].is_a? Array
+        machine.events_chain[name].state_transitions.any? do |trans|
+          trans.check_conditions(*args, &block)
+        end
+      else
+        check_conditions(*args, &block)
       end
     end
 
     # Add transition to the machine
     #
-    # @return [Transition]
+    # @return [FiniteMachine::Transition]
     #
     # @api private
     def update_transitions
       from_states.each do |from|
-        machine.transitions[name][from] = map[from] || ANY_STATE
+        if value = machine.transitions[name][from]
+          machine.transitions[name][from] = [value, map[from]].flatten
+        else
+          machine.transitions[name][from] = map[from] || ANY_STATE
+        end
       end
     end
 
@@ -202,12 +210,17 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def call
+    def call(*args)
       sync_exclusive do
         return if cancelled
         transitions     = machine.transitions[name]
         self.from_state = machine.state
-        machine.state   = transitions[machine.state] || transitions[ANY_STATE] || name
+        if machine.transitions[name][from_state].is_a? Array
+          found_trans   = machine.events_chain[name].find_transition(*args)
+          machine.state = found_trans.to_states.first
+        else
+          machine.state   = transitions[machine.state] || transitions[ANY_STATE] || name
+        end
         machine.initial_state = machine.state if from_state == DEFAULT_STATE
       end
     end
