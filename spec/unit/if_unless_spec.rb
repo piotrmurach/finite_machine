@@ -231,7 +231,6 @@ describe FiniteMachine, ':if, :unless' do
   end
 
   context 'when same event name' do
-
     it "preservers conditions for the same named event" do
       bug = Bug.new
       fsm = FiniteMachine.define do
@@ -250,6 +249,47 @@ describe FiniteMachine, ':if, :unless' do
       expect(fsm.current).to eq(:low)
       fsm.bump
       expect(fsm.current).to eq(:low)
+    end
+
+    it "allows for static choice based on branching condition" do
+      fsm = FiniteMachine.define do
+        initial :company_form
+
+        events {
+          event :next, :company_form => :agreement_form, if: -> { false }
+          event :next, :company_form => :promo_form,     if: -> { false }
+          event :next, :company_form => :official_form,  if: -> { true }
+        }
+      end
+      expect(fsm.current).to eq(:company_form)
+      fsm.next
+      expect(fsm.current).to eq(:official_form)
+    end
+
+    it "allows for dynamic choice based on branching condition" do
+      fsm = FiniteMachine.define do
+        initial :company_form
+
+        events {
+          event :next, :company_form => :agreement_form, if: proc { |_, a| a < 1 }
+          event :next, :company_form => :promo_form,     if: proc { |_, a| a == 1 }
+          event :next, :company_form => :official_form,  if: proc { |_, a| a > 1 }
+        }
+      end
+      expect(fsm.current).to eq(:company_form)
+
+      fsm.next(0)
+      expect(fsm.current).to eq(:agreement_form)
+      fsm.restore!(:company_form)
+      expect(fsm.current).to eq(:company_form)
+
+      fsm.next(1)
+      expect(fsm.current).to eq(:promo_form)
+      fsm.restore!(:company_form)
+      expect(fsm.current).to eq(:company_form)
+
+      fsm.next(2)
+      expect(fsm.current).to eq(:official_form)
     end
   end
 end
