@@ -17,11 +17,11 @@ module FiniteMachine
     # @return [self]
     #
     # @api private
-    def self.build(transition)
+    def self.build(transition, *data)
       instance = new
       instance.name = transition.name
       instance.from = transition.from_state
-      instance.to   = transition.to_state
+      instance.to   = transition.to_state(*data)
       instance
     end
   end # TransitionEvent
