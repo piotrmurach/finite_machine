@@ -109,7 +109,7 @@ describe FiniteMachine, '#choice' do
       events {
         event :next, from: :company_form do
           choice :agreement_form, if: -> { false }
-          choice :promo_form,     if: -> { false}
+          choice :promo_form,     if: -> { false }
           default :official_form
         end
       }
@@ -117,5 +117,21 @@ describe FiniteMachine, '#choice' do
     expect(fsm.current).to eq(:company_form)
     fsm.next
     expect(fsm.current).to eq(:official_form)
+  end
+
+  it "fails to transition when no condition matches without default state" do
+    fsm = FiniteMachine.define do
+      initial :company_form
+
+      events {
+        event :next, from: :company_form do
+          choice :agreement_form, if: -> { false }
+          choice :promo_form,     if: -> { false }
+        end
+      }
+    end
+    expect(fsm.current).to eq(:company_form)
+    fsm.next
+    expect(fsm.current).to eq(:company_form)
   end
 end
