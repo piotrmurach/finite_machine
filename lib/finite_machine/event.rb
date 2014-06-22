@@ -51,10 +51,25 @@ module FiniteMachine
     #
     # @api private
     def next_transition
-      state_transitions.find do |transition|
-        transition.from_state == machine.current ||
-          transition.from_state == ANY_STATE
-      end || state_transitions.first
+      sync_shared do
+        state_transitions.find do |transition|
+          transition.from_state == machine.current ||
+            transition.from_state == ANY_STATE
+        end || state_transitions.first
+      end
+    end
+
+    # Find transition matching conditions
+    #
+    # @param [Array[Object]] args
+    #
+    # return FiniteMachine::TransitionChoice
+    #
+    # @api private
+    def find_transition(*args)
+      sync_shared do
+        state_transitions.find { |trans| trans.check_conditions(*args) }
+      end
     end
 
     # Trigger this event
@@ -72,7 +87,7 @@ module FiniteMachine
       sync_exclusive do
         _transition = next_transition
         if silent
-          _transition.call
+          _transition.call(*args, &block)
         else
           machine.send(:transition, _transition, *args, &block)
         end
