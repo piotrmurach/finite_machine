@@ -88,6 +88,17 @@ module FiniteMachine
         @unless.map { |c| Callable.new(c).invert }
     end
 
+    # Verify conditions returning true if all match, false otherwise
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    def check_conditions(*args, &block)
+      conditions.all? do |condition|
+        condition.call(machine.target, *args, &block)
+      end
+    end
+
     # Check if moved to different state or not
     #
     # @param [Symbol] state
