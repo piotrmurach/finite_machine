@@ -260,7 +260,7 @@ module FiniteMachine
         notify HookEvent::Exit, _transition, *args
 
         begin
-          _transition.call
+          _transition.call(*args)
 
           notify HookEvent::Transition, _transition, *args
         rescue Exception => e
