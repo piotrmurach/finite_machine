@@ -50,6 +50,7 @@ Or install it yourself as:
     * [1.5 can? and cannot?](#15-can-and-cannot)
     * [1.6 states](#16-states)
     * [1.7 target](#17-target)
+    * [1.8 restore!](#18-restore!)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Forcing transitions](#22-forcing-transitions)
@@ -62,21 +63,21 @@ Or install it yourself as:
     * [3.3 Using a String](#33-using-a-string)
     * [3.4 Combining transition conditions](#34-combining-transition-conditions)
 * [4. Choice pseudostates](#4-choice-pseudostates)
-* [5. Callbacks](#4-callbacks)
-    * [5.1 on_enter](#41-on_enter)
-    * [5.2 on_transition](#42-on_transition)
-    * [5.3 on_exit](#43-on_exit)
-    * [5.4 on_before](#44-on_before)
-    * [5.5 on_after](#45-on_after)
-    * [5.6 once_on](#46-once_on)
-    * [5.7 Execution sequence](#47-execution-sequence)
-    * [5.8 Parameters](#48-parameters)
-    * [5.9 Same kind of callbacks](#49-same-kind-of-callbacks)
-    * [5.10 Fluid callbacks](#410-fluid-callbacks)
-    * [5.11 Executing methods inside callbacks](#411-executing-methods-inside-callbacks)
-    * [5.12 Defining callbacks](#412-defining-callbacks)
-    * [5.13 Asynchronous callbacks](#413-asynchronous-callbacks)
-    * [5.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
+* [5. Callbacks](#5-callbacks)
+    * [5.1 on_enter](#51-on_enter)
+    * [5.2 on_transition](#52-on_transition)
+    * [5.3 on_exit](#53-on_exit)
+    * [5.4 on_before](#54-on_before)
+    * [5.5 on_after](#55-on_after)
+    * [5.6 once_on](#56-once_on)
+    * [5.7 Execution sequence](#57-execution-sequence)
+    * [5.8 Parameters](#58-parameters)
+    * [5.9 Same kind of callbacks](#59-same-kind-of-callbacks)
+    * [5.10 Fluid callbacks](#510-fluid-callbacks)
+    * [5.11 Executing methods inside callbacks](#511-executing-methods-inside-callbacks)
+    * [5.12 Defining callbacks](#512-defining-callbacks)
+    * [5.13 Asynchronous callbacks](#513-asynchronous-callbacks)
+    * [5.14 Cancelling inside callbacks](#514-cancelling-inside-callbacks)
 * [6. Errors](#6-errors)
     * [6.1 Using target](#61-using-target)
 * [7. Integration](#7-integration)
@@ -358,6 +359,16 @@ fm = FiniteMachine.define do
   }
 end
 ```
+
+### 1.8 restore!
+
+In order to set the machine to a given state and thus skip triggering callbacks use the `restore!` method:
+
+```ruby
+fm.restore!(:neutral)
+```
+
+This method may be suitable when used testing your state machine or in restoring the state from datastore.
 
 ## 2 Transitions
 
