@@ -21,10 +21,10 @@ A minimal finite state machine with a straightforward and intuitive syntax. You 
 * observers (pub/sub) for state changes
 * ability to check reachable states
 * ability to check for terminal state
-* conditional transitions
+* transition guard conditions
+* dynamic conditional branching
 * sync and async transitions
 * sync and async callbacks
-* nested/composable states (TODO)
 
 ## Installation
 
@@ -61,26 +61,27 @@ Or install it yourself as:
     * [3.2 Using a Symbol](#32-using-a-symbol)
     * [3.3 Using a String](#33-using-a-string)
     * [3.4 Combining transition conditions](#34-combining-transition-conditions)
-* [4. Callbacks](#4-callbacks)
-    * [4.1 on_enter](#41-on_enter)
-    * [4.2 on_transition](#42-on_transition)
-    * [4.3 on_exit](#43-on_exit)
-    * [4.4 on_before](#44-on_before)
-    * [4.5 on_after](#45-on_after)
-    * [4.6 once_on](#46-once_on)
-    * [4.7 Execution sequence](#47-execution-sequence)
-    * [4.8 Parameters](#48-parameters)
-    * [4.9 Same kind of callbacks](#49-same-kind-of-callbacks)
-    * [4.10 Fluid callbacks](#410-fluid-callbacks)
-    * [4.11 Executing methods inside callbacks](#411-executing-methods-inside-callbacks)
-    * [4.12 Defining callbacks](#412-defining-callbacks)
-    * [4.13 Asynchronous callbacks](#413-asynchronous-callbacks)
-    * [4.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
-* [5. Errors](#5-errors)
-    * [5.1 Using target](#51-using-target)
-* [6. Integration](#6-integration)
-    * [6.1 ActiveRecord](#61-activerecord)
-* [7. Tips](#7-tips)
+* [4. Choice pseudostates](#4-choice-pseudostates)
+* [5. Callbacks](#4-callbacks)
+    * [5.1 on_enter](#41-on_enter)
+    * [5.2 on_transition](#42-on_transition)
+    * [5.3 on_exit](#43-on_exit)
+    * [5.4 on_before](#44-on_before)
+    * [5.5 on_after](#45-on_after)
+    * [5.6 once_on](#46-once_on)
+    * [5.7 Execution sequence](#47-execution-sequence)
+    * [5.8 Parameters](#48-parameters)
+    * [5.9 Same kind of callbacks](#49-same-kind-of-callbacks)
+    * [5.10 Fluid callbacks](#410-fluid-callbacks)
+    * [5.11 Executing methods inside callbacks](#411-executing-methods-inside-callbacks)
+    * [5.12 Defining callbacks](#412-defining-callbacks)
+    * [5.13 Asynchronous callbacks](#413-asynchronous-callbacks)
+    * [5.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
+* [6. Errors](#6-errors)
+    * [6.1 Using target](#61-using-target)
+* [7. Integration](#7-integration)
+    * [7.1 ActiveRecord](#71-activerecord)
+* [8. Tips](#7-tips)
 
 ## 1 Usage
 
@@ -577,7 +578,69 @@ end
 
 The transition only runs when all the `:if` conditions and none of the `unless` conditions are evaluated to `true`.
 
-## 4 Callbacks
+## 4 Choice pseudostates
+
+Choice pseudostate allows you to implement conditional branch. The conditions of an event's transitions are evaluated in order to to select only one outgoing transition.
+
+You can implement the conditional branch as ordinary events grouped under the same name and use familiar `:if/:unless` conditions:
+
+```ruby
+fsm = FiniteMachine.define do
+  initial :green
+
+  events {
+    event :next, :green => :yellow, if: -> { false }
+    event :next, :green => :red,    if: -> { true }
+  }
+end
+
+fsm.current # => :green
+fsm.next
+fsm.current # => :red
+```
+
+The same conditional logic can be implemented using much shorter and more descriptive style using `choice` method:
+
+```ruby
+fsm = FiniteMachine.define do
+  initial :green
+
+  events {
+    event :next, from: :green do
+      choice :yellow, if: -> { false }
+      choice :red,    if: -> { true }
+    end
+  }
+end
+
+fsm.current # => :green
+fsm.next
+fsm.current # => :red
+```
+
+Just as with event conditions you can make conditional logic dynamic and dependent on parameters passed in:
+
+```ruby
+fsm = FiniteMachine.define do
+  initial :green
+
+  events {
+    event :next, from: :green do
+      choice :yellow, if: -> (context, a) { a < 1 }
+      choice :red,    if: -> (context, a) { a > 1 }
+      default :red
+    end
+  }
+end
+
+fsm.current # => :green
+fsm.next(0)
+fsm.current # => :yellow
+```
+
+If more than one of the conditions evaluates to true, a first matching one is chosen. If none of the conditions evaluate to true, then the `default` state is matched. However if default state is not present and non of the conditions match, no transition is performed. To avoid such situation always specify `default` choice.
+
+## 5 Callbacks
 
 You can watch state machine events and the information they provide by registering a callback. The following 5 types of callbacks are available in **FiniteMachine**:
 
@@ -612,27 +675,27 @@ fm.ready(1, 2, 3)
 fm.go('Piotr!')
 ```
 
-### 4.1 on_enter
+### 5.1 on_enter
 
 The `on_enter` callback is executed before given state change is fired. By passing state name you can narrow down the listener to only watch out for enter state changes. Otherwise, all enter state changes will be watched.
 
-### 4.2 on_transition
+### 5.2 on_transition
 
 The `on_transition` callback is executed when given state change happens. By passing state name you can narrow down the listener to only watch out for transition state changes. Otherwise, all transition state changes will be watched.
 
-### 4.3 on_exit
+### 5.3 on_exit
 
 The `on_exit` callback is executed after a given state change happens. By passing state name you can narrow down the listener to only watch out for exit state changes. Otherwise, all exit state changes will be watched.
 
-### 4.4 on_before
+### 5.4 on_before
 
 The `on_before` callback is executed before a given event happens. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
-### 4.5 on_after
+### 5.5 on_after
 
 This callback is executed after a given event happened. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
-### 4.6 once_on
+### 5.6 once_on
 
 **FiniteMachine** allows you to listen on initial state change or when the event is fired first time by using the following 5 types of callbacks:
 
@@ -642,7 +705,7 @@ This callback is executed after a given event happened. By default it will liste
 * `once_before`
 * `once_after`
 
-### 4.7 Execution sequence
+### 5.7 Execution sequence
 
 Assuming we have the following event specified:
 
@@ -663,7 +726,7 @@ then by calling `go` event the following callbacks in the following sequence wil
 * `on_after :go` - callback after the `go` event
 * `on_after` - generic callback after `any` event
 
-### 4.8 Parameters
+### 5.8 Parameters
 
 All callbacks get the `TransitionEvent` object with the following attributes.
 
@@ -691,7 +754,7 @@ end
 fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
 ```
 
-### 4.9 Same kind of callbacks
+### 5.9 Same kind of callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
 
@@ -711,7 +774,7 @@ end
 fm.slow # => will invoke both callbacks
 ```
 
-### 4.10 Fluid callbacks
+### 5.10 Fluid callbacks
 
 Callbacks can also be specified as full method calls.
 
@@ -733,7 +796,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 4.11 Executing methods inside callbacks
+### 5.11 Executing methods inside callbacks
 
 In order to execute method from another object use `target` helper.
 
@@ -790,9 +853,9 @@ end
 fm.back   # => Go Piotr!
 ```
 
-For more complex example see [Integration](#6-integration) section.
+For more complex example see [Integration](#7-integration) section.
 
-### 4.12 Defining callbacks
+### 5.12 Defining callbacks
 
 When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
 
@@ -812,7 +875,7 @@ fm.on_enter_yellow do |event|
 end
 ```
 
-### 4.13 Asynchronous callbacks
+### 5.13 Asynchronous callbacks
 
 By default all callbacks are run synchronosuly. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
 
@@ -828,7 +891,7 @@ or
 
 This will ensure that when the callback is fired it will run in seperate thread outside of the main execution thread.
 
-### 4.14 Cancelling inside callbacks
+### 5.14 Cancelling inside callbacks
 
 Preferred way to handle cancelling transitions is to use [3 Conditional transitions](#3-conditional-transitions). However if the logic is more than one liner you can cancel the event, hence the transition by returning `FiniteMachine::CANCELLED` constant from the callback scope. The two ways you can affect the event are
 
@@ -855,7 +918,7 @@ fm.ready
 fm.current  # => :red
 ```
 
-## 5 Errors
+## 6 Errors
 
 By default, the **FiniteMachine** will throw an exception whenever the machine is in invalid state or fails to transition.
 
@@ -885,7 +948,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 5.1 Using target
+### 6.1 Using target
 
 You can pass an external context via `target` helper that will be the receiver for the handler. The handler method needs to take one argument that will be called with the exception.
 
@@ -912,7 +975,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-## 6 Integration
+## 7 Integration
 
 Since **FiniteMachine** is an object in its own right it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
 
@@ -960,7 +1023,7 @@ class Car
 end
 ```
 
-### 6.1 ActiveRecord
+### 7.1 ActiveRecord
 
 In order to integrate **FiniteMachine** with ActiveRecord use the `target` helper to reference the current class and call ActiveRecord methods inside the callbacks to persist the state.
 
@@ -1002,7 +1065,7 @@ account.manage.authorize
 account.state   # => :access
 ```
 
-## 7 Tips
+## 8 Tips
 
 Creating a standalone **FiniteMachine** brings a number of benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself. Ideally, you would test the machine in isolation and then integrate it with other objects or ORMs.
 
