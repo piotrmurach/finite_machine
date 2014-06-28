@@ -212,6 +212,19 @@ module FiniteMachine
       end
     end
 
+    # Set state on the machine
+    #
+    # @api private
+    def update_state(*args)
+      if transition_choice?
+        found_trans   = machine.select_transition(name, *args)
+        machine.state = found_trans.to_states.first
+      else
+        transitions   = machine.transitions[name]
+        machine.state = transitions[machine.state] || transitions[ANY_STATE] || name
+      end
+    end
+
     # Execute current transition
     #
     # @return [nil]
@@ -220,14 +233,8 @@ module FiniteMachine
     def call(*args)
       sync_exclusive do
         return if cancelled
-        transitions     = machine.transitions[name]
         self.from_state = machine.state
-        if machine.transitions[name][from_state].is_a? Array
-          found_trans   = machine.events_chain[name].find_transition(*args)
-          machine.state = found_trans.to_states.first
-        else
-          machine.state   = transitions[machine.state] || transitions[ANY_STATE] || name
-        end
+        update_state(*args)
         machine.initial_state = machine.state if from_state == DEFAULT_STATE
       end
     end
