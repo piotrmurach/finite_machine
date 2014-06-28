@@ -4,7 +4,6 @@ module FiniteMachine
   # Class describing a transition associated with a given event
   class Transition
     include Threadable
-    include Safety
 
     attr_threadsafe :name
 
@@ -67,8 +66,9 @@ module FiniteMachine
       _transition = new(machine, attrs)
       _transition.update_transitions
       _transition.define_state_methods
-      _transition.define_event
-      _transition
+
+      builder = EventBuilder.new(machine)
+      builder.call(_transition)
     end
 
     # Decide :to state from available transitions for this event
@@ -173,54 +173,6 @@ module FiniteMachine
       return if machine.respond_to?("#{state}?")
       machine.send(:define_singleton_method, "#{state}?") do
         machine.is?(state.to_sym)
-      end
-    end
-
-    # Define event on the machine
-    #
-    # @param [Symbol] name
-    #   the event name
-    #
-    # @api private
-    def define_event
-      detect_event_conflict!(name)
-      if machine.singleton_class.send(:method_defined?, name)
-        machine.events_chain.insert(name, self)
-      else
-        define_event_transition(name, self)
-        define_event_bang(name)
-      end
-    end
-
-    # Define transition event
-    #
-    # @param [Symbol] name
-    #   the event name
-    #
-    # @param [FiniteMachine::Transition] transition
-    #   the transition this event is associated with
-    #
-    # @api private
-    def define_event_transition(name, transition)
-      _event = FiniteMachine::Event.new(machine, name: name, silent: silent)
-      _event << transition
-      machine.events_chain.add(name, _event)
-
-      machine.send(:define_singleton_method, name) do |*args, &block|
-        _event.call(*args, &block)
-      end
-    end
-
-    # Define event that skips validations
-    #
-    # @param [Symbol] name
-    #   the event name
-    #
-    # @api private
-    def define_event_bang(name)
-      machine.send(:define_singleton_method, "#{name}!") do
-        transitions   = machine.transitions[name]
-        machine.state = transitions.values[0]
       end
     end
 
