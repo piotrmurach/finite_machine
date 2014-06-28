@@ -51,7 +51,7 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def define_event_transition(transition)
+    def define_event_transition(name, transition)
       silent = transition.silent
       _event = FiniteMachine::Event.new(machine, name: name, silent: silent)
       _event << transition
