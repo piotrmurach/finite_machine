@@ -116,6 +116,15 @@ module FiniteMachine
       map[state] == state || (map[ANY_STATE] == state && from_state == state)
     end
 
+    # Check if this transition has branching choice or not
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def transition_choice?
+      machine.transitions[name][from_state].is_a?(Array)
+    end
+
     # Check if transition can be performed according to constraints
     #
     # @param [Array] args
