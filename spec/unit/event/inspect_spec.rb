@@ -14,4 +14,8 @@ describe FiniteMachine::Event, '#inspect' do
     event << transition
     expect(event.inspect).to eq("<#FiniteMachine::Event @name=test, @transitions=[#{transition.inspect}]>")
   end
+
+  it "prints event name" do
+    expect(event.to_s).to eq('test')
+  end
 end
