@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require 'forwardable'
-
 module FiniteMachine
   # Base class for state machine
   class StateMachine
@@ -47,6 +45,8 @@ module FiniteMachine
 
     def_delegator :@events_dsl, :event
 
+    def_delegators :@events_chain, :check_choice_conditions, :select_transition
+
     # Initialize state machine
     #
     # @api private
@@ -58,7 +58,7 @@ module FiniteMachine
       @errors        = ErrorsDSL.new(self)
       @observer      = Observer.new(self)
       @transitions   = Hash.new { |hash, name| hash[name] = Hash.new }
-      @events_chain  = {}
+      @events_chain  = EventsChain.new(self)
       @env           = Environment.new(target: self)
       @dsl           = DSL.new(self, attributes)
 
@@ -177,7 +177,7 @@ module FiniteMachine
       event       = args.shift
       valid_state = transitions[event].key?(current)
       valid_state ||= transitions[event].key?(ANY_STATE)
-      valid_state &&= events_chain[event].next_transition.valid?(*args, &block)
+      valid_state &&= events_chain.valid_event?(event, *args, &block)
     end
 
     # Checks if event cannot be triggered
