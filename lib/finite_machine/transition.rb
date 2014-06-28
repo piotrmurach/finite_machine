@@ -77,8 +77,8 @@ module FiniteMachine
     #
     # @api public
     def to_state(*args)
-      if machine.transitions[name][from_state].is_a? Array
-        found_trans = machine.events_chain[name].find_transition(*args)
+      if transition_choice?
+        found_trans = machine.select_transition(name, *args)
         found_trans.map[from_state]
       else
         machine.transitions[name][from_state]
@@ -135,10 +135,8 @@ module FiniteMachine
     #
     # @api public
     def valid?(*args, &block)
-      if machine.transitions[name][from_state].is_a? Array
-        machine.events_chain[name].state_transitions.any? do |trans|
-          trans.check_conditions(*args, &block)
-        end
+      if transition_choice?
+        machine.check_choice_conditions(name, *args, &block)
       else
         check_conditions(*args, &block)
       end
@@ -184,7 +182,7 @@ module FiniteMachine
     def define_event
       detect_event_conflict!(name)
       if machine.singleton_class.send(:method_defined?, name)
-        machine.events_chain[name] << self
+        machine.events_chain.insert(name, self)
       else
         define_event_transition(name)
         define_event_bang(name)
@@ -197,7 +195,7 @@ module FiniteMachine
     def define_event_transition(name)
       _event = FiniteMachine::Event.new(machine, name: name, silent: silent)
       _event << self
-      machine.events_chain[name] = _event
+      machine.events_chain.add(name, _event)
 
       machine.send(:define_singleton_method, name) do |*args, &block|
         _event.call(*args, &block)
