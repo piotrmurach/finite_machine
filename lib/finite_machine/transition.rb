@@ -178,23 +178,32 @@ module FiniteMachine
 
     # Define event on the machine
     #
+    # @param [Symbol] name
+    #   the event name
+    #
     # @api private
     def define_event
       detect_event_conflict!(name)
       if machine.singleton_class.send(:method_defined?, name)
         machine.events_chain.insert(name, self)
       else
-        define_event_transition(name)
+        define_event_transition(name, self)
         define_event_bang(name)
       end
     end
 
     # Define transition event
     #
+    # @param [Symbol] name
+    #   the event name
+    #
+    # @param [FiniteMachine::Transition] transition
+    #   the transition this event is associated with
+    #
     # @api private
-    def define_event_transition(name)
+    def define_event_transition(name, transition)
       _event = FiniteMachine::Event.new(machine, name: name, silent: silent)
-      _event << self
+      _event << transition
       machine.events_chain.add(name, _event)
 
       machine.send(:define_singleton_method, name) do |*args, &block|
@@ -203,6 +212,9 @@ module FiniteMachine
     end
 
     # Define event that skips validations
+    #
+    # @param [Symbol] name
+    #   the event name
     #
     # @api private
     def define_event_bang(name)
