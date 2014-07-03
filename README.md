@@ -81,7 +81,8 @@ Or install it yourself as:
 * [6. Errors](#6-errors)
     * [6.1 Using target](#61-using-target)
 * [7. Integration](#7-integration)
-    * [7.1 ActiveRecord](#71-activerecord)
+    * [7.1 Plain Ruby Objects](#71-plain-ruby-objects)
+    * [7.2 ActiveRecord](#72-activerecord)
 * [8. Tips](#7-tips)
 
 ## 1 Usage
@@ -988,18 +989,24 @@ end
 
 ## 7 Integration
 
-Since **FiniteMachine** is an object in its own right it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
+Since **FiniteMachine** is an object in its own right, it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
+
+### 7.1 Plain Ruby Objects
+
+In order to use **FiniteMachine** with an object, you need to define a method that will construct the state machine. You can implement the state machine using the `define` DSL or create a seperate object that can be instantiated. To complete integration you will need to specify `target` context to allow state machine to communicate with the other methods inside the class like so:
 
 ```ruby
 class Car
-  attr_accessor :reverse_lights
-
   def turn_reverse_lights_off
     @reverse_lights = false
   end
 
   def turn_reverse_lights_on
     @reverse_lights = true
+  end
+
+  def reverse_lights_on?
+    @reverse_lights || false
   end
 
   def gears
@@ -1034,7 +1041,21 @@ class Car
 end
 ```
 
-### 7.1 ActiveRecord
+Having written the class, you can use it as follows:
+
+```ruby
+car = Car.new
+car.gears.current      # => :neutral
+car.reverse_lights_on? # => false
+
+car.gears.start        # => "shifted from neutral to one"
+
+car.gears.back         # => "shifted from one to reverse"
+car.gears.current      # => :reverse
+car.reverse_lights_on? # => true
+```
+
+### 7.2 ActiveRecord
 
 In order to integrate **FiniteMachine** with ActiveRecord use the `target` helper to reference the current class and call ActiveRecord methods inside the callbacks to persist the state.
 
@@ -1042,8 +1063,9 @@ In order to integrate **FiniteMachine** with ActiveRecord use the `target` helpe
 class Account < ActiveRecord::Base
   validates :state, presence: true
 
-  def initialize
-    self.state = :unapproved
+  def initialize(attrs = {})
+    super
+    @manage.restore!(state) if state
   end
 
   def manage
@@ -1051,7 +1073,7 @@ class Account < ActiveRecord::Base
     @manage ||= FiniteMachine.define do
       target context
 
-      initial context.state
+      initial :unapproved
 
       events {
         event :enqueue, :unapproved => :pending
@@ -1060,7 +1082,7 @@ class Account < ActiveRecord::Base
 
       callbacks {
         on_enter_state do |event|
-          state = event.to
+          self.state = event.to
           save
         end
       }
