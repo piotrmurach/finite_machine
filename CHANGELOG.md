@@ -1,3 +1,8 @@
+0.8.1 (July 5, 2014)
+
+* Add EventsChain to handle internal events logic
+* Add EventBuilder to handle events construction
+
 0.8.0 (June 22, 2014)
 
 * Add silent option for state machine events to allow turning on/off
