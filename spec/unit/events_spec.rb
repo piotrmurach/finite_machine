@@ -64,16 +64,16 @@ describe FiniteMachine, 'events' do
 
     expect(fsm.current).to eql(:green)
 
-    expect(fsm.can?(:noop)).to be_true
-    expect(fsm.can?(:slow)).to be_true
+    expect(fsm.can?(:noop)).to be true
+    expect(fsm.can?(:slow)).to be true
 
     fsm.noop
     expect(fsm.current).to eql(:green)
     fsm.slow
     expect(fsm.current).to eql(:yellow)
 
-    expect(fsm.cannot?(:noop)).to be_true
-    expect(fsm.cannot?(:slow)).to be_true
+    expect(fsm.cannot?(:noop)).to be true
+    expect(fsm.cannot?(:slow)).to be true
   end
 
   it "permits event from any state with :any 'from'" do
@@ -171,7 +171,7 @@ describe FiniteMachine, 'events' do
       }
     end
     expect(fsm.current).to eql(:green)
-    expect(fsm.can?(:stop)).to be_false
+    expect(fsm.can?(:stop)).to be false
     fsm.stop!
     expect(fsm.current).to eql(:red)
   end
@@ -191,10 +191,10 @@ describe FiniteMachine, 'events' do
 
       expect(fsm.current).to eql(:green)
 
-      expect(fsm.can?(:slow)).to be_true
-      expect(fsm.can?(:stop)).to be_true
-      expect(fsm.cannot?(:ready)).to be_true
-      expect(fsm.cannot?(:go)).to be_true
+      expect(fsm.can?(:slow)).to be true
+      expect(fsm.can?(:stop)).to be true
+      expect(fsm.cannot?(:ready)).to be true
+      expect(fsm.cannot?(:go)).to be true
 
       fsm.slow;  expect(fsm.current).to eql(:yellow)
       fsm.stop;  expect(fsm.current).to eql(:red)
@@ -219,10 +219,10 @@ describe FiniteMachine, 'events' do
 
       expect(fsm.current).to eql(:green)
 
-      expect(fsm.can?(:slow)).to be_true
-      expect(fsm.can?(:stop)).to be_true
-      expect(fsm.cannot?(:ready)).to be_true
-      expect(fsm.cannot?(:go)).to be_true
+      expect(fsm.can?(:slow)).to be true
+      expect(fsm.can?(:stop)).to be true
+      expect(fsm.cannot?(:ready)).to be true
+      expect(fsm.cannot?(:go)).to be true
 
       fsm.slow;  expect(fsm.current).to eql(:yellow)
       fsm.stop;  expect(fsm.current).to eql(:red)
@@ -247,7 +247,7 @@ describe FiniteMachine, 'events' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.can?(:stop)).to be_true
+    expect(fsm.can?(:stop)).to be true
     fsm.stop
     expect(fsm.current).to eql(:yellow)
     fsm.stop
@@ -272,12 +272,9 @@ describe FiniteMachine, 'events' do
     end
 
     expect(fsm.current).to eq(:initial)
-    fsm.bump
-    expect(fsm.current).to eq(:low)
-    fsm.bump
-    expect(fsm.current).to eq(:medium)
-    fsm.bump
-    expect(fsm.current).to eq(:high)
+    fsm.bump; expect(fsm.current).to eq(:low)
+    fsm.bump; expect(fsm.current).to eq(:medium)
+    fsm.bump; expect(fsm.current).to eq(:high)
   end
 
   it "returns values for events" do

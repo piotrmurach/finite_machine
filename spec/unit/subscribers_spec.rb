@@ -12,7 +12,7 @@ describe FiniteMachine::Subscribers do
   before { subscribers.subscribe(listener) }
 
   it "checks if any subscribers exist" do
-    expect(subscribers.empty?).to be_false
+    expect(subscribers.empty?).to be(false)
   end
 
   it "returns index for the subscriber" do
@@ -26,6 +26,6 @@ describe FiniteMachine::Subscribers do
 
   it "resets the subscribers" do
     subscribers.reset
-    expect(subscribers.empty?).to be_true
+    expect(subscribers.empty?).to be(true)
   end
 end

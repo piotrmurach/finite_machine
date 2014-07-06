@@ -9,7 +9,7 @@ describe FiniteMachine::Logger do
 
   subject(:logger) { described_class }
 
-  before { FiniteMachine.stub(:logger) { log } }
+  before { allow(FiniteMachine).to receive(:logger) { log } }
 
   it "debugs message call" do
     expect(log).to receive(:debug).with(message)

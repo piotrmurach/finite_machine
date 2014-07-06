@@ -139,13 +139,13 @@ describe FiniteMachine, ':if, :unless' do
         }
       end
       car.turn_engine_off
-      expect(car.engine_on?).to be_false
+      expect(car.engine_on?).to be false
       expect(fsm.current).to eql(:neutral)
       fsm.start
       expect(fsm.current).to eql(:neutral)
 
       car.turn_engine_on
-      expect(car.engine_on?).to be_true
+      expect(car.engine_on?).to be true
       expect(fsm.current).to eql(:neutral)
       fsm.start
       expect(fsm.current).to eql(:one)
@@ -189,13 +189,13 @@ describe FiniteMachine, ':if, :unless' do
         }
       end
       car.turn_engine_off
-      expect(car.engine_on?).to be_false
+      expect(car.engine_on?).to be false
       expect(fsm.current).to eql(:neutral)
       fsm.start
       expect(fsm.current).to eql(:neutral)
 
       car.turn_engine_on
-      expect(car.engine_on?).to be_true
+      expect(car.engine_on?).to be true
       expect(fsm.current).to eql(:neutral)
       fsm.start
       expect(fsm.current).to eql(:one)
@@ -217,13 +217,13 @@ describe FiniteMachine, ':if, :unless' do
         }
       end
       car.turn_engine_off
-      expect(car.engine_on?).to be_false
+      expect(car.engine_on?).to be false
       expect(fsm.current).to eql(:neutral)
       fsm.start
       expect(fsm.current).to eql(:neutral)
 
       car.turn_engine_on
-      expect(car.engine_on?).to be_true
+      expect(car.engine_on?).to be true
       expect(fsm.current).to eql(:neutral)
       fsm.start
       expect(fsm.current).to eql(:one)

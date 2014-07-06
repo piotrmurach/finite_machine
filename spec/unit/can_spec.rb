@@ -25,34 +25,34 @@ describe FiniteMachine, 'can?' do
 
     expect(fsm.current).to eql(:green)
 
-    expect(fsm.can?(:slow)).to be_true
-    expect(fsm.cannot?(:stop)).to be_true
-    expect(fsm.can?(:ready)).to be_false
-    expect(fsm.can?(:go)).to be_false
+    expect(fsm.can?(:slow)).to be(true)
+    expect(fsm.cannot?(:stop)).to be(true)
+    expect(fsm.can?(:ready)).to be(false)
+    expect(fsm.can?(:go)).to be(false)
 
     fsm.slow
     expect(fsm.current).to eql(:yellow)
 
-    expect(fsm.can?(:slow)).to be_false
-    expect(fsm.can?(:stop)).to be_true
-    expect(fsm.can?(:ready)).to be_false
-    expect(fsm.can?(:go)).to be_true
+    expect(fsm.can?(:slow)).to be(false)
+    expect(fsm.can?(:stop)).to be(true)
+    expect(fsm.can?(:ready)).to be(false)
+    expect(fsm.can?(:go)).to be(true)
 
     fsm.stop
     expect(fsm.current).to eql(:red)
 
-    expect(fsm.can?(:slow)).to be_false
-    expect(fsm.can?(:stop)).to be_false
-    expect(fsm.can?(:ready)).to be_true
-    expect(fsm.can?(:go)).to be_false
+    expect(fsm.can?(:slow)).to be(false)
+    expect(fsm.can?(:stop)).to be(false)
+    expect(fsm.can?(:ready)).to be(true)
+    expect(fsm.can?(:go)).to be(false)
 
     fsm.ready
     expect(fsm.current).to eql(:yellow)
 
-    expect(fsm.can?(:slow)).to be_false
-    expect(fsm.can?(:stop)).to be_true
-    expect(fsm.can?(:ready)).to be_false
-    expect(fsm.can?(:go)).to be_true
+    expect(fsm.can?(:slow)).to be(false)
+    expect(fsm.can?(:stop)).to be(true)
+    expect(fsm.can?(:ready)).to be(false)
+    expect(fsm.can?(:go)).to be(true)
   end
 
   context 'with conditionl transition' do
@@ -66,13 +66,13 @@ describe FiniteMachine, 'can?' do
         }
       end
       expect(fsm.current).to eq(:green)
-      expect(fsm.can?(:slow)).to be_true
-      expect(fsm.can?(:stop)).to be_false
+      expect(fsm.can?(:slow)).to be(true)
+      expect(fsm.can?(:stop)).to be(false)
 
       fsm.slow
       expect(fsm.current).to eq(:yellow)
-      expect(fsm.can?(:stop, false)).to be_false
-      expect(fsm.can?(:stop, true)).to be_true
+      expect(fsm.can?(:stop, false)).to be(false)
+      expect(fsm.can?(:stop, true)).to be(true)
     end
 
     it "checks against target and grouped events" do
@@ -90,9 +90,9 @@ describe FiniteMachine, 'can?' do
       end
       expect(fsm.current).to eq(:initial)
 
-      expect(fsm.can?(:bump)).to be_true
+      expect(fsm.can?(:bump)).to be(true)
       fsm.bump
-      expect(fsm.can?(:bump)).to be_false
+      expect(fsm.can?(:bump)).to be(false)
     end
   end
 end

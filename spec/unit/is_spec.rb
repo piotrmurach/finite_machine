@@ -18,17 +18,17 @@ describe FiniteMachine, 'is?' do
 
     expect(fsm.current).to eql(:green)
 
-    expect(fsm.is?(:green)).to be_true
-    expect(fsm.is?(:yellow)).to be_false
-    expect(fsm.is?([:green,  :red])).to be_true
-    expect(fsm.is?([:yellow, :red])).to be_false
+    expect(fsm.is?(:green)).to be true
+    expect(fsm.is?(:yellow)).to be false
+    expect(fsm.is?([:green,  :red])).to be true
+    expect(fsm.is?([:yellow, :red])).to be false
 
     fsm.slow
 
-    expect(fsm.is?(:green)).to be_false
-    expect(fsm.is?(:yellow)).to be_true
-    expect(fsm.is?([:green, :red])).to be_false
-    expect(fsm.is?([:yellow, :red])).to be_true
+    expect(fsm.is?(:green)).to be false
+    expect(fsm.is?(:yellow)).to be true
+    expect(fsm.is?([:green, :red])).to be false
+    expect(fsm.is?([:yellow, :red])).to be true
   end
 
   it "defines helper methods to check current state" do
@@ -44,12 +44,12 @@ describe FiniteMachine, 'is?' do
     end
     expect(fsm.current).to eql(:green)
 
-    expect(fsm.green?).to be_true
-    expect(fsm.yellow?).to be_false
+    expect(fsm.green?).to be true
+    expect(fsm.yellow?).to be false
 
     fsm.slow
 
-    expect(fsm.green?).to be_false
-    expect(fsm.yellow?).to be_true
+    expect(fsm.green?).to be false
+    expect(fsm.yellow?).to be true
   end
 end

@@ -16,6 +16,10 @@ describe FiniteMachine, '#target' do
         @reverse_lights = true
       end
 
+      def reverse_lights?
+        @reverse_lights ||= false
+      end
+
       def engine
         context = self
         @engine ||= FiniteMachine.define do
@@ -43,14 +47,14 @@ describe FiniteMachine, '#target' do
       end
     end
     car = Car.new
-    expect(car.reverse_lights).to be_false
+    expect(car.reverse_lights?).to be(false)
     expect(car.engine.current).to eql(:neutral)
     car.engine.back
     expect(car.engine.current).to eql(:reverse)
-    expect(car.reverse_lights).to be_true
+    expect(car.reverse_lights?).to be(true)
     car.engine.forward
     expect(car.engine.current).to eql(:one)
-    expect(car.reverse_lights).to be_false
+    expect(car.reverse_lights?).to be(false)
   end
 
   it "propagates method call" do
@@ -112,6 +116,10 @@ describe FiniteMachine, '#target' do
         @reverse_lights = true
       end
 
+      def reverse_lights?
+        @reverse_lights ||= false
+      end
+
       def engine
         self.called ||= []
         context ||= self
@@ -142,7 +150,7 @@ describe FiniteMachine, '#target' do
     end
 
     car = Car.new
-    expect(car.reverse_lights).to be_false
+    expect(car.reverse_lights?).to be(false)
     expect(car.engine.current).to eql(:neutral)
     car.engine.back
     expect(car.engine.current).to eql(:one)

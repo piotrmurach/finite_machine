@@ -12,9 +12,9 @@ describe FiniteMachine::EventsChain, '#clear' do
   it "clears chain events" do
     event = double(:event)
     chain.add(:validated, event)
-    expect(chain.empty?).to be_false
+    expect(chain.empty?).to be(false)
 
     chain.clear
-    expect(chain.empty?).to be_true
+    expect(chain.empty?).to be(true)
   end
 end

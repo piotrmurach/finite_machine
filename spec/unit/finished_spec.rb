@@ -16,15 +16,15 @@ describe FiniteMachine, 'finished?' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.finished?).to be_false
+    expect(fsm.finished?).to be(false)
 
     fsm.slow
     expect(fsm.current).to eql(:yellow)
-    expect(fsm.finished?).to be_false
+    expect(fsm.finished?).to be(false)
 
     fsm.stop
     expect(fsm.current).to eql(:red)
-    expect(fsm.finished?).to be_true
+    expect(fsm.finished?).to be(true)
   end
 
   it "allows to specify terminal state as parameter" do
@@ -38,7 +38,7 @@ describe FiniteMachine, 'finished?' do
     end
     fsm.slow
     fsm.stop
-    expect(fsm.finished?).to be_true
+    expect(fsm.finished?).to be(true)
   end
 
   it "checks without terminal state" do
@@ -52,14 +52,14 @@ describe FiniteMachine, 'finished?' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.finished?).to be_false
+    expect(fsm.finished?).to be(false)
 
     fsm.slow
     expect(fsm.current).to eql(:yellow)
-    expect(fsm.finished?).to be_false
+    expect(fsm.finished?).to be(false)
 
     fsm.stop
     expect(fsm.current).to eql(:red)
-    expect(fsm.finished?).to be_false
+    expect(fsm.finished?).to be(false)
   end
 end

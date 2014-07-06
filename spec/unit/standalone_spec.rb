@@ -63,10 +63,10 @@ describe FiniteMachine::Definition, 'definition' do
 
     engine.forward
     expect(engine.current).to eq(:one)
-    expect(car.reverse_lights?).to be_false
+    expect(car.reverse_lights?).to be false
 
     engine.back
     expect(engine.current).to eq(:reverse)
-    expect(car.reverse_lights?).to be_true
+    expect(car.reverse_lights?).to be true
   end
 end

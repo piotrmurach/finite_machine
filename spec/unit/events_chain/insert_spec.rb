@@ -21,6 +21,6 @@ describe FiniteMachine::EventsChain, '#insert' do
   end
 
   it "fails to insert transition" do
-    expect(chain.insert(:validated, transition)).to be_false
+    expect(chain.insert(:validated, transition)).to be false
   end
 end
