@@ -17,7 +17,7 @@ A minimal finite state machine with a straightforward and intuitive syntax. You 
 
 * plain object state machine
 * easy custom object integration
-* natural DSL for declaring events, exceptions and callbacks
+* natural DSL for declaring events, callbacks and exceptions
 * observers (pub/sub) for state changes
 * ability to check reachable states
 * ability to check for terminal state
@@ -80,10 +80,13 @@ Or install it yourself as:
     * [5.14 Cancelling inside callbacks](#514-cancelling-inside-callbacks)
 * [6. Errors](#6-errors)
     * [6.1 Using target](#61-using-target)
-* [7. Integration](#7-integration)
-    * [7.1 Plain Ruby Objects](#71-plain-ruby-objects)
-    * [7.2 ActiveRecord](#72-activerecord)
-* [8. Tips](#7-tips)
+* [7. Stand-Alone FiniteMachine](#7-stand-alone-finitemachine)
+    * [7.1 Creating a Definition](#71-creating-a-definition)
+    * [7.2 Targeting definition](#72-targeting-definition)
+* [8. Integration](#8-integration)
+    * [8.1 Plain Ruby Objects](#81-plain-ruby-objects)
+    * [8.2 ActiveRecord](#82-activerecord)
+* [9. Tips](#9-tips)
 
 ## 1 Usage
 
@@ -338,7 +341,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-For more complex example see [Integration](#6-integration) section.
+For more complex example see [Integration](#8-integration) section.
 
 Finally, you can always reference an external context inside the **FiniteMachine** by simply calling `target`, for instance, to reference it inside a callback:
 
@@ -865,7 +868,7 @@ end
 fm.back   # => Go Piotr!
 ```
 
-For more complex example see [Integration](#7-integration) section.
+For more complex example see [Integration](#8-integration) section.
 
 ### 5.12 Defining callbacks
 
@@ -987,11 +990,88 @@ fm = FiniteMachine.define do
 end
 ```
 
-## 7 Integration
+## 7 Stand-Alone FiniteMachine
+
+**FiniteMachine** allows you to seperate your state machine from the target class so that you can keep your concerns broken in small maintainable pieces.
+
+### 7.1 Creating a Definition
+
+You can turn a class into a **FiniteMachine** by simply subclassing `FiniteMachine::Definition`. As a rule of thumb, every single public method of the **FiniteMachine** is available inside your class:
+
+```ruby
+class Engine < FiniteMachine::Definition
+  initial :neutral
+
+  events {
+    event :forward, [:reverse, :neutral] => :one
+    event :shift, :one => :two
+    event :back,  [:neutral, :one] => :reverse
+  }
+
+  callbacks {
+    on_enter :reverse do |event|
+      turn_reverse_lights_on
+    end
+
+    on_exit :reverse do |event|
+      turn_reverse_lights_off
+    end
+  }
+
+  handlers {
+    handle FiniteMachine::InvalidStateError do |exception| ... end
+  }
+end
+```
+
+### 7.2 Targeting definition
+
+The next step is to instantiate your state machine and use `target` to load specific context.
+
+```ruby
+class Car
+  def turn_reverse_lights_off
+    @reverse_lights = false
+  end
+
+  def turn_reverse_lights_on
+    @reverse_lights = true
+  end
+
+  def reverse_lights?
+    @reverse_lights ||= false
+  end
+end
+```
+Thus, to associate `Engine` to `Car` do:
+
+```ruby
+car = Car.new
+engine = Engine.new
+engine.target car
+
+car.reverse_lignts?  # => false
+engine.back
+car.reverse_lights?  # => true
+```
+
+Alternatively, create method inside the `Car` that will do the integration like so
+
+```ruby
+class Car
+  ... #  as above
+  def engine
+    @engine ||= Engine.new
+    @engine.target(self)
+  end
+end
+```
+
+## 8 Integration
 
 Since **FiniteMachine** is an object in its own right, it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
 
-### 7.1 Plain Ruby Objects
+### 8.1 Plain Ruby Objects
 
 In order to use **FiniteMachine** with an object, you need to define a method that will construct the state machine. You can implement the state machine using the `define` DSL or create a seperate object that can be instantiated. To complete integration you will need to specify `target` context to allow state machine to communicate with the other methods inside the class like so:
 
@@ -1055,7 +1135,7 @@ car.gears.current      # => :reverse
 car.reverse_lights_on? # => true
 ```
 
-### 7.2 ActiveRecord
+### 8.2 ActiveRecord
 
 In order to integrate **FiniteMachine** with ActiveRecord use the `target` helper to reference the current class and call ActiveRecord methods inside the callbacks to persist the state.
 
@@ -1098,7 +1178,7 @@ account.manage.authorize
 account.state   # => :access
 ```
 
-## 8 Tips
+## 9 Tips
 
 Creating a standalone **FiniteMachine** brings a number of benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself. Ideally, you would test the machine in isolation and then integrate it with other objects or ORMs.
 
