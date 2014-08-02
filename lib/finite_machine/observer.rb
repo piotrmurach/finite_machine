@@ -108,10 +108,10 @@ module FiniteMachine
     def trigger(event, *args, &block)
       sync_exclusive do
         [event.type, ANY_EVENT].each do |event_type|
-          [event.state, ANY_STATE].each do |event_state|
-            hooks.call(event_type, event_state) do |hook|
+          [event.name, ANY_STATE].each do |event_name|
+            hooks.call(event_type, event_name) do |hook|
               handle_callback(hook, event)
-              off(event_type, event_state, &hook) if hook.is_a?(Once)
+              off(event_type, event_name, &hook) if hook.is_a?(Once)
             end
           end
         end
