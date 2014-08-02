@@ -26,7 +26,10 @@ module FiniteMachine
       @silent  = attrs.fetch(:silent, false)
       @state_transitions = []
       # TODO: add event conditions
+      freeze
     end
+
+    protected :machine
 
     # Add transition for this event
     #
