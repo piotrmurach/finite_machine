@@ -179,7 +179,7 @@ If you want to defer setting the initial state, pass the `:defer` option to the 
 
 ```ruby
 fm = FiniteMachine.define do
-  initial state: :green, defer: true
+  initial :green, defer: true # Defer calling :init event
 
   events {
     event :slow,  :green  => :yellow
@@ -187,7 +187,7 @@ fm = FiniteMachine.define do
   }
 end
 fm.current # => :none
-fm.init
+fm.init    # execute initial transition
 fm.current # => :green
 ```
 
@@ -195,7 +195,7 @@ If your target object already has `init` method or one of the events names redef
 
 ```ruby
 fm = FiniteMachine.define do
-  initial state: :green, event: :start, defer: true
+  initial :green, event: :start, defer: true # Rename event from :init to :start
 
   events {
     event :slow,  :green  => :yellow
@@ -204,7 +204,7 @@ fm = FiniteMachine.define do
 end
 
 fm.current # => :none
-fm.start
+fm.start   # => call the renamed event
 fm.current # => :green
 ```
 
@@ -212,7 +212,7 @@ By default the `initial` does not trigger any callbacks. If you need to fire cal
 
 ```ruby
 fm = FiniteMachine.define do
-  initial state: :green, silent: false  # => callbacks are triggered
+  initial :green, silent: false  # callbacks are triggered
 
   events {
     event :slow,  :green  => :yellow
