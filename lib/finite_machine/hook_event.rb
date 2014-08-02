@@ -93,8 +93,8 @@ module FiniteMachine
     #
     # @api public
     def <=>(other)
-      other.is_a?(type) && name == other.name &&
-        transition <=> other.transition && data <=> other.data
+      other.is_a?(type) &&
+      [name, transition, data] <=> [other.name, other.transition, other.data]
     end
     alias_method :eql?, :==
 
