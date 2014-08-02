@@ -84,7 +84,7 @@ module FiniteMachine
     #
     # @api public
     def self.to_s
-      event_name
+      event_name.to_s
     end
 
     # Compare whether the instance is greater, less then or equal to other
