@@ -42,6 +42,23 @@ module FiniteMachine
       freeze
     end
 
+    # Build event hook
+    #
+    # @param [Symbol] :state
+    #   The state name.
+    # @param [FiniteMachine::Transition] :event_transition
+    #   The transition associted with this hook.
+    # @param [Array[Object]] :data
+    #   The data associated with this hook
+    #
+    # @return [self]
+    #
+    # @api public
+    def self.build(state, event_transition, *data)
+      state_or_action = self < Anystate ? state : event_transition.name
+      new(state_or_action, event_transition, *data)
+    end
+
     # Notify subscriber about this event
     #
     # @return [nil]
