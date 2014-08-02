@@ -3,6 +3,7 @@
 module FiniteMachine
   # A class representing event with transitions
   class Event
+    include Comparable
     include Threadable
 
     # The name of this event
@@ -115,5 +116,16 @@ module FiniteMachine
       "<##{self.class} @name=#{name}, @silent=#{silent}, " \
       "@transitions=#{state_transitions.inspect}>"
     end
+
+    # Compare whether the instance is greater, less then or equal to other
+    #
+    # @return [-1 0 1]
+    #
+    # @api public
+    def <=>(other)
+      other.is_a?(self.class) && [name, silent, state_transitions] <=>
+        [other.name, other.silent, other.state_transitions]
+    end
+    alias_method :eql?, :==
   end # Event
 end # FiniteMachine
