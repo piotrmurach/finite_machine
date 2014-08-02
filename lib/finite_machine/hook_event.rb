@@ -22,8 +22,9 @@ module FiniteMachine
     def initialize(state, transition, *data, &block)
       @state = state
       @transition = transition
-      @data  = *data
-      @type  = self.class
+      @data       = *data
+      @type       = self.class
+      freeze
     end
 
     def notify(subscriber, *args, &block)
