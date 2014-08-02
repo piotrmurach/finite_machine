@@ -177,7 +177,7 @@ module FiniteMachine
       event       = args.shift
       valid_state = transitions[event].key?(current)
       valid_state ||= transitions[event].key?(ANY_STATE)
-      valid_state &&= events_chain.valid_event?(event, *args, &block)
+      valid_state && events_chain.valid_event?(event, *args, &block)
     end
 
     # Checks if event cannot be triggered
