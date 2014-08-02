@@ -112,7 +112,8 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      "<##{self.class} @name=#{@name}, @transitions=#{state_transitions.inspect}>"
+      "<##{self.class} @name=#{name}, @silent=#{silent}, " \
+      "@transitions=#{state_transitions.inspect}>"
     end
   end # Event
 end # FiniteMachine
