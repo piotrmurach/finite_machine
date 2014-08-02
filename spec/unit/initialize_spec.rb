@@ -69,7 +69,7 @@ describe FiniteMachine, 'initialize' do
 
   it "allows to specify deferred inital state" do
     fsm = FiniteMachine.define do
-      initial state: :green, defer: true
+      initial :green, defer: true
 
       events {
         event :slow, :green  => :yellow
@@ -97,7 +97,7 @@ describe FiniteMachine, 'initialize' do
 
   it "allows to specify inital start event" do
     fsm = FiniteMachine.define do
-      initial state: :green, event: :start
+      initial :green, event: :start
 
       events {
         event :slow, :green  => :none
@@ -114,7 +114,7 @@ describe FiniteMachine, 'initialize' do
 
   it "allows to specify deferred inital start event" do
     fsm = FiniteMachine.define do
-      initial state: :green, event: :start, defer: true
+      initial :green, event: :start, defer: true
 
       events {
         event :slow, :green  => :yellow
@@ -173,7 +173,7 @@ describe FiniteMachine, 'initialize' do
 
   it "allows to retrieve initial state for deferred" do
     fsm = FiniteMachine.define do
-      initial state: :green, defer: true
+      initial :green, defer: true
 
       events {
         event :slow, :green  => :yellow
@@ -190,7 +190,7 @@ describe FiniteMachine, 'initialize' do
   it "allows to trigger callbacks on initial with :silent option" do
     called = []
     fsm = FiniteMachine.define do
-      initial state: :green, silent: false
+      initial :green, silent: false
 
       events {
         event :slow, :green => :yellow
@@ -206,7 +206,7 @@ describe FiniteMachine, 'initialize' do
   it "allows to trigger callbacks on deferred initial state" do
     called = []
     fsm = FiniteMachine.define do
-      initial state: :green, silent: false, defer: true
+      initial :green, silent: false, defer: true
 
       events {
         event :slow, :green => :yellow

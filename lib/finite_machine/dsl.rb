@@ -55,19 +55,38 @@ module FiniteMachine
 
     # Define initial state
     #
+    # @param [Symbol] value
+    #   The initial state name.
+    # @param [Hash[Symbol]] options
+    # @option options [Symbol] :event
+    #   The event name.
+    # @option options [Symbol] :defer
+    #   Set to true to defer initial state transition.
+    #   Default false.
+    # @option options [Symbol] :silent
+    #   Set to true to disable callbacks.
+    #   Default true.
+    #
     # @example
     #   initial :green
     #
-    # @example
+    # @example Defer initial event
     #   initial state: green, defer: true
+    #
+    # @example Trigger callbacks
+    #   initial :green, silent: false
+    #
+    # @example Redefine event name
+    #   initial :green, event: :start
     #
     # @param [String, Hash] value
     #
     # @return [StateMachine]
     #
     # @api public
-    def initial(value)
-      state, name, self.defer, silent = parse(value)
+    def initial(value, options = {})
+      state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
+      name, self.defer, silent = parse(options)
       self.initial_event = name
       machine.event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
     end
@@ -118,6 +137,11 @@ module FiniteMachine
 
     # Define state machine events
     #
+    # @example
+    #   events do
+    #     event :start, :red => :green
+    #   end
+    #
     # @return [FiniteMachine::StateMachine]
     #
     # @api public
@@ -126,6 +150,13 @@ module FiniteMachine
     end
 
     # Define state machine callbacks
+    #
+    # @example
+    #   callbacks do
+    #     on_enter :green do |event| ... end
+    #   end
+    #
+    # @return [FiniteMachine::Observer]
     #
     # @api public
     def callbacks(&block)
@@ -159,21 +190,25 @@ module FiniteMachine
     # @api private
     def parse(value)
       if value.is_a?(Hash)
-        [value.fetch(:state) { raise_missing_state },
-         value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
+        [value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
          value.fetch(:defer) { false },
          value.fetch(:silent) { true }]
       else
-        [value, FiniteMachine::DEFAULT_EVENT_NAME, false, true]
+        [FiniteMachine::DEFAULT_EVENT_NAME, false, true]
       end
     end
 
     # Raises missing state error
     #
+    # @raise [MissingInitialStateError]
+    #   Raised when state name is not provided for initial.
+    #
+    # @return [nil]
+    #
     # @api private
     def raise_missing_state
-      raise MissingInitialStateError,
-            'Provide state to transition :to for the initial event'
+      fail MissingInitialStateError,
+           'Provide state to transition :to for the initial event'
     end
   end # DSL
 
