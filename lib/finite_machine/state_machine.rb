@@ -75,14 +75,22 @@ module FiniteMachine
     end
 
     # TODO:  use trigger to actually fire state machine events!
-    # Notify about event
+    # Notify about event all the subscribers
+    #
+    # @param [FiniteMachine::HookEvent] :event_type
+    #   The hook event type.
+    # @param [FiniteMachine::Transition] :event_transition
+    #   The event transition.
+    # @param [Array[Object]] :data
+    #   The data associated with the hook event.
+    #
+    # @return [nil]
     #
     # @api public
-    def notify(event_type, _transition, *data)
+    def notify(event_type, event_transition, *data)
       sync_shared do
-        state_or_action = event_type < HookEvent::Anystate ? state : _transition.name
-        _event          = event_type.new(state_or_action, _transition, *data)
-        subscribers.visit(_event)
+        hook_event = event_type.build(state, event_transition, *data)
+        subscribers.visit(hook_event)
       end
     end
 
@@ -230,47 +238,51 @@ module FiniteMachine
 
     # Check if state is reachable
     #
+    # @param [FiniteMachine::Transition]
+    #
+    # @return [Boolean]
+    #
     # @api private
-    def valid_state?(_transition)
-      current_states = transitions[_transition.name].keys
+    def valid_state?(event_transition)
+      current_states = transitions[event_transition.name].keys
       if !current_states.include?(state) && !current_states.include?(ANY_STATE)
         exception = InvalidStateError
         catch_error(exception) ||
-          raise(exception, "inappropriate current state '#{state}'")
+          fail(exception, "inappropriate current state '#{state}'")
         true
       end
     end
 
     # Performs transition
     #
-    # @param [Transition] _transition
+    # @param [Transition] event_transition
     # @param [Array] args
     #
     # @return [Integer]
     #   the status code for the transition
     #
     # @api private
-    def transition(_transition, *args, &block)
+    def transition(event_transition, *args, &block)
       sync_exclusive do
-        notify HookEvent::Before, _transition, *args
+        notify HookEvent::Before, event_transition, *args
 
-        return CANCELLED if valid_state?(_transition)
-        return CANCELLED unless _transition.valid?(*args, &block)
+        return CANCELLED if valid_state?(event_transition)
+        return CANCELLED unless event_transition.valid?(*args, &block)
 
-        notify HookEvent::Exit, _transition, *args
+        notify HookEvent::Exit, event_transition, *args
 
         begin
-          _transition.call(*args)
+          event_transition.call(*args)
 
-          notify HookEvent::Transition, _transition, *args
+          notify HookEvent::Transition, event_transition, *args
         rescue Exception => e
           catch_error(e) || raise_transition_error(e)
         end
 
-        notify HookEvent::Enter, _transition, *args
-        notify HookEvent::After, _transition, *args
+        notify HookEvent::Enter, event_transition, *args
+        notify HookEvent::After, event_transition, *args
 
-        _transition.same?(state) ? NOTRANSITION : SUCCEEDED
+        event_transition.same?(state) ? NOTRANSITION : SUCCEEDED
       end
     end
 
