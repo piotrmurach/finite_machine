@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'new' do
+describe FiniteMachine::HookEvent, 'new' do
   let(:name)       { :green }
   let(:transition) { double(:transition) }
   let(:data)       { [:foo, :bar] }
-  let(:object)     { FiniteMachine::HookEvent }
+  let(:object)     { described_class }
 
   subject(:hook) { object.new(name, transition, *data) }
 
