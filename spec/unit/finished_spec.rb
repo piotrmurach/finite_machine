@@ -62,4 +62,34 @@ describe FiniteMachine, 'finished?' do
     expect(fsm.current).to eql(:red)
     expect(fsm.finished?).to be(false)
   end
+
+  it "allows for multiple terminal states" do
+    fsm = FiniteMachine.define do
+      initial :open
+
+      terminal :close, :canceled, :faulty
+
+      events {
+        event :resolve, :open => :close
+        event :decline, :open => :canceled
+        event :error,   :open => :faulty
+      }
+    end
+    expect(fsm.current).to eql(:open)
+    expect(fsm.finished?).to be(false)
+
+    fsm.resolve
+    expect(fsm.current).to eql(:close)
+    expect(fsm.finished?).to be(true)
+
+    fsm.restore!(:open)
+    fsm.decline
+    expect(fsm.current).to eql(:canceled)
+    expect(fsm.finished?).to be(true)
+
+    fsm.restore!(:open)
+    fsm.error
+    expect(fsm.current).to eql(:faulty)
+    expect(fsm.finished?).to be(true)
+  end
 end

@@ -131,8 +131,8 @@ module FiniteMachine
     # @return [FiniteMachine::StateMachine]
     #
     # @api public
-    def terminal(value)
-      machine.final_state = value
+    def terminal(*values)
+      machine.final_state = values
     end
 
     # Define state machine events
