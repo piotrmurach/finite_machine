@@ -1063,6 +1063,7 @@ class Car
   def engine
     @engine ||= Engine.new
     @engine.target(self)
+    @engine
   end
 end
 ```
