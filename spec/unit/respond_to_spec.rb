@@ -31,7 +31,7 @@ describe FiniteMachine, '#respond_to' do
     expect(fsm).to respond_to(:on_enter_slow)
   end
 
-  it "knows about target class methods" do
-    expect(fsm).to respond_to(:engine_on?)
+  it "doesn't know about target class methods" do
+    expect(fsm).not_to respond_to(:engine_on?)
   end
 end

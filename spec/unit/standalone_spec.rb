@@ -17,16 +17,16 @@ describe FiniteMachine::Definition, 'definition' do
 
       callbacks {
         on_enter :reverse do |event|
-          turn_reverse_lights_on
+          target.turn_reverse_lights_on
         end
 
         on_exit :reverse do |event|
-          turn_reverse_lights_off
+          target.turn_reverse_lights_off
         end
       }
 
       handlers {
-        handle FiniteMachine::InvalidStateError do |exception|  end
+        handle FiniteMachine::InvalidStateError do |exception| end
       }
     end
   end

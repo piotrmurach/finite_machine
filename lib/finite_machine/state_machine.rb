@@ -299,7 +299,7 @@ module FiniteMachine
         "occured at #{error.backtrace.join("\n")}")
     end
 
-    # Forward the message to target, observer or self
+    # Forward the message to observer or self
     #
     # @param [String] method_name
     #
@@ -309,9 +309,7 @@ module FiniteMachine
     #
     # @api private
     def method_missing(method_name, *args, &block)
-      if target.respond_to?(method_name.to_sym)
-        target.public_send(method_name.to_sym, *args, &block)
-      elsif observer.respond_to?(method_name.to_sym)
+      if observer.respond_to?(method_name.to_sym)
         observer.public_send(method_name.to_sym, *args, &block)
       else
         super
@@ -328,9 +326,7 @@ module FiniteMachine
     #
     # @api private
     def respond_to_missing?(method_name, include_private = false)
-      env.target.respond_to?(method_name.to_sym) ||
-        observer.respond_to?(method_name.to_sym) ||
-        super
+      observer.respond_to?(method_name.to_sym) || super
     end
   end # StateMachine
 end # FiniteMachine

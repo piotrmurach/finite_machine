@@ -36,11 +36,11 @@ describe FiniteMachine, '#target' do
 
           callbacks {
             on_enter :reverse do |event|
-              turn_reverse_lights_on
+              target.turn_reverse_lights_on
             end
 
             on_exit :reverse do |event|
-              turn_reverse_lights_off
+              target.turn_reverse_lights_off
             end
           }
         end
@@ -137,12 +137,12 @@ describe FiniteMachine, '#target' do
 
           callbacks {
             on_enter :reverse do |event|
-              called << 'on_enter_reverse'
-              turn_reverse_lights_on
+              target.called << 'on_enter_reverse'
+              target.turn_reverse_lights_on
               forward('Piotr!')
             end
             on_before :forward do |event, name|
-              called << "on_enter_forward with #{name}"
+              target.called << "on_enter_forward with #{name}"
             end
           }
         end
@@ -166,7 +166,7 @@ describe FiniteMachine, '#target' do
     fsm = FiniteMachine.define do
       initial :green
 
-      target  context
+      target context
 
       events {
         event :slow, :green  => :yellow
@@ -181,5 +181,46 @@ describe FiniteMachine, '#target' do
     expect(fsm.current).to eql(:green)
     fsm.slow
     expect(called).to eq(context)
+  end
+
+  it "allows to differentiate between same named methods" do
+    called = []
+    Car = Class.new do
+      def initialize(called)
+        @called = called
+      end
+      def save
+        @called << 'car save called'
+      end
+    end
+
+    car = Car.new(called)
+    fsm = FiniteMachine.define do
+      initial :unsaved
+
+      target car
+
+      events {
+        event :validate, :unsaved => :valid
+        event :save, :valid => :saved
+      }
+
+      callbacks {
+        on_enter :valid do |event|
+          target.save
+          save
+        end
+        on_after :save do |event|
+          called << 'event save called'
+        end
+      }
+    end
+    expect(fsm.current).to eql(:unsaved)
+    fsm.validate
+    expect(fsm.current).to eql(:saved)
+    expect(called).to eq([
+      'car save called',
+      'event save called'
+    ])
   end
 end

@@ -77,7 +77,7 @@ module FiniteMachine
     def evaluate_handler(handler)
       case handler
       when Symbol
-        method(handler)
+        target.method(handler)
       when Proc
         if handler.arity.zero?
           proc { instance_exec(&handler) }

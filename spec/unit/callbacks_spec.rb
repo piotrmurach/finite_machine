@@ -359,12 +359,12 @@ describe FiniteMachine, 'callbacks' do
     expected = {name: :init, from: :none, to: :green, a: nil, b: nil, c: nil }
 
     callback = Proc.new { |event, a, b, c|
-      expect(event.from).to eql(expected[:from])
-      expect(event.to).to eql(expected[:to])
-      expect(event.name).to eql(expected[:name])
-      expect(a).to eql(expected[:a])
-      expect(b).to eql(expected[:b])
-      expect(c).to eql(expected[:c])
+      target.expect(event.from).to target.eql(expected[:from])
+      target.expect(event.to).to target.eql(expected[:to])
+      target.expect(event.name).to target.eql(expected[:name])
+      target.expect(a).to target.eql(expected[:a])
+      target.expect(b).to target.eql(expected[:b])
+      target.expect(c).to target.eql(expected[:c])
     }
     context = self
 
