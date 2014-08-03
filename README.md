@@ -224,28 +224,30 @@ end
 
 ### 1.3 terminal
 
-To specify a final state **FiniteMachine** uses the `terminal` method.
+To specify a final state **FiniteMachine** uses the `terminal` method. The `terminal` can accpet more than one state.
 
 ```ruby
 fm = FiniteMachine.define do
   initial :green
+
   terminal :red
 
   events {
     event :slow, :green  => :yellow
     event :stop, :yellow => :red
+    event :go,   :red    => :green
   }
 end
 ```
 
-When the terminal state has been specified, you can use `finished?` method on the state machine instance to verify if the terminal state has been reached or not.
+When the terminal state has been specified, you can use `terminated?` method on the state machine instance to verify if the terminal state has been reached or not.
 
 ```ruby
-fm.finished?  # => false
+fm.terminated?  # => false
 fm.slow
-fm.finished?  # => false
+fm.terminated?  # => false
 fm.stop
-fm.finished?  # => true
+fm.terminated?  # => true
 ```
 
 ### 1.4 is?
