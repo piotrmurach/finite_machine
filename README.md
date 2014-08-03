@@ -87,6 +87,7 @@ Or install it yourself as:
 * [8. Integration](#8-integration)
     * [8.1 Plain Ruby Objects](#81-plain-ruby-objects)
     * [8.2 ActiveRecord](#82-activerecord)
+    * [8.3 Transactions](#83-transactions)
 * [9. Tips](#9-tips)
 
 ## 1 Usage
@@ -1199,6 +1200,20 @@ account.state   # => :pending
 account.manage.authorize
 account.state   # => :access
 ```
+
+### 8.3 Transactions
+
+When using **FiniteMachine** with ActiveRecord it advisable to trigger state changes inside transactions to ensure integrity of the database. Given Account example from section 8.2 one can run event in transaction in the following way:
+
+```ruby
+ActiveRecord::Base.transaction do
+  account.manage.enqueue
+end
+```
+
+If the transition fails it will raise `TransitionError` which will cause the transaction to rollback.
+
+Please check the ORM of your choice if it supports database transactions.
 
 ## 9 Tips
 
