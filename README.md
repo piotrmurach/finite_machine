@@ -57,6 +57,7 @@ Or install it yourself as:
     * [2.3 Asynchronous transitions](#23-asynchronous-transitions)
     * [2.4 Single event with multiple from states](#24-single-event-with-multiple-from-states)
     * [2.5 Grouping states under single event](#25-grouping-states-under-single-event)
+    * [2.6 Silent transitions](#26-silent-transitions)
 * [3. Conditional transitions](#3-conditional-transitions)
     * [3.1 Using a Proc](#31-using-a-proc)
     * [3.2 Using a Symbol](#32-using-a-symbol)
@@ -477,6 +478,24 @@ fm = FiniteMachine.define do
     event :bump, :low     => :medium
     event :bump, :medium  => :high
   }
+```
+
+### 2.6 Silent transitions
+
+The **FiniteMachine** allows to selectively silence events and thus prevent any callbacks from firing. Using the `silent` option passed to event definition like so:
+
+```ruby
+fm = FiniteMachine.define do
+  initial :yellow
+
+  events {
+    event :go    :yellow => :green, silent: true
+    event :stop, :green => :red
+  }
+end
+
+fsm.go   # no callbacks
+fms.stop # callbacks are fired
 ```
 
 ## 3 Conditional transitions
