@@ -324,7 +324,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-Furthermore, the context created through `target` helper will allow you to reference and call methods from another object.
+Furthermore, the context created through `target` helper will allow you to reference and call methods from another object inside your callbacks. You can reference external context by calling `target`.
 
 ```ruby
 car = Car.new
@@ -339,8 +339,8 @@ fm = FiniteMachine.define do
   }
 
   callbacks {
-    on_enter_start do |event| turn_engine_on end
-    on_exit_start  do |event| turn_engine_off end
+    on_enter_start do |event| target.turn_engine_on end
+    on_exit_start  do |event| target.turn_engine_off end
   }
 end
 ```
@@ -549,9 +549,9 @@ fm = FiniteMachine.define do
   target car
 
   events {
-    event :start, :neutral => :one, if: -> (_car, state) {
-      _car.engine_on = state
-      _car.engine_on?
+    event :start, :neutral => :one, if: -> (target, state) {
+      target.engine_on = state
+      target.engine_on?
     }
   }
 end
@@ -863,8 +863,8 @@ fm = FiniteMachine.define do
   }
 
   callbacks {
-    on_enter_reverse { |event| turn_reverse_lights_on }
-    on_exit_reverse  { |event| turn_reverse_lights_off }
+    on_enter_reverse { |event| target.turn_reverse_lights_on }
+    on_exit_reverse  { |event| target.turn_reverse_lights_off }
   }
 end
 ```
@@ -874,8 +874,6 @@ Note that you can also fire events from callbacks.
 ```ruby
 fm = FiniteMachine.define do
   initial :neutral
-
-  target car
 
   events {
     event :forward, [:reverse, :neutral] => :one
@@ -1032,11 +1030,11 @@ class Engine < FiniteMachine::Definition
 
   callbacks {
     on_enter :reverse do |event|
-      turn_reverse_lights_on
+      target.turn_reverse_lights_on
     end
 
     on_exit :reverse do |event|
-      turn_reverse_lights_off
+      target.turn_reverse_lights_off
     end
   }
 
@@ -1128,11 +1126,11 @@ class Car
 
       callbacks {
         on_enter :reverse do |event|
-          turn_reverse_lights_on
+          target.turn_reverse_lights_on
         end
 
         on_exit :reverse do |event|
-          turn_reverse_lights_off
+          target.turn_reverse_lights_off
         end
 
         on_transition do |event|
@@ -1185,8 +1183,8 @@ class Account < ActiveRecord::Base
 
       callbacks {
         on_enter_state do |event|
-          self.state = event.to
-          save
+          target.state = event.to
+          target.save
         end
       }
     end
