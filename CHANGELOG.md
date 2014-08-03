@@ -1,3 +1,14 @@
+0.9.0 (August 3, 2014)
+
+* Add Definition class to allow to define standalone state machine
+* Upgrade RSpec dependency and refactor specs
+* Change initial helper to simply state name with options
+* Change HookEvent to be immutable and extend comparison
+* Change Event to be immutable and extend comparison
+* Add #build method to HookEvent
+* Change finished? to terminated? and allow for multiple terminal states
+* Change to require explicit context to call target methods
+
 0.8.1 (July 5, 2014)
 
 * Add EventsChain to handle internal events logic
