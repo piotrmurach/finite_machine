@@ -207,7 +207,7 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def finished?
+    def terminated?
       is?(final_state)
     end
 

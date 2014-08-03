@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'finished?' do
+describe FiniteMachine, 'terminated?' do
 
   it "allows to specify terminal state" do
     fsm = FiniteMachine.define do
@@ -16,15 +16,15 @@ describe FiniteMachine, 'finished?' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.finished?).to be(false)
+    expect(fsm.terminated?).to be(false)
 
     fsm.slow
     expect(fsm.current).to eql(:yellow)
-    expect(fsm.finished?).to be(false)
+    expect(fsm.terminated?).to be(false)
 
     fsm.stop
     expect(fsm.current).to eql(:red)
-    expect(fsm.finished?).to be(true)
+    expect(fsm.terminated?).to be(true)
   end
 
   it "allows to specify terminal state as parameter" do
@@ -38,7 +38,7 @@ describe FiniteMachine, 'finished?' do
     end
     fsm.slow
     fsm.stop
-    expect(fsm.finished?).to be(true)
+    expect(fsm.terminated?).to be(true)
   end
 
   it "checks without terminal state" do
@@ -52,15 +52,15 @@ describe FiniteMachine, 'finished?' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.finished?).to be(false)
+    expect(fsm.terminated?).to be(false)
 
     fsm.slow
     expect(fsm.current).to eql(:yellow)
-    expect(fsm.finished?).to be(false)
+    expect(fsm.terminated?).to be(false)
 
     fsm.stop
     expect(fsm.current).to eql(:red)
-    expect(fsm.finished?).to be(false)
+    expect(fsm.terminated?).to be(false)
   end
 
   it "allows for multiple terminal states" do
@@ -76,20 +76,20 @@ describe FiniteMachine, 'finished?' do
       }
     end
     expect(fsm.current).to eql(:open)
-    expect(fsm.finished?).to be(false)
+    expect(fsm.terminated?).to be(false)
 
     fsm.resolve
     expect(fsm.current).to eql(:close)
-    expect(fsm.finished?).to be(true)
+    expect(fsm.terminated?).to be(true)
 
     fsm.restore!(:open)
     fsm.decline
     expect(fsm.current).to eql(:canceled)
-    expect(fsm.finished?).to be(true)
+    expect(fsm.terminated?).to be(true)
 
     fsm.restore!(:open)
     fsm.error
     expect(fsm.current).to eql(:faulty)
-    expect(fsm.finished?).to be(true)
+    expect(fsm.terminated?).to be(true)
   end
 end
