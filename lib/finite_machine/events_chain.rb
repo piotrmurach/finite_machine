@@ -70,6 +70,18 @@ module FiniteMachine
       chain[name].find_transition(*args)
     end
 
+    # Examine choice transitions to find one matching condition
+    #
+    # @return [FiniteMachine::Transition]
+    #   The choice transition that matches
+    #
+    # @api public
+    def select_choice_transition(name, *args, &block)
+      chain[name].state_transitions.find do |trans|
+        trans.check_conditions(*args, &block)
+      end
+    end
+
     # Check if any of the transition constraints passes
     #
     # @param [Symbol] name
