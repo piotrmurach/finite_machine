@@ -152,4 +152,18 @@ describe FiniteMachine, '#choice' do
     fsm.go
     expect(fsm.current).to eq(:green)
   end
+
+  it "allows to transition from any state to choice pseudo state" do
+    fsm = FiniteMachine.define do
+      initial :red
+
+      event :go, from: :any do
+        choice :pink, if: -> { false }
+        choice :green
+      end
+    end
+    expect(fsm.current).to eq(:red)
+    fsm.go
+    expect(fsm.current).to eq(:green)
+  end
 end

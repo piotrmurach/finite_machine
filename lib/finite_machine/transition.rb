@@ -122,7 +122,10 @@ module FiniteMachine
     #
     # @api public
     def transition_choice?
-      machine.transitions[name][from_state].is_a?(Array)
+      matching = machine.transitions[name]
+      [matching[from_state], matching[ANY_STATE]].any? do |match|
+        match.is_a?(Array)
+      end
     end
 
     # Check if transition can be performed according to constraints
