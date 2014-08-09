@@ -226,14 +226,12 @@ module FiniteMachine
     def event(name, attrs = {}, &block)
       sync_exclusive do
         attributes = attrs.merge!(name: name)
-        FiniteMachine::StateParser.new(attrs).parse_states do |from, to|
-          if block_given?
-            merger = ChoiceMerger.new(self, attributes)
-            merger.instance_eval(&block)
-          else
-            attributes.merge!(parsed_states: { from => to })
-            Transition.create(machine, attributes)
-          end
+        if block_given?
+          merger = ChoiceMerger.new(self, attributes)
+          merger.instance_eval(&block)
+        else
+          transition_builder = TransitionBuilder.new(machine, attributes)
+          transition_builder.call(attrs)
         end
       end
     end
