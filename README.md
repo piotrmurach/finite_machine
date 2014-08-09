@@ -65,6 +65,8 @@ Or install it yourself as:
     * [3.3 Using a String](#33-using-a-string)
     * [3.4 Combining transition conditions](#34-combining-transition-conditions)
 * [4. Choice pseudostates](#4-choice-pseudostates)
+  * [4.1 Dynamic choice conditions](#4.1-dynamic-choice-conditions)
+  * [4.2 Multiple from states](#4.2-multiple-from-states)
 * [5. Callbacks](#5-callbacks)
     * [5.1 on_enter](#51-on_enter)
     * [5.2 on_transition](#52-on_transition)
@@ -678,6 +680,8 @@ fsm.next
 fsm.current # => :red
 ```
 
+### 4.1 Dynamic choice conditions
+
 Just as with event conditions you can make conditional logic dynamic and dependent on parameters passed in:
 
 ```ruby
@@ -699,6 +703,38 @@ fsm.current # => :yellow
 ```
 
 If more than one of the conditions evaluates to true, a first matching one is chosen. If none of the conditions evaluate to true, then the `default` state is matched. However if default state is not present and non of the conditions match, no transition is performed. To avoid such situation always specify `default` choice.
+
+### 4.2 Multiple from states
+
+Similarly to event definitions, you can specify the event to transition from a group of states:
+
+```ruby
+FiniteMachine.define do
+  initial :red
+
+  events {
+    event :next, from: [:yellow, :red] do
+      choice :pink, if: -> { false }
+      choice :green
+    end
+  }
+end
+```
+
+or from any state using the `:any` state name like so:
+
+```ruby
+FiniteMachine.define do
+  initial :red
+
+  events {
+    event :next, from: :any do
+      choice :pink, if: -> { false }
+      choice :green
+    end
+  }
+end
+```
 
 ## 5 Callbacks
 
