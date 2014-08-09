@@ -134,4 +134,22 @@ describe FiniteMachine, '#choice' do
     fsm.next
     expect(fsm.current).to eq(:company_form)
   end
+
+  it "allows to transition from multiple states to choice pseudostate" do
+    fsm = FiniteMachine.define do
+      initial :red
+
+      event :go, from: [:yellow, :red] do
+        choice :pink, if: -> { false }
+        choice :green
+      end
+    end
+    expect(fsm.current).to eq(:red)
+    fsm.go
+    expect(fsm.current).to eq(:green)
+    fsm.restore!(:yellow)
+    expect(fsm.current).to eq(:yellow)
+    fsm.go
+    expect(fsm.current).to eq(:green)
+  end
 end
