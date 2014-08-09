@@ -55,9 +55,10 @@ Or install it yourself as:
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Forcing transitions](#22-forcing-transitions)
     * [2.3 Asynchronous transitions](#23-asynchronous-transitions)
-    * [2.4 Single event with multiple from states](#24-single-event-with-multiple-from-states)
-    * [2.5 Grouping states under single event](#25-grouping-states-under-single-event)
-    * [2.6 Silent transitions](#26-silent-transitions)
+    * [2.4 Multiple from states](#24-multiple-from-states)
+    * [2.5 From :any state](#25-from-any-state)
+    * [2.6 Grouping states under single event](#26-grouping-states-under-single-event)
+    * [2.7 Silent transitions](#27-silent-transitions)
 * [3. Conditional transitions](#3-conditional-transitions)
     * [3.1 Using a Proc](#31-using-a-proc)
     * [3.2 Using a Symbol](#32-using-a-symbol)
@@ -436,7 +437,7 @@ In order to fire the event transition asynchronously use the `async` scope like 
 fm.async.ready  # => executes in separate Thread
 ```
 
-### 2.4 Single event with multiple from states
+### 2.4 Multiple from states
 
 If an event transitions from multiple states to the same state then all the states can be grouped into an array.
 Alternatively, you can create separate events under the same name for each transition that needs combining.
@@ -455,7 +456,29 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 2.5 Grouping states under single event
+### 2.5 From :any state
+
+The **FiniteMachine** offers few ways to transition out of any state. This is parrticularly useful when the machine already defines many states.
+
+You can pass `:any` for the name of the state, for instance:
+
+```ruby
+event :run, from: :any, to: :green
+
+or
+
+event :run, :any => :green
+```
+
+Alternatively, you can skip the `:any` state definition and just specify `to` state:
+
+```ruby
+event :run, to: :green
+```
+
+All the above `run` event definitions will always transition the state machine into `:green` state.
+
+### 2.6 Grouping states under single event
 
 Another way to specify state transitions under single event name is to group all your state transitions into a single hash like so:
 
@@ -483,7 +506,7 @@ fm = FiniteMachine.define do
   }
 ```
 
-### 2.6 Silent transitions
+### 2.7 Silent transitions
 
 The **FiniteMachine** allows to selectively silence events and thus prevent any callbacks from firing. Using the `silent` option passed to event definition like so:
 
