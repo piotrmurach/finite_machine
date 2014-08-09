@@ -116,6 +116,19 @@ module FiniteMachine
       map[state] == state || (map[ANY_STATE] == state && from_state == state)
     end
 
+    # Check if from matches current state
+    #
+    # @example
+    #   transition.current? # => true
+    #
+    # @return [Boolean]
+    #   Return true if match is found, false otherwise.
+    #
+    # @api public
+    def current?
+      [machine.current, ANY_STATE].any? { |state| state == from_state }
+    end
+
     # Check if this transition has branching choice or not
     #
     # @return [Boolean]
