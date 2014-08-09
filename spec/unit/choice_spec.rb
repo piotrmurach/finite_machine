@@ -166,4 +166,22 @@ describe FiniteMachine, '#choice' do
     fsm.go
     expect(fsm.current).to eq(:green)
   end
+
+  it "groups correctly events under the same name" do
+    fsm = FiniteMachine.define do
+      initial :red
+
+      event :next, from: :yellow, to: :green
+
+      event :next, from: :red do
+        choice :pink, if: -> { false }
+        choice :yellow
+      end
+    end
+    expect(fsm.current).to eq(:red)
+    fsm.next
+    expect(fsm.current).to eq(:yellow)
+    fsm.next
+    expect(fsm.current).to eq(:green)
+  end
 end

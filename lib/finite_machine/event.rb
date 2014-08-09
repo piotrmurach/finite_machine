@@ -72,7 +72,9 @@ module FiniteMachine
     # @api private
     def find_transition(*args)
       sync_shared do
-        state_transitions.find { |trans| trans.check_conditions(*args) }
+        state_transitions.find do |trans|
+          trans.current? && trans.check_conditions(*args)
+        end
       end
     end
 

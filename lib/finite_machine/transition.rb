@@ -78,7 +78,7 @@ module FiniteMachine
     # @api public
     def to_state(*args)
       if transition_choice?
-        found_trans = machine.select_transition(name, *args)
+        found_trans = machine.select_choice_transition(name, *args)
         found_trans.map[from_state]
       else
         machine.transitions[name][from_state]
