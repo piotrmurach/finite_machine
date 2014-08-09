@@ -8,11 +8,11 @@ describe FiniteMachine::Event, '#next_transition' do
   subject(:event) { object.new(machine, name: :test) }
 
   describe "matches transition by name" do
-    let(:machine) { double(:machine, current: :b) }
+    let(:machine) { double(:machine) }
 
     it "finds matching transition" do
-      transition_a = double(:transition_a, from_state: :a)
-      transition_b = double(:transition_b, from_state: :b)
+      transition_a = double(:transition_a, current?: false)
+      transition_b = double(:transition_b, current?: true)
       event << transition_a
       event << transition_b
 
@@ -20,25 +20,12 @@ describe FiniteMachine::Event, '#next_transition' do
     end
   end
 
-  describe "matches :any transition" do
-    let(:machine) { double(:machine, current: :any) }
-
-    it "finds matching transition" do
-      transition_a   = double(:transition_a, from_state: :a)
-      transition_any = double(:transition_any, from_state: :any)
-      event << transition_a
-      event << transition_any
-
-      expect(event.next_transition).to eq(transition_any)
-    end
-  end
-
   describe "fails to find" do
-    let(:machine) { double(:machine, current: :c) }
+    let(:machine) { double(:machine) }
 
     it "choses first available transition" do
-      transition_a = double(:transition_a, from_state: :a)
-      transition_b = double(:transition_b, from_state: :b)
+      transition_a = double(:transition_a, current?: false)
+      transition_b = double(:transition_b, current?: false)
       event << transition_a
       event << transition_b
 

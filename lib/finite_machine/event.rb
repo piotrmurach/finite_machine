@@ -56,10 +56,8 @@ module FiniteMachine
     # @api private
     def next_transition
       sync_shared do
-        state_transitions.find do |transition|
-          transition.from_state == machine.current ||
-            transition.from_state == ANY_STATE
-        end || state_transitions.first
+        state_transitions.find { |transition| transition.current? } ||
+        state_transitions.first
       end
     end
 
@@ -91,11 +89,11 @@ module FiniteMachine
     # @api public
     def call(*args, &block)
       sync_exclusive do
-        _transition = next_transition
+        event_transition = next_transition
         if silent
-          _transition.call(*args, &block)
+          event_transition.call(*args, &block)
         else
-          machine.send(:transition, _transition, *args, &block)
+          machine.send(:transition, event_transition, *args, &block)
         end
       end
     end
