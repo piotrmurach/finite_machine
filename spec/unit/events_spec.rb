@@ -111,6 +111,29 @@ describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:green)
   end
 
+  it "permits event from any state for hash syntax" do
+    fsm = FiniteMachine.define do
+      initial :red
+
+      events {
+        event :start, :red    => :yellow
+        event :run,   :yellow => :green
+        event :stop,  :green  => :red
+        event :go,    :any    => :green
+      }
+    end
+
+    expect(fsm.current).to eql(:red)
+
+    fsm.go
+    expect(fsm.current).to eql(:green)
+    fsm.stop
+    fsm.start
+    expect(fsm.current).to eql(:yellow)
+    fsm.go
+    expect(fsm.current).to eql(:green)
+  end
+
   it "permits event from any state without 'from'" do
     fsm = FiniteMachine.define do
       initial :green
