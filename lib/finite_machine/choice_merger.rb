@@ -36,8 +36,8 @@ module FiniteMachine
     def choice(to, attrs = {})
       opts = options.dup
       opts.merge!(attrs)
-      opts.merge!(parsed_states: { options[:from] => to })
-      Transition.create(context.machine, opts)
+      transition_builder = TransitionBuilder.new(context.machine, opts)
+      transition_builder.call(options[:from] => to)
     end
     alias_method :default, :choice
   end # ChoiceMerger
