@@ -1,3 +1,11 @@
+0.9.1 (August 10, 2014)
+
+* Add TransitionBuilder to internally build transitions from states
+* Fix #choice to allow for multiple from states
+* Add #current? to Transition to determine if matches from state
+* Add #select_choice_transition to EventsChain to determine matching choice transition
+* Fix #choice to work with same named events
+
 0.9.0 (August 3, 2014)
 
 * Add Definition class to allow to define standalone state machine
