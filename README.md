@@ -1225,7 +1225,7 @@ class Account < ActiveRecord::Base
 
   def initialize(attrs = {})
     super
-    @manage.restore!(state) if state
+    manage.restore!(state) if state
   end
 
   def manage
@@ -1241,7 +1241,7 @@ class Account < ActiveRecord::Base
       }
 
       callbacks {
-        on_enter_state do |event|
+        on_enter do |event|
           target.state = event.to
           target.save
         end
