@@ -4,7 +4,6 @@ module FiniteMachine
   # A mixin to allow instance methods to be synchronized
   module Threadable
     module InstanceMethods
-      @@sync = Sync.new
 
       # Exclusive lock
       #
@@ -12,7 +11,7 @@ module FiniteMachine
       #
       # @api public
       def sync_exclusive(&block)
-        @@sync.synchronize(:EX, &block)
+        TwoPhaseLock.synchronize(:EX, &block)
       end
 
       # Shared lock
@@ -21,7 +20,7 @@ module FiniteMachine
       #
       # @api public
       def sync_shared(&block)
-        @@sync.synchronize(:SH, &block)
+        TwoPhaseLock.synchronize(:SH, &block)
       end
     end
 

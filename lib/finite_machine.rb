@@ -31,6 +31,7 @@ require "finite_machine/subscribers"
 require "finite_machine/state_parser"
 require "finite_machine/observer"
 require "finite_machine/listener"
+require "finite_machine/two_phase_lock"
 
 module FiniteMachine
   # Default state name
