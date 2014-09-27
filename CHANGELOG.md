@@ -1,3 +1,11 @@
+0.9.2 (September 27, 2014)
+
+* Removes use of class variable to share Sync by @reggieb
+* Fix observer to differentiate between any state and any event
+* [#23] Fix transition to correctly set :from and :to parameters for :any state
+* [#25] Fix passing parameters to choice events with same named events
+* Fix choice pseudostate to work with :any state
+
 0.9.1 (August 10, 2014)
 
 * Add TransitionBuilder to internally build transitions from states
