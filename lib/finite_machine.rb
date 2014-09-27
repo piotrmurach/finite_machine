@@ -44,7 +44,7 @@ module FiniteMachine
   ANY_STATE = :any
 
   # Describe any event name
-  ANY_EVENT = :any
+  ANY_EVENT = :any_event
 
   # Returned when transition has successfully performed
   SUCCEEDED = 1
