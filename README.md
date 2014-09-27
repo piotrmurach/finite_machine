@@ -1217,15 +1217,23 @@ car.reverse_lights_on? # => true
 
 ### 8.2 ActiveRecord
 
-In order to integrate **FiniteMachine** with ActiveRecord use the `target` helper to reference the current class and call ActiveRecord methods inside the callbacks to persist the state.
+In order to integrate **FiniteMachine** with ActiveRecord simply add a method with state machine definition. You can also define the state machine is separate module to aid reusability. Once the state machine is defined use the `target` helper to reference the current class. Having defined `target` you call ActiveRecord methods inside the callbacks to persist the state.
+
+You can use the `restore!` method to specify which state the **FininteMachine** should be put back into as follows:
 
 ```ruby
 class Account < ActiveRecord::Base
   validates :state, presence: true
 
+  before_validation :set_initial_state, on: :create
+
+  def set_initial_state
+    self.state = manage.current
+  end
+
   def initialize(attrs = {})
     super
-    manage.restore!(state) if state
+    manage.restore!(state.to_sym) if state.present?
   end
 
   def manage
@@ -1257,6 +1265,8 @@ account.state   # => :pending
 account.manage.authorize
 account.state   # => :access
 ```
+
+Please note that you do not need to call `target.save` inside callback, it is enought to just set the state. It is much more prefereable to let the `ActiveRecord` object to persist when it makes sense for the application and thus keep the state machine focused on managing the state transitions.
 
 ### 8.3 Transactions
 
