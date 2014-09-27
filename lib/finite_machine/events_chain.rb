@@ -16,7 +16,7 @@ module FiniteMachine
 
     # Initialize a EventsChain
     #
-    # @param [FiniteMachine::StateMachine] machine
+    # @param [StateMachine] machine
     #   the state machine
     #
     # @api public
@@ -30,7 +30,7 @@ module FiniteMachine
     # @param [Symbol] name
     #  the event name
     #
-    # @param [FiniteMachine::Transition]
+    # @param [Transition]
     #
     # @return [nil]
     #
@@ -63,7 +63,7 @@ module FiniteMachine
     # @param [Symbol] name
     #   the event name
     #
-    # @return [FiniteMachine::Transition]
+    # @return [Transition]
     #
     # @api public
     def select_transition(name, *args)
@@ -72,12 +72,19 @@ module FiniteMachine
 
     # Examine choice transitions to find one matching condition
     #
-    # @return [FiniteMachine::Transition]
+    # @param [Symbol] name
+    #   the event name
+    #
+    # @param [Symbol] from_state
+    #   the current context from_state
+    #
+    # @return [Transition]
     #   The choice transition that matches
     #
     # @api public
-    def select_choice_transition(name, *args, &block)
+    def select_choice_transition(name, from_state, *args, &block)
       chain[name].state_transitions.find do |trans|
+        trans.from_state == from_state &&
         trans.check_conditions(*args, &block)
       end
     end

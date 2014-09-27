@@ -184,4 +184,72 @@ describe FiniteMachine, '#choice' do
     fsm.next
     expect(fsm.current).to eq(:green)
   end
+
+  it "sets callback properties correctly" do
+    expected = {name: :init, from: :none, to: :red, a: nil, b: nil, c: nil }
+
+    callback = Proc.new { |event, a, b, c|
+      target.expect(event.from).to target.eql(expected[:from])
+      target.expect(event.to).to target.eql(expected[:to])
+      target.expect(event.name).to target.eql(expected[:name])
+      target.expect(a).to target.eql(expected[:a])
+      target.expect(b).to target.eql(expected[:b])
+      target.expect(c).to target.eql(expected[:c])
+    }
+
+    context = self
+
+    fsm = FiniteMachine.define do
+      initial :red
+
+      target context
+
+      events {
+        event :next, from: :red do
+          choice :green, if: -> { false }
+          choice :yellow
+        end
+
+        event :next, from: :yellow do
+          choice :green, if: -> { true }
+          choice :yellow
+        end
+      }
+
+      callbacks {
+        # generic state callbacks
+        on_enter(&callback)
+        on_transition(&callback)
+        on_exit(&callback)
+
+        # generic event callbacks
+        on_before(&callback)
+        on_after(&callback)
+
+        # state callbacks
+        on_enter :green,  &callback
+        on_enter :yellow, &callback
+        on_enter :red,    &callback
+
+        on_transition :green,  &callback
+        on_transition :yellow, &callback
+        on_transition :red,    &callback
+
+        on_exit :green,  &callback
+        on_exit :yellow, &callback
+        on_exit :red,    &callback
+
+        # event callbacks
+        on_before :next, &callback
+        on_after  :next, &callback
+      }
+    end
+    expect(fsm.current).to eq(:red)
+
+    expected = {name: :next, from: :red, to: :yellow, a: 1, b: 2, c: 3}
+    fsm.next(1, 2, 3)
+
+    expected = {name: :next, from: :yellow, to: :green, a: 4, b: 5, c: 6}
+    fsm.next(4, 5, 6)
+  end
 end
