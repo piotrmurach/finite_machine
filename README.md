@@ -1217,7 +1217,7 @@ car.reverse_lights_on? # => true
 
 ### 8.2 ActiveRecord
 
-In order to integrate **FiniteMachine** with ActiveRecord simply add a method with state machine definition. You can also define the state machine is separate module to aid reusability. Once the state machine is defined use the `target` helper to reference the current class. Having defined `target` you call ActiveRecord methods inside the callbacks to persist the state.
+In order to integrate **FiniteMachine** with ActiveRecord simply add a method with state machine definition. You can also define the state machine in separate module to aid reusability. Once the state machine is defined use the `target` helper to reference the current class. Having defined `target` you call ActiveRecord methods inside the callbacks to persist the state.
 
 You can use the `restore!` method to specify which state the **FininteMachine** should be put back into as follows:
 
