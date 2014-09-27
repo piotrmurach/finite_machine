@@ -214,6 +214,11 @@ describe FiniteMachine, '#choice' do
           choice :green, if: -> { true }
           choice :yellow
         end
+
+        event :finish, from: :any do
+          choice :green, if: -> { false }
+          choice :red
+        end
       }
 
       callbacks {
@@ -251,5 +256,8 @@ describe FiniteMachine, '#choice' do
 
     expected = {name: :next, from: :yellow, to: :green, a: 4, b: 5, c: 6}
     fsm.next(4, 5, 6)
+
+    expected = {name: :finish, from: :green, to: :red, a: 7, b: 8, c: 9}
+    fsm.finish(7, 8, 9)
   end
 end

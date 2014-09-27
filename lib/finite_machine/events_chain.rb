@@ -84,7 +84,7 @@ module FiniteMachine
     # @api public
     def select_choice_transition(name, from_state, *args, &block)
       chain[name].state_transitions.find do |trans|
-        trans.from_state == from_state &&
+        [from_state, ANY_STATE].include?(trans.from_state) &&
         trans.check_conditions(*args, &block)
       end
     end
