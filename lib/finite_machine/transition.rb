@@ -63,12 +63,12 @@ module FiniteMachine
     #
     # @api public
     def self.create(machine, attrs = {})
-      _transition = new(machine, attrs)
-      _transition.update_transitions
-      _transition.define_state_methods
+      transition = new(machine, attrs)
+      transition.update_transitions
+      transition.define_state_methods
 
       builder = EventBuilder.new(machine)
-      builder.call(_transition)
+      builder.call(transition)
     end
 
     # Decide :to state from available transitions for this event
@@ -81,7 +81,8 @@ module FiniteMachine
         found_trans = machine.select_choice_transition(name, *args)
         found_trans.map[from_state]
       else
-        machine.transitions[name][from_state]
+        available_trans = machine.transitions[name]
+        available_trans[from_state] || available_trans[ANY_STATE]
       end
     end
 
@@ -165,7 +166,7 @@ module FiniteMachine
     # @api private
     def update_transitions
       from_states.each do |from|
-        if value = machine.transitions[name][from]
+        if (value = machine.transitions[name][from])
           machine.transitions[name][from] = [value, map[from]].flatten
         else
           machine.transitions[name][from] = map[from] || ANY_STATE
@@ -205,6 +206,20 @@ module FiniteMachine
       end
     end
 
+    # Find latest from state
+    #
+    # Note that for the exit hook the call hasn't happened yet so
+    # we need to find previous to state when the from is :any.
+    #
+    # @return [Object] from_state
+    #
+    # @api private
+    def latest_from_state
+      sync_shared do
+        from_state == ANY_STATE ? machine.previous_state : from_state
+      end
+    end
+
     # Execute current transition
     #
     # @return [nil]
@@ -215,6 +230,7 @@ module FiniteMachine
         return if cancelled
         self.from_state = machine.state
         update_state(*args)
+        machine.previous_state = machine.state
         machine.initial_state = machine.state if from_state == DEFAULT_STATE
       end
     end

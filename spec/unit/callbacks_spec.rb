@@ -429,6 +429,92 @@ describe FiniteMachine, 'callbacks' do
     fsm.go(nil, nil)
   end
 
+  it "sets callback parameters correctly for transition from :any state" do
+    expected = {name: :init, from: :none, to: :green, a: nil, b: nil, c: nil }
+
+    callback = Proc.new { |event, a, b, c|
+      target.expect(event.from).to target.eql(expected[:from])
+      target.expect(event.to).to target.eql(expected[:to])
+      target.expect(event.name).to target.eql(expected[:name])
+      target.expect(a).to target.eql(expected[:a])
+      target.expect(b).to target.eql(expected[:b])
+      target.expect(c).to target.eql(expected[:c])
+    }
+
+    context = self
+
+    fsm = FiniteMachine.define do
+      initial :red
+
+      target context
+
+      events {
+        event :power_on,  :off => :red
+        event :power_off, :any => :off
+        event :go,   :red    => :green
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
+      }
+
+      callbacks {
+        # generic state callbacks
+        on_enter(&callback)
+        on_transition(&callback)
+        on_exit(&callback)
+
+        # generic event callbacks
+        on_before(&callback)
+        on_after(&callback)
+
+        # state callbacks
+        on_enter :green,  &callback
+        on_enter :yellow, &callback
+        on_enter :red,    &callback
+        on_enter :off,    &callback
+        on_enter :off,    &callback
+
+        on_transition :green,  &callback
+        on_transition :yellow, &callback
+        on_transition :red,    &callback
+        on_transition :off,    &callback
+        on_transition :off,    &callback
+
+        on_exit :green,  &callback
+        on_exit :yellow, &callback
+        on_exit :red,    &callback
+        on_exit :off,    &callback
+        on_exit :off,    &callback
+
+        # event callbacks
+        on_before :power_on, &callback
+        on_before :power_off, &callback
+        on_before :go,       &callback
+        on_before :slow,     &callback
+        on_before :stop,     &callback
+
+        on_after :power_on, &callback
+        on_after :power_off, &callback
+        on_after :go,       &callback
+        on_after :slow,     &callback
+        on_after :stop,     &callback
+      }
+    end
+
+    expect(fsm.current).to eq(:red)
+
+    expected = {name: :go, from: :red, to: :green, a: 1, b: 2, c: 3 }
+    fsm.go(1, 2, 3)
+
+    expected = {name: :slow, from: :green, to: :yellow, a: 4, b: 5, c: 6}
+    fsm.slow(4, 5, 6)
+
+    expected = {name: :stop, from: :yellow, to: :red, a: 7, b: 8, c: 9}
+    fsm.stop(7, 8, 9)
+
+    expected = {name: :power_off, from: :red, to: :off, a: 10, b: 11, c: 12}
+    fsm.power_off(10, 11, 12)
+  end
+
   it "raises an error with invalid callback name" do
     expect {
       FiniteMachine.define do
