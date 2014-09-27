@@ -38,6 +38,9 @@ module FiniteMachine
     # The state machine environment
     attr_threadsafe :env
 
+    # The previous state before transition
+    attr_threadsafe :previous_state
+
     # The state machine event definitions
     attr_threadsafe :events_chain
 
