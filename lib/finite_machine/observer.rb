@@ -41,7 +41,9 @@ module FiniteMachine
     def on(event_type = HookEvent, *args, &callback)
       sync_exclusive do
         name, async, _ = args
-        name = ANY_EVENT if name.nil?
+        if name.nil?
+          name = event_type < HookEvent::Anyaction ? ANY_EVENT : ANY_STATE
+        end
         async = false if async.nil?
         ensure_valid_callback_name!(event_type, name)
         callback.extend(Async) if async == :async
@@ -52,7 +54,7 @@ module FiniteMachine
     # Unregister callback for a given event
     #
     # @api public
-    def off(event_type = ANY_EVENT, name = ANY_STATE, &callback)
+    def off(event_type, name = ANY_STATE, &callback)
       sync_exclusive do
         hooks.unregister event_type, name, callback
       end
@@ -107,8 +109,8 @@ module FiniteMachine
     # @api public
     def trigger(event, *args, &block)
       sync_exclusive do
-        [event.type, ANY_EVENT].each do |event_type|
-          [event.name, ANY_STATE].each do |event_name|
+        [event.type].each do |event_type|
+          [event.name, ANY_STATE, ANY_EVENT].each do |event_name|
             hooks.call(event_type, event_name) do |hook|
               handle_callback(hook, event)
               off(event_type, event_name, &hook) if hook.is_a?(Once)
@@ -163,7 +165,7 @@ module FiniteMachine
     #
     # @api private
     def callback_names
-      machine.states + machine.event_names + [ANY_EVENT]
+      machine.states + machine.event_names + [ANY_EVENT, ANY_STATE]
     end
 
     # Forward the message to observer
