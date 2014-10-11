@@ -1,4 +1,5 @@
 # FiniteMachine
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/peter-murach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Gem Version](https://badge.fury.io/rb/finite_machine.png)][gem]
 [![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.png?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/peter-murach/finite_machine.png)][codeclimate]
