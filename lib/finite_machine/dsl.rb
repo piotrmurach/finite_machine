@@ -141,7 +141,7 @@ module FiniteMachine
     #
     # @api public
     def alias_target(alias_name)
-      machine.class.send(:alias_method, alias_name, :target)
+      machine.env.aliases << alias_name.to_sym
     end
 
     # Define terminal state

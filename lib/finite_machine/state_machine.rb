@@ -44,7 +44,8 @@ module FiniteMachine
     # The state machine event definitions
     attr_threadsafe :events_chain
 
-    def_delegators :@dsl, :initial, :terminal, :target, :trigger_init
+    def_delegators :@dsl, :initial, :terminal, :target, :trigger_init,
+                   :alias_target
 
     def_delegator :@events_dsl, :event
 
@@ -63,7 +64,7 @@ module FiniteMachine
       @observer      = Observer.new(self)
       @transitions   = Hash.new { |hash, name| hash[name] = Hash.new }
       @events_chain  = EventsChain.new(self)
-      @env           = Environment.new(target: self)
+      @env           = Environment.new(self, [])
       @dsl           = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
@@ -315,6 +316,8 @@ module FiniteMachine
     def method_missing(method_name, *args, &block)
       if observer.respond_to?(method_name.to_sym)
         observer.public_send(method_name.to_sym, *args, &block)
+      elsif env.aliases.include?(method_name.to_sym)
+        env.send(:target, *args, &block)
       else
         super
       end
@@ -330,7 +333,8 @@ module FiniteMachine
     #
     # @api private
     def respond_to_missing?(method_name, include_private = false)
-      observer.respond_to?(method_name.to_sym) || super
+      observer.respond_to?(method_name.to_sym) ||
+        env.aliases.include?(method_name.to_sym) || super
     end
   end # StateMachine
 end # FiniteMachine

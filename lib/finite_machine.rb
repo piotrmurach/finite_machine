@@ -78,7 +78,7 @@ module FiniteMachine
   # Raised when argument is already defined
   AlreadyDefinedError = Class.new(::ArgumentError)
 
-  Environment = Struct.new(:target)
+  Environment = Struct.new(:target, :aliases)
 
   class << self
     attr_accessor :logger
