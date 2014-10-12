@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Definition, 'definition' do
+describe FiniteMachine::Definition, '#alias_target' do
 
   before do
     class Engine < FiniteMachine::Definition
       initial :neutral
-      
-      target_alias :car
+
+      alias_target :car
 
       events {
         event :forward, [:reverse, :neutral] => :one
