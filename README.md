@@ -1257,8 +1257,10 @@ class Account < ActiveRecord::Base
     self.state = manage.current
   end
 
-  def initialize(attrs = {})
-    super
+  after_find :restore_state
+  after_initialize :restore_state
+
+  def restore_state
     manage.restore!(state.to_sym) if state.present?
   end
 
@@ -1277,7 +1279,6 @@ class Account < ActiveRecord::Base
       callbacks {
         on_enter do |event|
           target.state = event.to
-          target.save
         end
       }
     end
