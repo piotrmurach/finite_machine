@@ -50,7 +50,8 @@ Or install it yourself as:
     * [1.5 can? and cannot?](#15-can-and-cannot)
     * [1.6 states](#16-states)
     * [1.7 target](#17-target)
-    * [1.8 restore!](#18-restore)
+    * [1.8 Alias target](#18-alias-target)
+    * [1.9 restore!](#19-restore)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Forcing transitions](#22-forcing-transitions)
@@ -371,7 +372,32 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 1.8 restore!
+### 1.8 Alias target
+
+If you need to better express the intention behind the target name, in particular when calling actions in callbacks, you can use the `alias_target` helper:
+
+```ruby
+car = Car.new
+
+fm = FiniteMachine.define do
+  initial :neutral
+
+  target car
+
+  alias_target :car
+
+  events {
+    event :start, :neutral => :one, if: "engine_on?"
+  }
+
+  callbacks {
+    on_enter_start do |event| car.turn_engine_on end
+    on_exit_start  do |event| car.turn_engine_off end
+  }
+end
+```
+
+### 1.9 restore!
 
 In order to set the machine to a given state and thus skip triggering callbacks use the `restore!` method:
 
