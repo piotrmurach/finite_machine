@@ -122,23 +122,26 @@ module FiniteMachine
         machine.env.target = object
       end
     end
-    
-    # Use alternative name for target within definition
-    # 
+
+    # Use alternative name for target
+    #
     # @example
     #   target_alias: :car
-    #   
+    #
     #   callbacks {
     #     on_transition do |event|
     #       car.state = event.to
     #     end
     #   }
-    # 
+    #
     # @param [Symbol] alias_name
+    #   the name to alias target to
+    #
+    # @return [FiniteMachine::StateMachine]
     #
     # @api public
-    def target_alias(alias_name)
-      FiniteMachine::StateMachine.send(:alias_method, alias_name, :target)
+    def alias_target(alias_name)
+      machine.class.send(:alias_method, alias_name, :target)
     end
 
     # Define terminal state
