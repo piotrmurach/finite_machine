@@ -68,6 +68,24 @@ describe FiniteMachine, 'async_events' do
     expect(fsmBar.current).to eql(:yellow)
   end
 
+  it "requires different number of arguments on conditional choices" do
+    fsm = FiniteMachine.define do
+      events {
+        event :go, from: :any do
+          choice :yellow, if: -> (context) { true }
+        end
+      }
+    end
+
+    # sync passes
+    fsm.go
+    fsm.restore!(:green)
+
+    # async logs
+    # Error while running event: wrong number of arguments (2 for 1)
+    fsm.async.go
+  end
+
   it "permits async callback" do
     called = []
     fsm = FiniteMachine.define do
