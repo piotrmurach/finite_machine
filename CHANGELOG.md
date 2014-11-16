@@ -1,3 +1,11 @@
+0.10.0 (November 16, 2014)
+
+* Add #alias_target to allow renaming of target object by @reggieb
+* Fix issue with async calls passing wrong arguments to conditionals
+* Change TransitionEvent, AsyncCall to be immutable
+* Add :log_transitions option for easy transition debugging
+* Increase test coverage to 99%
+
 0.9.2 (September 27, 2014)
 
 * Removes use of class variable to share Sync by @reggieb
