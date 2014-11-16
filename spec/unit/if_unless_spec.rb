@@ -27,6 +27,64 @@ describe FiniteMachine, ':if, :unless' do
     end
   }
 
+  it "passes context to conditionals" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :red
+
+      events {
+        event :go, :red => :green,
+              if: -> (context) { called << "cond_red_green(#{context})"; true}
+        event :stop, from: :any do
+          choice :red,
+                 if: -> (context) { called << "cond_any_red(#{context})"; true }
+        end
+      }
+    end
+
+    expect(fsm.current).to eq(:red)
+
+    fsm.go
+    expect(fsm.current).to eq(:green)
+    expect(called).to eq(["cond_red_green(#{fsm})"])
+
+    fsm.stop
+    expect(fsm.current).to eq(:red)
+    expect(called).to match_array([
+      "cond_red_green(#{fsm})",
+      "cond_any_red(#{fsm})"
+    ])
+  end
+
+  it "passes context & arguments to conditionals" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :red
+
+      events {
+        event :go,  :red => :green,
+              if: lambda { |*_| called << "cond_red_green(#{})"; true }
+        event :stop, from: :any do
+          choice :red,
+                 if: -> (_, b) { called << "cond_any_red(#{b})"; true }
+        end
+      }
+    end
+
+    expect(fsm.current).to eq(:red)
+
+    fsm.go(:foo)
+    expect(fsm.current).to eq(:green)
+    expect(called).to eq(["cond_red_green(foo)"])
+
+    fsm.stop(:bar)
+    expect(fsm.current).to eq(:red)
+    expect(called).to match_array([
+      "cond_red_green(foo)",
+      "cond_any_red(bar)"
+    ])
+  end
+
   it "allows to cancel event with :if option" do
     called = []
 
