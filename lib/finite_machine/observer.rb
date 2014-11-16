@@ -145,7 +145,7 @@ module FiniteMachine
     # @api private
     def handle_callback(hook, event)
       data        = event.data
-      trans_event = TransitionEvent.build(event.transition, *data)
+      trans_event = TransitionEvent.new(event.transition, *data)
       callable    = create_callable(hook)
 
       if hook.is_a?(Async)

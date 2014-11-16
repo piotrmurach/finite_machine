@@ -7,24 +7,26 @@ module FiniteMachine
   #
   # @api private
   class TransitionEvent
+    include Threadable
+
     # This event from state name
     #
     # @return [Object]
     #
     # @api public
-    attr_accessor :from
+    attr_threadsafe :from
 
     # This event to state name
     #
     # @return [Object]
     #
     # @api public
-    attr_accessor :to
+    attr_threadsafe :to
 
     # This event name
     #
     # @api public
-    attr_accessor :name
+    attr_threadsafe :name
 
     # Build a transition event
     #
@@ -33,12 +35,11 @@ module FiniteMachine
     # @return [self]
     #
     # @api private
-    def self.build(transition, *data)
-      instance = new
-      instance.name = transition.name
-      instance.from = transition.latest_from_state
-      instance.to   = transition.to_state(*data)
-      instance
+    def initialize(transition, *data)
+      @name = transition.name
+      @from = transition.latest_from_state
+      @to   = transition.to_state(*data)
+      freeze
     end
   end # TransitionEvent
 end # FiniteMachine
