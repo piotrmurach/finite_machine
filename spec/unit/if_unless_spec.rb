@@ -63,10 +63,10 @@ describe FiniteMachine, ':if, :unless' do
 
       events {
         event :go,  :red => :green,
-              if: lambda { |*_| called << "cond_red_green(#{})"; true }
+              if: proc { |_, a| called << "cond_red_green(#{a})"; true }
         event :stop, from: :any do
           choice :red,
-                 if: -> (_, b) { called << "cond_any_red(#{b})"; true }
+                 if: proc { |_, b| called << "cond_any_red(#{b})"; true }
         end
       }
     end
