@@ -28,5 +28,15 @@ module FiniteMachine
         message << "EMPTY BACKTRACE\n\t"
       end
     end
+
+    def report_transition(event_transition, *args)
+      message = "Transition: @event=#{event_transition.name} "
+      unless args.empty?
+        message << "@with=[#{args.join(',')}] "
+      end
+      message << "#{event_transition.from_state} -> "
+      message << "#{event_transition.machine.current}"
+      info(message)
+    end
   end # Logger
 end # FiniteMachine

@@ -30,4 +30,11 @@ describe FiniteMachine::Logger do
     expect(log).to receive(:error).with(message)
     logger.error(message)
   end
+
+  it "reports transition" do
+    expect(log).to receive(:info).with("Transition: @event=go red -> green")
+    machine = double(:machine, current: :green)
+    transition = double(:transition, name: "go", from_state: :red, machine: machine)
+    logger.report_transition(transition)
+  end
 end
