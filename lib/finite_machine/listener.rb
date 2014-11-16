@@ -3,6 +3,13 @@
 module FiniteMachine
   # A generic listener interface
   class Listener
+    # Initialize a listener
+    #
+    # @api private
+    def initialize(*args)
+      @name = args.unshift
+    end
+
     # Define event delivery handler
     #
     # @api public

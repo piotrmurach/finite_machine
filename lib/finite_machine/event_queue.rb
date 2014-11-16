@@ -53,7 +53,7 @@ module FiniteMachine
     #
     # @api public
     def subscribe(*args, &block)
-      listener = Listener.new
+      listener = Listener.new(*args)
       listener.on_delivery(&block)
       @listeners << listener
     end
@@ -103,7 +103,7 @@ module FiniteMachine
     #
     # @api public
     def shutdown
-      raise EventQueueDeadError, "event queue already dead" if @dead
+      fail EventQueueDeadError, 'event queue already dead' if @dead
 
       @mutex.lock
       begin
@@ -154,7 +154,8 @@ module FiniteMachine
         event.dispatch
       end
     rescue Exception => ex
-      Logger.error "Error while running event: #{ex}"
+      Logger.error "Error while running event: #{ex.class} #{ex}" \
+                   "#{ex.backtrace.join("\n")}"
     end
   end # EventQueue
 end # FiniteMachine
