@@ -40,12 +40,7 @@ module FiniteMachine
     #
     # @api public
     def <<(event)
-      @mutex.lock
-      begin
-        @queue << event
-      ensure
-        @mutex.unlock rescue nil
-      end
+      @mutex.synchronize { @queue << event }
       self
     end
 
