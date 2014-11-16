@@ -34,10 +34,10 @@ describe FiniteMachine, ':if, :unless' do
 
       events {
         event :go, :red => :green,
-              if: -> (context) { called << "cond_red_green(#{context})"; true}
+              if: proc { |context| called << "cond_red_green(#{context})"; true}
         event :stop, from: :any do
           choice :red,
-                 if: -> (context) { called << "cond_any_red(#{context})"; true }
+                 if: proc { |context| called << "cond_any_red(#{context})"; true }
         end
       }
     end
