@@ -19,5 +19,14 @@ module FiniteMachine
     def error(message)
       FiniteMachine.logger.error(message)
     end
+
+    def format_error(error)
+      message = "#{error.class}: #{error.message}\n\t"
+      if error.backtrace
+        message << "occured at #{error.backtrace.join("\n\t")}"
+      else
+        message << "EMPTY BACKTRACE\n\t"
+      end
+    end
   end # Logger
 end # FiniteMachine
