@@ -62,6 +62,7 @@ Or install it yourself as:
     * [2.5 From :any state](#25-from-any-state)
     * [2.6 Grouping states under single event](#26-grouping-states-under-single-event)
     * [2.7 Silent transitions](#27-silent-transitions)
+    * [2.8 Log transitions](#28-log-transitions)
 * [3. Conditional transitions](#3-conditional-transitions)
     * [3.1 Using a Proc](#31-using-a-proc)
     * [3.2 Using a Symbol](#32-using-a-symbol)
@@ -558,6 +559,16 @@ end
 
 fsm.go   # no callbacks
 fms.stop # callbacks are fired
+```
+
+### 2.8 Log transitions
+
+To help debug your state machine, **FiniteMachine** provides `:log_transitions` option.
+
+```ruby
+FiniteMachine.define log_transitions: true do
+  ...
+end
 ```
 
 ## 3 Conditional transitions
