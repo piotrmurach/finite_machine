@@ -37,7 +37,7 @@ module FiniteMachine
       instance = new
       instance.context = context
       instance.callable = callable
-      instance.arguments = *args
+      instance.arguments = args
       instance.block = block
       instance
     end
@@ -49,7 +49,7 @@ module FiniteMachine
     # @api private
     def dispatch
       @mutex.synchronize do
-        callable.call(context, *arguments, block)
+        callable.call(context, *arguments, &block)
       end
     end
   end # AsyncCall

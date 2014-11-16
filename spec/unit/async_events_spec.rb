@@ -10,8 +10,8 @@ describe FiniteMachine, 'async_events' do
       initial :green
 
       events {
-        event :slow, :green => :yellow
-        event :stop, :yellow => :red
+        event :slow,  :green  => :yellow
+        event :stop,  :yellow => :red
         event :ready, :red    => :yellow
         event :go,    :yellow => :green
       }
@@ -35,6 +35,38 @@ describe FiniteMachine, 'async_events' do
     expect(called).to match_array([
       'on_enter_yellow_foo',
       'on_enter_red_bar'
+    ])
+  end
+
+  it 'correctly passes parameters to conditionals' do
+    called = []
+    fsm = FiniteMachine.define do
+      events {
+        event :go, :none => :green,
+              if: -> (context, arg) {
+                called << "cond_none_green(#{context},#{arg})"; true
+              }
+
+        event :stop, from: :any do
+          choice :red, if: -> (context, arg) {
+                         called << "cond_any_red(#{context},#{arg})"; true
+                       }
+        end
+      }
+    end
+    expect(fsm.current).to eql(:none)
+    fsm.async.go(:foo)
+    fsm.event_queue.join 0.01
+    expect(fsm.current).to eql(:green)
+    expect(called).to eql(["cond_none_green(#{fsm},foo)"])
+
+    expect(fsm.current).to eql(:green)
+    fsm.async.stop(:bar)
+    fsm.event_queue.join 0.01
+    expect(fsm.current).to eql(:red)
+    expect(called).to match_array([
+      "cond_none_green(#{fsm},foo)",
+      "cond_any_red(#{fsm},bar)"
     ])
   end
 
