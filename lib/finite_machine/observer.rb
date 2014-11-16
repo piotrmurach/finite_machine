@@ -126,7 +126,7 @@ module FiniteMachine
     #
     # @api private
     def defer(callable, trans_event, *data)
-      async_call = AsyncCall.build(machine, callable, trans_event, *data)
+      async_call = AsyncCall.new(machine, callable, trans_event, *data)
       machine.event_queue << async_call
     end
 

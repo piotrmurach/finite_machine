@@ -22,7 +22,10 @@ module FiniteMachine
     #
     # @api private
     def method_missing(method_name, *args, &block)
-      event_queue << AsyncCall.build(context, Callable.new(method_name), *args, &block)
+      callable   = Callable.new(method_name)
+      async_call = AsyncCall.new(context, callable, *args, &block)
+
+      event_queue << async_call
     end
   end # AsyncProxy
 end # FiniteMachine
