@@ -464,7 +464,13 @@ fm.current     # => :yellow
 In order to fire the event transition asynchronously use the `async` scope like so
 
 ```ruby
-fm.async.ready  # => executes in separate Thread
+fm.async.ready('Piotr')  # => executes in separate Thread
+```
+
+The `async` call allows for alternative syntax whereby the method name is passed as one of the parameters like so:
+
+```ruby
+fm.async(:ready, 'Piotr')
 ```
 
 ### 2.4 Multiple from states
@@ -572,6 +578,27 @@ fm = FiniteMachine.define do
 end
 fm.slow    # doesn't transition to :yellow state
 fm.current # => :green
+```
+
+Condition by default receives the current context, which is the current state machine instance, followed by extra arguments.
+
+```ruby
+fsm = FiniteMachine.define do
+  initial :red
+
+  events {
+    event :go, :red => :green,
+          if: -> (context, a) { context.current == a }
+  }
+end
+fm.go(:yellow) # doesn't transition
+fm.go          # raises ArgumentError
+```
+
+**Note** If you specify condition with a given arguments then you need to call an event with the exact number of arguments, otherwise you will get `ArgumentError`. Thus in above scenario to prevent errors specify condition like so:
+
+```ruby
+if: -> (context, *args) { ... }
 ```
 
 Provided your **FiniteMachine** is associated with another object through `target` helper. Then the target object together with event arguments will be passed to the `:if` or `:unless` condition scope.
