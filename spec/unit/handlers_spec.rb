@@ -5,7 +5,7 @@ require 'spec_helper'
 describe FiniteMachine, 'handlers' do
 
   before(:each) {
-    Logger = Class.new do
+    DummyLogger = Class.new do
       attr_reader :result
 
       def log_error(exception)
@@ -44,7 +44,7 @@ describe FiniteMachine, 'handlers' do
   end
 
   it 'allows for :with to be symbol' do
-    logger = Logger.new
+    logger = DummyLogger.new
     fsm = FiniteMachine.define do
       initial :green
 
@@ -67,7 +67,7 @@ describe FiniteMachine, 'handlers' do
   end
 
   it 'allows for error type as string' do
-    logger = Logger.new
+    logger = DummyLogger.new
     called = []
     fsm = FiniteMachine.define do
       initial :green

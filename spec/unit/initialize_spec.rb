@@ -5,7 +5,7 @@ require 'spec_helper'
 describe FiniteMachine, 'initialize' do
 
   before(:each) {
-    Logger = Class.new do
+    DummyLogger = Class.new do
       attr_accessor :level
 
       def initialize
@@ -128,7 +128,7 @@ describe FiniteMachine, 'initialize' do
   end
 
   it "evaluates initial state" do
-    logger = Logger.new
+    logger = DummyLogger.new
     fsm = FiniteMachine.define do
       initial logger.level
 
