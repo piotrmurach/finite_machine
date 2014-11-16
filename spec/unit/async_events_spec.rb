@@ -43,12 +43,12 @@ describe FiniteMachine, 'async_events' do
     fsm = FiniteMachine.define do
       events {
         event :go, :none => :green,
-              if: -> (context, arg) {
+              if: proc { |context, arg|
                 called << "cond_none_green(#{context},#{arg})"; true
               }
 
         event :stop, from: :any do
-          choice :red, if: -> (context, arg) {
+          choice :red, if: proc { |context, arg|
                          called << "cond_any_red(#{context},#{arg})"; true
                        }
         end
