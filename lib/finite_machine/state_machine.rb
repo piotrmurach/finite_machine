@@ -300,8 +300,7 @@ module FiniteMachine
     #
     # @api private
     def raise_transition_error(error)
-      fail(TransitionError, "#(#{error.class}): #{error.message}\n" \
-        "occured at #{error.backtrace.join("\n")}")
+      fail TransitionError, Logger.format_error(error)
     end
 
     # Forward the message to observer or self

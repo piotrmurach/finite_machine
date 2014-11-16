@@ -154,8 +154,7 @@ module FiniteMachine
         event.dispatch
       end
     rescue Exception => ex
-      Logger.error "Error while running event: #{ex.class} #{ex}" \
-                   "#{ex.backtrace.join("\n")}"
+      Logger.error "Error while running event: #{Logger.format_error(ex)}"
     end
   end # EventQueue
 end # FiniteMachine
