@@ -191,6 +191,13 @@ module FiniteMachine
       machine.errors.call(&block)
     end
 
+    # Decide whether to log transitions
+    #
+    # @api public
+    def log_transitions(value)
+      machine.log_transitions = value
+    end
+
     private
 
     # Initialize state machine properties based off attributes
@@ -200,6 +207,7 @@ module FiniteMachine
       attrs[:initial]  and initial(attrs[:initial])
       attrs[:target]   and target(attrs[:target])
       attrs[:terminal] and terminal(attrs[:terminal])
+      log_transitions(attrs.fetch(:log_transitions, false))
     end
 
     # Parse initial options

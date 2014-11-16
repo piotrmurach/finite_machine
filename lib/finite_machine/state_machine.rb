@@ -44,6 +44,9 @@ module FiniteMachine
     # The state machine event definitions
     attr_threadsafe :events_chain
 
+    # Allow or not logging of transitions
+    attr_threadsafe :log_transitions
+
     def_delegators :@dsl, :initial, :terminal, :target, :trigger_init,
                    :alias_target
 
