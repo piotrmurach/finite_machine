@@ -2,25 +2,14 @@
 
 module FiniteMachine
   # An asynchronouse call representation
+  #
+  # Used internally by {EventQueue} to schedule events
+  #
+  # @api private
   class AsyncCall
     include Threadable
 
-    attr_threadsafe :context
-
-    attr_threadsafe :callable
-
-    attr_threadsafe :arguments
-
-    attr_threadsafe :block
-
-    # Create an AsynCall
-    #
-    # @api private
-    def initialize
-      @mutex = Mutex.new
-    end
-
-    # Build asynchronous call instance
+    # Create asynchronous call instance
     #
     # @param [Object] context
     # @param [Callable] callable
@@ -28,18 +17,18 @@ module FiniteMachine
     # @param [#call] block
     #
     # @example
-    #   AsyncCall.build(self, Callable.new(:method), :a, :b)
+    #   AsyncCall.new(context, Callable.new(:method), :a, :b)
     #
     # @return [self]
     #
     # @api public
-    def self.build(context, callable, *args, &block)
-      instance = new
-      instance.context = context
-      instance.callable = callable
-      instance.arguments = args
-      instance.block = block
-      instance
+    def initialize(context, callable, *args, &block)
+      @context   = context
+      @callable  = callable
+      @arguments = args.dup
+      @block     = block
+      @mutex     = Mutex.new
+      freeze
     end
 
     # Dispatch the event to the context
@@ -52,5 +41,15 @@ module FiniteMachine
         callable.call(context, *arguments, &block)
       end
     end
+
+    protected
+
+    attr_threadsafe :context
+
+    attr_threadsafe :callable
+
+    attr_threadsafe :arguments
+
+    attr_threadsafe :block
   end # AsyncCall
 end # FiniteMachine
