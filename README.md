@@ -1,16 +1,17 @@
 # FiniteMachine
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/peter-murach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Gem Version](https://badge.fury.io/rb/finite_machine.png)][gem]
 [![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.png?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/peter-murach/finite_machine.png)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/peter-murach/finite_machine/badge.png)][coverage]
 [![Inline docs](http://inch-ci.org/github/peter-murach/finite_machine.png)][inchpages]
+[![Gitter](https://badges.gitter.im/Join Chat.svg)][gitter]
 
 [gem]: http://badge.fury.io/rb/finite_machine
 [travis]: http://travis-ci.org/peter-murach/finite_machine
 [codeclimate]: https://codeclimate.com/github/peter-murach/finite_machine
 [coverage]: https://coveralls.io/r/peter-murach/finite_machine
 [inchpages]: http://inch-ci.org/github/peter-murach/finite_machine
+[gitter]: https://gitter.im/peter-murach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
 
