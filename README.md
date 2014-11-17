@@ -232,7 +232,7 @@ end
 
 ### 1.3 terminal
 
-To specify a final state **FiniteMachine** uses the `terminal` method. The `terminal` can accpet more than one state.
+To specify a final state **FiniteMachine** uses the `terminal` method. The `terminal` can accept more than one state.
 
 ```ruby
 fm = FiniteMachine.define do
