@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'can?' do
+RSpec.describe FiniteMachine, 'can?' do
   before(:each) {
     Bug = Class.new do
       def pending?

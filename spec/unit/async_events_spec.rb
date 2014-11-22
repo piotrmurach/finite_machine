@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'async_events' do
+RSpec.describe FiniteMachine, 'async_events' do
 
   it 'runs events asynchronously' do
     called = []

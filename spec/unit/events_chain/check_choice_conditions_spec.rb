@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::EventsChain, '#clear' do
+RSpec.describe FiniteMachine::EventsChain, '#clear' do
   let(:object)  { described_class }
 
   let(:machine) { double(:machine) }

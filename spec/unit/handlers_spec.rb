@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'handlers' do
+RSpec.describe FiniteMachine, 'handlers' do
 
   before(:each) {
     DummyLogger = Class.new do

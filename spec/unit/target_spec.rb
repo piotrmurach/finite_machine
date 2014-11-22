@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, '#target' do
-
+RSpec.describe FiniteMachine, '#target' do
   it "allows to target external object" do
     Car = Class.new do
       attr_accessor :reverse_lights

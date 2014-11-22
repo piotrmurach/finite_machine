@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'events' do
+RSpec.describe FiniteMachine, 'events' do
 
   it "allows for hash rocket syntax to describe transition" do
     fsm = FiniteMachine.define do

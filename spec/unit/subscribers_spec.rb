@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Subscribers do
+RSpec.describe FiniteMachine::Subscribers do
   let(:machine)  { double }
   let(:event)    { double }
   let(:listener) { double }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, '#choice' do
+RSpec.describe FiniteMachine, '#choice' do
   before(:each) {
     User = Class.new do
       def promo?(token = false)

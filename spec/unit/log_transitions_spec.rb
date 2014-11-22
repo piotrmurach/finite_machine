@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'log_transitions' do
+RSpec.describe FiniteMachine, 'log_transitions' do
   let(:output) { StringIO.new('', 'w+')}
 
   before { FiniteMachine.logger = ::Logger.new(output) }

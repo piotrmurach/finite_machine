@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'is?' do
+RSpec.describe FiniteMachine, 'is?' do
 
   it "allows to check if state is reachable" do
     fsm = FiniteMachine.define do

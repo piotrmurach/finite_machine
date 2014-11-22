@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Callable, '#call' do
+RSpec.describe FiniteMachine::Callable, '#call' do
 
   before(:each) {
     Car = Class.new do

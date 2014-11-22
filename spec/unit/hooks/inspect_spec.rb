@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Hooks, '#inspect' do
+RSpec.describe FiniteMachine::Hooks, '#inspect' do
   subject(:hooks) { described_class.new }
 
   it "displays name and transitions" do

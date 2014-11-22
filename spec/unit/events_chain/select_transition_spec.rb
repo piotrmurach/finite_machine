@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::EventsChain, '#select_transition' do
+RSpec.describe FiniteMachine::EventsChain, '#select_transition' do
   let(:object)  { described_class }
 
   let(:machine) { double(:machine) }

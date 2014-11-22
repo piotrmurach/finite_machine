@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::EventQueue do
+RSpec.describe FiniteMachine::EventQueue do
 
   subject(:event_queue) { described_class.new }
 

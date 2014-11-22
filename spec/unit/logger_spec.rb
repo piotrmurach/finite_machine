@@ -1,9 +1,8 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'logger'
 
-describe FiniteMachine::Logger do
+RSpec.describe FiniteMachine::Logger do
   let(:message) { 'error' }
   let(:log) { double }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Definition, 'definition' do
+RSpec.describe FiniteMachine::Definition, 'definition' do
 
   before do
     class Engine < FiniteMachine::Definition

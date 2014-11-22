@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'define' do
+RSpec.describe FiniteMachine, 'define' do
 
   context 'with block' do
     it "creates system state machine" do

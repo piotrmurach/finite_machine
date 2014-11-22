@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Event, '#next_transition' do
+RSpec.describe FiniteMachine::Event, '#next_transition' do
   let(:object) { described_class }
 
   subject(:event) { object.new(machine, name: :test) }

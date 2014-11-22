@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, '#respond_to' do
-
+RSpec.describe FiniteMachine, '#respond_to' do
   subject(:fsm) {
     Car = Class.new do
       def engine_on?

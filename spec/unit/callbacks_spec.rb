@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'callbacks' do
+RSpec.describe FiniteMachine, 'callbacks' do
 
   it "triggers default init event" do
     called = []

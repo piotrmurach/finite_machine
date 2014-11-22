@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Transition, '#inspect' do
+RSpec.describe FiniteMachine::Transition, '#inspect' do
   let(:machine) { double(:machine) }
 
   subject(:transition) { described_class.new(machine, attrs) }

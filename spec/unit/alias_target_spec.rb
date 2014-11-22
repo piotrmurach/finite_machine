@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Definition, '#alias_target' do
+RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
   before do
     Car = Class.new do

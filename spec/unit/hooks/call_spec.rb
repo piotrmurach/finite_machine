@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Hooks, '#call' do
+RSpec.describe FiniteMachine::Hooks, '#call' do
   let(:object) { described_class }
 
   subject(:hooks) { object.new }

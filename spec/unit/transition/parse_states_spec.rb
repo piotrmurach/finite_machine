@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Transition, 'parsed_states' do
+RSpec.describe FiniteMachine::Transition, 'parsed_states' do
   let(:machine) { double(:machine) }
 
   subject(:transition) { described_class.new(machine, attrs) }

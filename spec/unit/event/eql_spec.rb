@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Event, 'eql?' do
+RSpec.describe FiniteMachine::Event, 'eql?' do
   let(:machine) { double(:machine) }
   let(:name)    { :green }
   let(:options) { {} }

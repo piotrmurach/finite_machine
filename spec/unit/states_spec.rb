@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, 'states' do
-
+RSpec.describe FiniteMachine, 'states' do
   it "retrieves all available states" do
     fsm = FiniteMachine.define do
       initial :green

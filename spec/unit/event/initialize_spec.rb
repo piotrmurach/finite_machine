@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Event, 'new' do
+RSpec.describe FiniteMachine::Event, 'new' do
   let(:machine) { double(:machine) }
   let(:name)    { :green }
   let(:options) { {} }

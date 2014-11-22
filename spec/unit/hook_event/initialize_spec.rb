@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::HookEvent, 'new' do
+RSpec.describe FiniteMachine::HookEvent, 'new' do
   let(:name)       { :green }
   let(:transition) { double(:transition) }
   let(:data)       { [:foo, :bar] }

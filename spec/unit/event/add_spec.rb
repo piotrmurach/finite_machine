@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::Event, '#<<' do
+RSpec.describe FiniteMachine::Event, '#<<' do
   let(:machine) { double(:machine) }
 
   let(:object) { described_class }

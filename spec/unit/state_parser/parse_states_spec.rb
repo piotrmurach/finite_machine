@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine::StateParser, '#inspect' do
+RSpec.describe FiniteMachine::StateParser, '#inspect' do
   let(:object) { described_class }
 
   subject(:parser) { object.new(attrs) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, ':if, :unless' do
+RSpec.describe FiniteMachine, ':if, :unless' do
   before(:each) {
     Car = Class.new do
       attr_accessor :engine_on

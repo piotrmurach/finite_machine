@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-describe FiniteMachine, '#inspect' do
-
+RSpec.describe FiniteMachine, '#inspect' do
   it "print useful information about state machine" do
     fsm = FiniteMachine.define do
       initial :green
