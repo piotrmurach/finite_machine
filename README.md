@@ -13,7 +13,7 @@
 [inchpages]: http://inch-ci.org/github/peter-murach/finite_machine
 [gitter]: https://gitter.im/peter-murach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
-A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
+> A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
 
 ## Features
 
