@@ -91,6 +91,7 @@ Or install it yourself as:
 * [7. Stand-Alone FiniteMachine](#7-stand-alone-finitemachine)
     * [7.1 Creating a Definition](#71-creating-a-definition)
     * [7.2 Targeting definition](#72-targeting-definition)
+    * [7.3 Definition inheritance](#73-definition-inheritance)
 * [8. Integration](#8-integration)
     * [8.1 Plain Ruby Objects](#81-plain-ruby-objects)
     * [8.2 ActiveRecord](#82-activerecord)
@@ -1213,6 +1214,45 @@ class Car
 end
 ```
 
+### 7.3 Definition inheritance
+
+You can create more specialised versions of a generic definition by using inheritance. Assuming a generic state machine definition:
+
+```ruby
+class GenericStateMachine < FiniteMachine::Definition
+  initial :red
+
+  events {
+    event :start, :red => :green
+  }
+
+  callbacks {
+    on_enter { |event| ... }
+  }
+end
+```
+
+we can easily create a more specifc definition that adds new event and more specifc callback to the mix.
+
+```ruby
+class SpecificStateMachine < GenericStateMachine
+  events {
+    event :stop, :green => :yellow
+  }
+
+  callbacks {
+    on_enter(:yellow) { |event| ... }
+  }
+end
+```
+
+Finally to use the specific state machine definition do:
+
+```ruby
+specific_fsm = SpecificStateMachine.new
+specific_fsm.target ... # Target specific object
+```
+
 ## 8 Integration
 
 Since **FiniteMachine** is an object in its own right, it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
@@ -1318,7 +1358,7 @@ class Account < ActiveRecord::Base
 
       callbacks {
         on_enter do |event|
-          target.state = machine.state
+          target.state = state
         end
       }
     end
@@ -1363,4 +1403,4 @@ Creating a standalone **FiniteMachine** brings a number of benefits, one of them
 
 ## Copyright
 
-Copyright (c) 2014 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014-2015 Piotr Murach. See LICENSE for further details.
