@@ -1318,7 +1318,7 @@ class Account < ActiveRecord::Base
 
       callbacks {
         on_enter do |event|
-          target.state = event.to
+          target.state = machine.state
         end
       }
     end
