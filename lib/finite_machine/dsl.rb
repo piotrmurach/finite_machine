@@ -22,9 +22,12 @@ module FiniteMachine
       self.machine = machine
     end
 
+    # Delegate attributes to machine instance
+    #
+    # @api private
     def method_missing(method_name, *args, &block)
-      if @machine.respond_to?(method_name)
-        @machine.send(method_name, *args, &block)
+      if machine.respond_to?(method_name)
+        machine.send(method_name, *args, &block)
       else
         super
       end
@@ -88,7 +91,7 @@ module FiniteMachine
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
       name, self.defer, silent = parse(options)
       self.initial_event = name
-      machine.event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
+      event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
     end
 
     # Trigger initial event
@@ -97,7 +100,7 @@ module FiniteMachine
     #
     # @api private
     def trigger_init
-      machine.send(:"#{initial_event}") unless defer
+      public_send(:"#{initial_event}") unless defer
     end
 
     # Attach state machine to an object
@@ -117,9 +120,9 @@ module FiniteMachine
     # @api public
     def target(object = nil)
       if object.nil?
-        machine.env.target
+        env.target
       else
-        machine.env.target = object
+        env.target = object
       end
     end
 
@@ -141,7 +144,7 @@ module FiniteMachine
     #
     # @api public
     def alias_target(alias_name)
-      machine.env.aliases << alias_name.to_sym
+      env.aliases << alias_name.to_sym
     end
 
     # Define terminal state
@@ -153,7 +156,7 @@ module FiniteMachine
     #
     # @api public
     def terminal(*values)
-      machine.final_state = values
+      self.final_state = values
     end
 
     # Define state machine events
@@ -167,7 +170,7 @@ module FiniteMachine
     #
     # @api public
     def events(&block)
-      machine.events_dsl.call(&block)
+      events_dsl.call(&block)
     end
 
     # Define state machine callbacks
@@ -181,21 +184,21 @@ module FiniteMachine
     #
     # @api public
     def callbacks(&block)
-      machine.observer.call(&block)
+      observer.call(&block)
     end
 
     # Error handler that throws exception when machine is in illegal state
     #
     # @api public
     def handlers(&block)
-      machine.errors.call(&block)
+      errors.call(&block)
     end
 
     # Decide whether to log transitions
     #
     # @api public
     def log_transitions(value)
-      machine.log_transitions = value
+      self.log_transitions = value
     end
 
     private
