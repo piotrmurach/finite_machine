@@ -1,9 +1,9 @@
 # FiniteMachine
-[![Gem Version](https://badge.fury.io/rb/finite_machine.png)][gem]
-[![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.png?branch=master)][travis]
-[![Code Climate](https://codeclimate.com/github/peter-murach/finite_machine.png)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/peter-murach/finite_machine/badge.png)][coverage]
-[![Inline docs](http://inch-ci.org/github/peter-murach/finite_machine.png)][inchpages]
+[![Gem Version](https://badge.fury.io/rb/finite_machine.svg)][gem]
+[![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.svg?branch=master)][travis]
+[![Code Climate](https://codeclimate.com/github/peter-murach/finite_machine/badges/gpa.svg)][codeclimate]
+[![Coverage Status](https://coveralls.io/repos/peter-murach/finite_machine/badge.svg)][coverage]
+[![Inline docs](http://inch-ci.org/github/peter-murach/finite_machine.svg)][inchpages]
 [![Gitter](https://badges.gitter.im/Join Chat.svg)][gitter]
 
 [gem]: http://badge.fury.io/rb/finite_machine
