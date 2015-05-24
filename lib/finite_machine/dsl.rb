@@ -259,7 +259,7 @@ module FiniteMachine
       sync_exclusive do
         attributes = attrs.merge!(name: name)
         if block_given?
-          merger = ChoiceMerger.new(self, attributes)
+          merger = ChoiceMerger.new(machine, attributes)
           merger.instance_eval(&block)
         else
           transition_builder = TransitionBuilder.new(machine, attributes)

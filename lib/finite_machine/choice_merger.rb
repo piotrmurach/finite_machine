@@ -6,16 +6,16 @@ module FiniteMachine
     include Threadable
 
     # The context where choice is executed
-    attr_threadsafe :context
+    attr_threadsafe :machine
 
-    # The options passed in to the context
+    # The options passed in to the machine
     attr_threadsafe :options
 
     # Initialize a ChoiceMerger
     #
     # @api private
-    def initialize(context, options)
-      self.context = context
+    def initialize(machine, options)
+      self.machine = machine
       self.options = options
     end
 
@@ -36,7 +36,7 @@ module FiniteMachine
     def choice(to, attrs = {})
       opts = options.dup
       opts.merge!(attrs)
-      transition_builder = TransitionBuilder.new(context.machine, opts)
+      transition_builder = TransitionBuilder.new(machine, opts)
       transition_builder.call(options[:from] => to)
     end
     alias_method :default, :choice
