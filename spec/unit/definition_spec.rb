@@ -63,10 +63,53 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
 
     engine.forward
     expect(engine.current).to eq(:one)
-    expect(car.reverse_lights?).to be false
+    expect(car.reverse_lights?).to eq(false)
 
     engine.back
     expect(engine.current).to eq(:reverse)
-    expect(car.reverse_lights?).to be true
+    expect(car.reverse_lights?).to eq(true)
+  end
+
+  it "supports inheritance of definitions" do
+    class GenericStateMachine < FiniteMachine::Definition
+      initial :red
+
+      events {
+        event :start, :red => :green
+      }
+
+      callbacks {
+        on_enter { |event| target << 'generic' }
+      }
+    end
+
+    class SpecificStateMachine < GenericStateMachine
+      events {
+        event :stop, :green => :yellow
+      }
+
+      callbacks {
+        on_enter(:yellow) { |event| target << 'specific' }
+      }
+    end
+
+    generic_fsm = GenericStateMachine.new
+    specific_fsm = SpecificStateMachine.new
+    called = []
+    generic_fsm.target called
+    specific_fsm.target called
+
+    expect(generic_fsm.states).to match_array([:none, :red, :green])
+    expect(specific_fsm.states).to match_array([:none, :red, :green, :yellow])
+
+    expect(specific_fsm.current).to eq(:red)
+
+    specific_fsm.start
+    expect(specific_fsm.current).to eq(:green)
+    expect(called).to match_array(['generic'])
+
+    specific_fsm.stop
+    expect(specific_fsm.current).to eq(:yellow)
+    expect(called).to match_array(['generic', 'generic', 'specific'])
   end
 end

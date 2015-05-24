@@ -43,6 +43,15 @@ module FiniteMachine
       end
     end
 
+    # Set deferrerd methods on the subclass
+    #
+    # @api private
+    def self.inherited(subclass)
+      super
+
+      self.deferreds.each { |d| subclass.add_deferred(d) }
+    end
+
     # Delay lookup of DSL method
     #
     # @param [Symbol] method_name
