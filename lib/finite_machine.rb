@@ -15,6 +15,7 @@ require "finite_machine/choice_merger"
 require "finite_machine/async_proxy"
 require "finite_machine/async_call"
 require "finite_machine/hook_event"
+require "finite_machine/env"
 require "finite_machine/event"
 require "finite_machine/event_builder"
 require "finite_machine/event_queue"
@@ -77,8 +78,6 @@ module FiniteMachine
 
   # Raised when argument is already defined
   AlreadyDefinedError = Class.new(::ArgumentError)
-
-  Environment = Struct.new(:target, :aliases)
 
   class << self
     attr_accessor :logger

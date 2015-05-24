@@ -67,7 +67,7 @@ module FiniteMachine
       @observer      = Observer.new(self)
       @transitions   = Hash.new { |hash, name| hash[name] = Hash.new }
       @events_chain  = EventsChain.new(self)
-      @env           = Environment.new(self, [])
+      @env           = Env.new(self, [])
       @dsl           = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
