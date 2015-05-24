@@ -62,12 +62,12 @@ module FiniteMachine
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
       @initial_state = DEFAULT_STATE
       @subscribers   = Subscribers.new(self)
-      @events_dsl    = EventsDSL.new(self)
-      @errors        = ErrorsDSL.new(self)
       @observer      = Observer.new(self)
       @transitions   = Hash.new { |hash, name| hash[name] = Hash.new }
       @events_chain  = EventsChain.new(self)
       @env           = Env.new(self, [])
+      @events_dsl    = EventsDSL.new(self)
+      @errors        = ErrorsDSL.new(self)
       @dsl           = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
