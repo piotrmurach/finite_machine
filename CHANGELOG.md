@@ -1,3 +1,10 @@
+0.10.1 (May 24, 2015)
+
+* Add ability to inherit state machine definitions
+* Add Env class for holiding machine envionment references
+* Change DSL to delegate calls to machine instance
+* Change ChoiceMerger to use machine directly
+
 0.10.0 (November 16, 2014)
 
 * Add #alias_target to allow renaming of target object by @reggieb
