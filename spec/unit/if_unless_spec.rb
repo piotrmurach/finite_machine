@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe FiniteMachine, ':if, :unless' do
   before(:each) {
-    Car = Class.new do
+    stub_const("Car", Class.new do
       attr_accessor :engine_on
 
       def turn_engine_on
@@ -18,13 +18,13 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       def engine_on?
         !!@engine_on
       end
-    end
+    end)
 
-    class Bug
+    stub_const("Bug", Class.new do
       def pending?
         false
       end
-    end
+    end)
   }
 
   it "passes context to conditionals" do

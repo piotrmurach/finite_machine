@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe FiniteMachine::Callable, '#call' do
 
   before(:each) {
-    Car = Class.new do
+    stub_const("Car", Class.new do
       attr_reader :result
 
       def initialize
@@ -31,7 +31,7 @@ RSpec.describe FiniteMachine::Callable, '#call' do
         @result = 'engine_on'
         !!@engine_on
       end
-    end
+    end)
   }
 
   let(:called) { [] }

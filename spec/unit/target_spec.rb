@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe FiniteMachine, '#target' do
   it "allows to target external object" do
-    Car = Class.new do
+    stub_const("Car", Class.new do
       attr_accessor :reverse_lights
 
       def turn_reverse_lights_off
@@ -44,7 +44,7 @@ RSpec.describe FiniteMachine, '#target' do
           }
         end
       end
-    end
+    end)
     car = Car.new
     expect(car.reverse_lights?).to be(false)
     expect(car.engine.current).to eql(:neutral)
@@ -103,7 +103,7 @@ RSpec.describe FiniteMachine, '#target' do
   end
 
   it "allows context methods take precedence over machine ones" do
-    Car = Class.new do
+    stub_const("Car", Class.new do
       attr_accessor :reverse_lights
       attr_accessor :called
 
@@ -146,7 +146,7 @@ RSpec.describe FiniteMachine, '#target' do
           }
         end
       end
-    end
+    end)
 
     car = Car.new
     expect(car.reverse_lights?).to be(false)
@@ -184,14 +184,14 @@ RSpec.describe FiniteMachine, '#target' do
 
   it "allows to differentiate between same named methods" do
     called = []
-    Car = Class.new do
+    stub_const("Car", Class.new do
       def initialize(called)
         @called = called
       end
       def save
         @called << 'car save called'
       end
-    end
+    end)
 
     car = Car.new(called)
     fsm = FiniteMachine.define do

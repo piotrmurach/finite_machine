@@ -42,7 +42,7 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
   end
 
   it "allows to create standalone machine" do
-    Car = Class.new do
+    stub_const("Car", Class.new do
       def turn_reverse_lights_off
         @reverse_lights = false
       end
@@ -54,7 +54,7 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
       def reverse_lights?
         @reverse_lights ||= false
       end
-    end
+    end)
 
     car = Car.new
     engine = Engine.new

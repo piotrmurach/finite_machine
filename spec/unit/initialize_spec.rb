@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe FiniteMachine, 'initialize' do
 
   before(:each) {
-    DummyLogger = Class.new do
+    stub_const("DummyLogger", Class.new do
       attr_accessor :level
 
       def initialize
         @level = :pending
       end
-    end
+    end)
   }
 
   it "defaults initial state to :none" do

@@ -25,14 +25,8 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
   config.disable_monkey_patching!
-  config.order = :random
-
-  # Remove defined constants
-  config.before :each do
-    [:Car, :DummyLogger, :Bug, :User, :Engine].each do |class_name|
-      if Object.const_defined?(class_name)
-        Object.send(:remove_const, class_name)
-      end
-    end
+  if config.files_to_run.one?
+    config.default_formatter = 'doc'
   end
+  config.order = :random
 end

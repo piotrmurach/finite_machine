@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe FiniteMachine, '#respond_to' do
+
   subject(:fsm) {
-    Car = Class.new do
+    stub_const("Car", Class.new do
       def engine_on?
         true
       end
-    end
+    end)
+
     FiniteMachine.new target: Car.new do
       initial :green
 

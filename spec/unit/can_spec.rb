@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe FiniteMachine, 'can?' do
   before(:each) {
-    Bug = Class.new do
+    stub_const("Bug", Class.new do
       def pending?
         false
       end
-    end
+    end)
   }
 
   it "allows to check if event can be fired" do

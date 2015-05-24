@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
   before do
-    Car = Class.new do
+    stub_const("Car", Class.new do
       def turn_reverse_lights_off
         @reverse_lights = false
       end
@@ -17,7 +17,7 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
       def reverse_lights?
         @reverse_lights ||= false
       end
-    end
+    end)
   end
 
   it "aliases target" do

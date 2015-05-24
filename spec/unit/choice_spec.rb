@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe FiniteMachine, '#choice' do
   before(:each) {
-    User = Class.new do
+    stub_const("User", Class.new do
       def promo?(token = false)
         token == :yes
       end
-    end
+    end)
   }
 
   it "allows for static choice based on conditional branching" do

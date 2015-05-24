@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe FiniteMachine, 'handlers' do
 
   before(:each) {
-    DummyLogger = Class.new do
+    stub_const("DummyLogger", Class.new do
       attr_reader :result
 
       def log_error(exception)
@@ -15,7 +15,7 @@ RSpec.describe FiniteMachine, 'handlers' do
       def raise_error
         raise FiniteMachine::TransitionError
       end
-    end
+    end)
   }
 
   it "allows to customise error handling" do
