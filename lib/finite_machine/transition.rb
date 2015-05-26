@@ -153,7 +153,9 @@ module FiniteMachine
     # @api public
     def valid?(*args, &block)
       if transition_choice?
-        machine.check_choice_conditions(name, *args, &block)
+        machine.events_chain[name].state_transitions.select { |trans|
+          trans.check_conditions(*args, &block)
+        }.any?(&:current?)
       else
         check_conditions(*args, &block)
       end
