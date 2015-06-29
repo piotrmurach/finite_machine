@@ -215,6 +215,7 @@ RSpec.describe FiniteMachine, '#choice' do
 
   it "does not transition when no matching choice for multiple event definitions" do
     ticket = double(:ticket, :pending? => true, :finished? => false)
+    called = []
     fsm = FiniteMachine.define do
       initial :inactive
 
@@ -233,12 +234,23 @@ RSpec.describe FiniteMachine, '#choice' do
           choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
         end
       }
+
+      callbacks {
+        on_before(:advance) { called << 'on_before_advance' }
+        on_after(:advance)  { called << 'on_after_advance' }
+      }
     end
     expect(fsm.current).to eq(:inactive)
     fsm.advance
     expect(fsm.current).to eq(:paused)
     fsm.advance
     expect(fsm.current).to eq(:paused)
+    expect(called).to eq([
+      'on_before_advance',
+      'on_after_advance',
+      'on_before_advance',
+      'on_after_advance'
+    ])
   end
 
   it "sets callback properties correctly" do
