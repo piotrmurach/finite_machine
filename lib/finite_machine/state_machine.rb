@@ -257,8 +257,9 @@ module FiniteMachine
         exception = InvalidStateError
         catch_error(exception) ||
           fail(exception, "inappropriate current state '#{state}'")
-        true
+        return false
       end
+      return true
     end
 
     # Performs transition
@@ -274,7 +275,7 @@ module FiniteMachine
       sync_exclusive do
         notify HookEvent::Before, event_transition, *args
 
-        if !valid_state?(event_transition) && event_transition.valid?(*args, &block)
+        if valid_state?(event_transition) && event_transition.valid?(*args, &block)
           notify HookEvent::Exit, event_transition, *args
 
           begin

@@ -181,7 +181,10 @@ RSpec.describe FiniteMachine, 'events' do
 
     expect(fsm.current).to eql(:green)
 
-    expect { fsm.stop }.to raise_error(FiniteMachine::InvalidStateError, /state 'green'/)
+    expect {
+      fsm.stop
+    }.to raise_error(FiniteMachine::InvalidStateError,
+                     /inappropriate current state 'green'/)
   end
 
   it "allows to transition to any state" do
