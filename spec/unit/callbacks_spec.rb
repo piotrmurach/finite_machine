@@ -909,8 +909,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
       initial :active
 
       events {
-        event :advance, active: :inactive, if: -> { false }
-        event :advance, inactive: :active, if: -> { false }
+        event :advance, :active   => :inactive, if: -> { false }
+        event :advance, :inactive => :active,   if: -> { false }
       }
 
       callbacks {
@@ -922,7 +922,9 @@ RSpec.describe FiniteMachine, 'callbacks' do
         end
       }
     end
+    expect(fsm.current).to eq(:active)
     fsm.advance
+    expect(fsm.current).to eq(:active)
     expect(called).to eq([
       'before_advance_active_inactive',
       'after_advance_active_inactive'
