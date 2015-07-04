@@ -274,24 +274,28 @@ module FiniteMachine
       sync_exclusive do
         notify HookEvent::Before, event_transition, *args
 
-        return CANCELLED if valid_state?(event_transition)
-        return CANCELLED unless event_transition.valid?(*args, &block)
+        if !valid_state?(event_transition) && event_transition.valid?(*args, &block)
+          notify HookEvent::Exit, event_transition, *args
 
-        notify HookEvent::Exit, event_transition, *args
+          begin
+            event_transition.call(*args)
+            Logger.report_transition(event_transition, *args) if log_transitions
 
-        begin
-          event_transition.call(*args)
-          Logger.report_transition(event_transition, *args) if log_transitions
+            notify HookEvent::Transition, event_transition, *args
+          rescue Exception => e
+            catch_error(e) || raise_transition_error(e)
+          end
 
-          notify HookEvent::Transition, event_transition, *args
-        rescue Exception => e
-          catch_error(e) || raise_transition_error(e)
+          notify HookEvent::Enter, event_transition, *args
+
+          notify HookEvent::After, event_transition, *args
+
+          event_transition.same?(state) ? NOTRANSITION : SUCCEEDED
+        else
+          notify HookEvent::After, event_transition, *args
+
+          CANCELLED
         end
-
-        notify HookEvent::Enter, event_transition, *args
-        notify HookEvent::After, event_transition, *args
-
-        event_transition.same?(state) ? NOTRANSITION : SUCCEEDED
       end
     end
 
