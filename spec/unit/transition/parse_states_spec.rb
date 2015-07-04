@@ -13,7 +13,7 @@ RSpec.describe FiniteMachine::Transition, 'parsed_states' do
     it "groups states" do
       expect(transition.from_states).to eq([:any])
       expect(transition.to_states).to eq([:red])
-      expect(transition.map).to eql({any: :red})
+      expect(transition.states).to eql({any: :red})
     end
   end
 

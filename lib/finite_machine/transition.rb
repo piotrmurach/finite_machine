@@ -26,8 +26,7 @@ module FiniteMachine
     attr_threadsafe :cancelled
 
     # All states for this transition event
-    attr_threadsafe :map
-    # TODO: rename to 'parsed_states'
+    attr_threadsafe :states
 
     # Silence callbacks
     attr_threadsafe :silent
@@ -41,10 +40,10 @@ module FiniteMachine
     def initialize(machine, attrs = {})
       @machine     = machine
       @name        = attrs.fetch(:name, DEFAULT_STATE)
-      @map         = attrs.fetch(:parsed_states, {})
+      @states      = attrs.fetch(:parsed_states, {})
       @silent      = attrs.fetch(:silent, false)
-      @from_states = @map.keys
-      @to_states   = @map.values
+      @from_states = @states.keys
+      @to_states   = @states.values
       @from_state  = @from_states.first
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
@@ -84,7 +83,7 @@ module FiniteMachine
         if found_trans.nil? # no choice found
           from_state
         else
-          found_trans.map[from_state] || found_trans.map[ANY_STATE]
+          found_trans.states[from_state] || found_trans.states[ANY_STATE]
         end
       else
         available_trans = machine.transitions[name]
@@ -120,7 +119,7 @@ module FiniteMachine
     #
     # @api public
     def same?(state)
-      map[state] == state || (map[ANY_STATE] == state && from_state == state)
+      states[state] == state || (states[ANY_STATE] == state && from_state == state)
     end
 
     # Check if from matches current state
@@ -173,9 +172,9 @@ module FiniteMachine
     def update_transitions
       from_states.each do |from|
         if (value = machine.transitions[name][from])
-          machine.transitions[name][from] = [value, map[from]].flatten
+          machine.transitions[name][from] = [value, states[from]].flatten
         else
-          machine.transitions[name][from] = map[from] || ANY_STATE
+          machine.transitions[name][from] = states[from] || ANY_STATE
         end
       end
       self
@@ -262,7 +261,7 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      transitions = @map.map { |from, to| "#{from} -> #{to}" }.join(', ')
+      transitions = @states.map { |from, to| "#{from} -> #{to}" }.join(', ')
       "<##{self.class} @name=#{@name}, @transitions=#{transitions}, @when=#{@conditions}>"
     end
   end # Transition
