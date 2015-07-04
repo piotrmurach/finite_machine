@@ -85,7 +85,7 @@ RSpec.describe FiniteMachine, '#choice' do
     expect(fsm.current).to eq(:agreement_form)
   end
 
-  it "choses state when skipped if/unless" do
+  it "chooses state when skipped if/unless" do
     fsm = FiniteMachine.define do
       initial :company_form
 
@@ -102,7 +102,7 @@ RSpec.describe FiniteMachine, '#choice' do
     expect(fsm.current).to eq(:promo_form)
   end
 
-  it "choice default state when branching conditions don't match" do
+  it "chooses default state when branching conditions don't match" do
     fsm = FiniteMachine.define do
       initial :company_form
 
