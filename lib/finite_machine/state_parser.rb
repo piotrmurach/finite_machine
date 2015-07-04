@@ -2,6 +2,10 @@
 
 module FiniteMachine
   # A class responsible for converting transition arguments to states
+  #
+  # Used by {TransitionBuilder} to parse user input state transitions.
+  #
+  # @api private
   class StateParser
     include Threadable
 
@@ -19,6 +23,7 @@ module FiniteMachine
     # @api public
     def initialize(attrs)
       @attrs = ensure_only_states!(attrs)
+      freeze
     end
 
     # Extract states from attributes
@@ -28,16 +33,14 @@ module FiniteMachine
     # @example
     #   StateParpser.new(attr).parase_states
     #
-    # @return [Hash[Symbol]] states
+    # @yield [Hash[Symbol]] the resolved states
+    #
+    # @return [Hash[Symbol]] the resolved states
     #
     # @api public
-    def parse_states(&block)
-      transitions = if contains_from_to_keys?
-        convert_from_to_attributes_to_states_hash
-      else
-        convert_attributes_to_states_hash
-      end
-      block ? transitions.each(&block) : transitions
+    def parse(&block)
+      states = extract_states
+      block ? states.each(&block) : states
     end
 
     # Check if attributes contain :from or :to key
@@ -84,10 +87,10 @@ module FiniteMachine
     #
     # @api private
     def ensure_only_states!(attrs)
-      _attrs = attrs.dup
-      BLACKLIST.each { |key| _attrs.delete(key) }
-      raise_not_enough_transitions unless _attrs.any?
-      _attrs
+      attributes = attrs.dup
+      BLACKLIST.each { |key| attributes.delete(key) }
+      raise_not_enough_transitions unless attributes.any?
+      attributes
     end
 
     # Convert attrbiutes with :from, :to keys to states hash
@@ -104,6 +107,10 @@ module FiniteMachine
 
     # Convert collapsed attributes to states hash
     #
+    # @example
+    #   parser = StateParser.new([:green, :red] => :yellow)
+    #   parser.parse # => {green: :yellow, red: :yellow}
+    #
     # @return [Hash[Symbol]]
     #
     # @api private
@@ -115,6 +122,19 @@ module FiniteMachine
           hash[k] = v
         end
         hash
+      end
+    end
+
+    # Perform extraction of states from user supplied definitions
+    #
+    # @return [Hash[Symbol]] the resolved states
+    #
+    # @api private
+    def extract_states
+      if contains_from_to_keys?
+        convert_from_to_attributes_to_states_hash
+      else
+        convert_attributes_to_states_hash
       end
     end
 

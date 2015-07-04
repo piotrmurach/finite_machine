@@ -33,7 +33,7 @@ module FiniteMachine
     #
     # @api public
     def call(states)
-      FiniteMachine::StateParser.new(states).parse_states do |from, to|
+      FiniteMachine::StateParser.new(states).parse do |from, to|
         attributes.merge!(parsed_states: { from => to })
         Transition.create(machine, attributes)
       end
