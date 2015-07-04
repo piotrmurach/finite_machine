@@ -41,6 +41,9 @@ module FiniteMachine
     #
     # @param [Exception] exception
     #
+    # @return [Boolean]
+    #   true if handler is found, nil otherwise
+    #
     # @api public
     def catch_error(exception)
       if handler = handler_for_error(exception)
