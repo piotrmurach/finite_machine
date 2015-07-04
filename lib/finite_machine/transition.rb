@@ -79,7 +79,12 @@ module FiniteMachine
     def to_state(*args)
       if transition_choice?
         found_trans = machine.select_choice_transition(name, from_state, *args)
-        found_trans.map[from_state] || found_trans.map[ANY_STATE]
+
+        if found_trans.nil?
+          from_state
+        else
+          found_trans.map[from_state] || found_trans.map[ANY_STATE]
+        end
       else
         available_trans = machine.transitions[name]
         available_trans[from_state] || available_trans[ANY_STATE]
@@ -153,7 +158,9 @@ module FiniteMachine
     # @api public
     def valid?(*args, &block)
       if transition_choice?
-        machine.check_choice_conditions(name, *args, &block)
+        machine.events_chain[name].state_transitions.select { |trans|
+          trans.check_conditions(*args, &block)
+        }.any?(&:current?)
       else
         check_conditions(*args, &block)
       end
