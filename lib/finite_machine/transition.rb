@@ -27,6 +27,7 @@ module FiniteMachine
 
     # All states for this transition event
     attr_threadsafe :map
+    # TODO: rename to 'parsed_states'
 
     # Silence callbacks
     attr_threadsafe :silent
@@ -54,21 +55,21 @@ module FiniteMachine
     # Create transition with associated helper methods
     #
     # @param [FiniteMachine::StateMachine] machine
+    #
     # @param [Hash] attrs
     #
     # @example
-    #   Transition.create(machine, {})
+    #   attributes = {parsed_states: {green: :yellow}, silent: true}
+    #   Transition.create(machine, attrbiutes)
     #
-    # @return [FiniteMachine::Transition]
+    # @return [Transition]
     #
     # @api public
     def self.create(machine, attrs = {})
       transition = new(machine, attrs)
       transition.update_transitions
-      transition.define_state_methods
-
-      builder = EventBuilder.new(machine)
-      builder.call(transition)
+      transition.define_state_query_methods
+      transition
     end
 
     # Decide :to state from available transitions for this event
@@ -166,7 +167,7 @@ module FiniteMachine
 
     # Add transition to the machine
     #
-    # @return [FiniteMachine::Transition]
+    # @return [Transition]
     #
     # @api private
     def update_transitions
@@ -177,13 +178,19 @@ module FiniteMachine
           machine.transitions[name][from] = map[from] || ANY_STATE
         end
       end
+      self
     end
 
     # Define helper state mehods for the transition states
     #
+    # @return [Transition]
+    #
     # @api private
-    def define_state_methods
-      from_states.concat(to_states).each { |state| define_state_method(state) }
+    def define_state_query_methods
+      from_states.concat(to_states).each do |state|
+        define_state_query_method(state)
+      end
+      self
     end
 
     # Define state helper method
@@ -191,7 +198,7 @@ module FiniteMachine
     # @param [Symbol] state
     #
     # @api private
-    def define_state_method(state)
+    def define_state_query_method(state)
       return if machine.respond_to?("#{state}?")
       machine.send(:define_singleton_method, "#{state}?") do
         machine.is?(state.to_sym)

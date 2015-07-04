@@ -2,6 +2,8 @@
 
 module FiniteMachine
   # A class reponsible for building transition out of parsed states
+  #
+  # @api private
   class TransitionBuilder
     include Threadable
 
@@ -9,6 +11,8 @@ module FiniteMachine
     attr_threadsafe :machine
 
     attr_threadsafe :attributes
+
+    attr_threadsafe :event_definition
 
     # Initialize a TransitionBuilder
     #
@@ -19,6 +23,7 @@ module FiniteMachine
     def initialize(machine, attributes = {})
       @machine = machine
       @attributes = attributes
+      @event_definition = EventDefinition.new(machine)
     end
 
     # Creates transitions for the states
@@ -35,7 +40,8 @@ module FiniteMachine
     def call(states)
       FiniteMachine::StateParser.new(states).parse do |from, to|
         attributes.merge!(parsed_states: { from => to })
-        Transition.create(machine, attributes)
+        transition = Transition.create(machine, attributes)
+        event_definition.apply(transition)
       end
     end
   end # TransitionBuilder

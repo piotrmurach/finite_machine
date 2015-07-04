@@ -1,8 +1,13 @@
 # encoding: utf-8
 
 module FiniteMachine
-  # A class responsible for building event methods
-  class EventBuilder
+  # A class responsible for defining event methods on state machine
+  #
+  # Used to add event definitions from {TransitionBuilder} to
+  # the {StateMachine} to obtain convenience helpers.
+  #
+  # @api private
+  class EventDefinition
     include Threadable
     include Safety
 
@@ -18,15 +23,15 @@ module FiniteMachine
       @machine = machine
     end
 
-    # Build state machine events
+    # Define transition event names as state machine events
     #
-    # @param [FiniteMachine::Transition] transition
-    #   the transition for which event is build
+    # @param [Transition] transition
+    #   the transition for which event definition is created
     #
-    # @return [FiniteMachine::Transition]
+    # @return [Transition]
     #
     # @api private
-    def call(transition)
+    def apply(transition)
       name = transition.name
       detect_event_conflict!(name)
       if machine.singleton_class.send(:method_defined?, name)
@@ -53,7 +58,7 @@ module FiniteMachine
     # @api private
     def define_event_transition(name, transition)
       silent = transition.silent
-      _event = FiniteMachine::Event.new(machine, name: name, silent: silent)
+      _event = Event.new(machine, name: name, silent: silent)
       _event << transition
       machine.events_chain.add(name, _event)
 
