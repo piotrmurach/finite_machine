@@ -2,20 +2,32 @@
 
 module FiniteMachine
   # A class representing event with transitions
+  #
+  # Used by {EventDefinition} to create events.
+  #
+  # @api private
   class Event
     include Comparable
     include Threadable
 
     # The name of this event
+    #
+    # @return [Symbol]
     attr_threadsafe :name
 
     # The state transitions for this event
+    #
+    # @return [Array[Transition]]
     attr_threadsafe :state_transitions
 
     # The reference to the state machine for this event
+    #
+    # @return [StateMachine]
     attr_threadsafe :machine
 
     # The silent option for this transition
+    #
+    # @return [Boolean]
     attr_threadsafe :silent
 
     # Initialize an Event
@@ -39,13 +51,14 @@ module FiniteMachine
     # @example
     #   event << FiniteMachine::Transition.new machine, :a => :b
     #
-    # @return [nil]
+    # @return [Event]
     #
     # @api public
     def <<(transition)
       sync_exclusive do
         Array(transition).flatten.each { |trans| state_transitions << trans }
       end
+      self
     end
     alias_method :add, :<<
 
@@ -81,13 +94,13 @@ module FiniteMachine
     # If silent option is passed the event will not fire any callbacks
     #
     # @example
-    #   transition = Transition.create(machine, {})
-    #   transition.call
+    #   transition = Event.new(machine, {})
+    #   transition.trigger
     #
     # @return [nil]
     #
     # @api public
-    def call(*args, &block)
+    def trigger(*args, &block)
       sync_exclusive do
         event_transition = next_transition
         if silent

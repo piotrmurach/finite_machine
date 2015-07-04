@@ -63,7 +63,7 @@ module FiniteMachine
       machine.events_chain.add(name, _event)
 
       machine.send(:define_singleton_method, name) do |*args, &block|
-        _event.call(*args, &block)
+        _event.trigger(*args, &block)
       end
     end
 

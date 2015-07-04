@@ -7,12 +7,10 @@ RSpec.describe FiniteMachine::Event, '#<<' do
 
   let(:object) { described_class }
 
-  subject(:event) { object.new(machine, name: :test) }
-
   it "adds multiple transitions" do
     transition = double(:transition)
-    event << transition
-    event << transition
+    event = object.new(machine)
+    event << transition << transition
     expect(event.state_transitions).to match_array([transition, transition])
   end
 end
