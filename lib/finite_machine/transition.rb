@@ -236,7 +236,7 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def call(*args)
+    def execute(*args)
       sync_exclusive do
         return if cancelled
         self.from_state = machine.state

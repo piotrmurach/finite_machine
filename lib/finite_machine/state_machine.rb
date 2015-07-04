@@ -279,7 +279,7 @@ module FiniteMachine
           notify HookEvent::Exit, event_transition, *args
 
           begin
-            event_transition.call(*args)
+            event_transition.execute(*args)
             Logger.report_transition(event_transition, *args) if log_transitions
 
             notify HookEvent::Transition, event_transition, *args

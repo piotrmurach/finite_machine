@@ -64,7 +64,8 @@ module FiniteMachine
 
     # Find next transition
     #
-    # @return [FiniteMachine::Transition]
+    # @return [Transition]
+    #   the next available transition
     #
     # @api private
     def next_transition
@@ -78,7 +79,7 @@ module FiniteMachine
     #
     # @param [Array[Object]] args
     #
-    # return FiniteMachine::TransitionChoice
+    # return [Transition]
     #
     # @api private
     def find_transition(*args)
@@ -97,14 +98,15 @@ module FiniteMachine
     #   transition = Event.new(machine, {})
     #   transition.trigger
     #
-    # @return [nil]
+    # @return [Boolean]
+    #   true is transition succeeded, false otherwise
     #
     # @api public
     def trigger(*args, &block)
       sync_exclusive do
         event_transition = next_transition
         if silent
-          event_transition.call(*args, &block)
+          event_transition.execute(*args, &block)
         else
           machine.send(:transition, event_transition, *args, &block)
         end
