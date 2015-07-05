@@ -1,3 +1,12 @@
+0.10.2 (July 5, 2015)
+
+* Fix to run 'on_after' callbacks even when event cancalled by @craiglittle
+* Fix to cancel transition when no matching choice is found by @craiglittle
+* Change StateParser #parse method
+* Change EventBuilder to EventDefinition and invert dependencies
+* Change Event#call to #trigger
+* Change Transition#call to #execute
+
 0.10.1 (May 24, 2015)
 
 * Add ability to inherit state machine definitions
