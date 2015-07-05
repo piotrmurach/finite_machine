@@ -5,38 +5,27 @@ require 'spec_helper'
 RSpec.describe FiniteMachine::Transition, 'parsed_states' do
   let(:machine) { double(:machine) }
 
-  subject(:transition) { described_class.new(machine, attrs) }
-
-  context 'with :to key only' do
-    let(:attrs) { { parsed_states: { any: :red } } }
-
-    it "groups states" do
-      expect(transition.from_states).to eq([:any])
-      expect(transition.to_states).to eq([:red])
-      expect(transition.states).to eql({any: :red})
-    end
+  it "groups states with :to key only" do
+    attrs = {parsed_states: {:any => :red}}
+    transition = FiniteMachine::Transition.new(machine, attrs)
+    expect(transition.states).to eql({any: :red})
   end
 
-  context 'when from array' do
-    let(:attrs) { {parsed_states: { :green => :red, :yellow => :red} } }
-
-    it "groups states" do
-      expect(transition.from_states).to match_array([:green, :yellow])
-      expect(transition.to_states).to eql([:red, :red])
-    end
+  it "groups states when from array" do
+    attrs = {parsed_states: { :green => :red, :yellow => :red}}
+    transition = FiniteMachine::Transition.new(machine, attrs)
+    expect(transition.states.keys).to match_array([:green, :yellow])
+    expect(transition.states.values).to eql([:red, :red])
   end
 
-  context 'when hash of states' do
-    let(:attrs) {
-      { parsed_states:
-        { :initial => :low,
-          :low     => :medium,
-          :medium  => :high } }
-     }
 
-    it "groups states" do
-      expect(transition.from_states).to match_array([:initial, :low, :medium])
-      expect(transition.to_states).to eql([:low, :medium, :high])
-    end
+  it "groups states when hash of states" do
+    attrs = {parsed_states: {
+              :initial => :low,
+              :low     => :medium,
+              :medium  => :high }}
+    transition = FiniteMachine::Transition.new(machine, attrs)
+    expect(transition.states.keys).to match_array([:initial, :low, :medium])
+    expect(transition.states.values).to eql([:low, :medium, :high])
   end
 end

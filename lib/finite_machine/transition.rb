@@ -5,13 +5,8 @@ module FiniteMachine
   class Transition
     include Threadable
 
+    # The event name
     attr_threadsafe :name
-
-    # State transitioning from
-    attr_threadsafe :from_states
-
-    # State transitioning to
-    attr_threadsafe :to_states
 
     # Predicates before transitioning
     attr_threadsafe :conditions
@@ -42,9 +37,7 @@ module FiniteMachine
       @name        = attrs.fetch(:name, DEFAULT_STATE)
       @states      = attrs.fetch(:parsed_states, {})
       @silent      = attrs.fetch(:silent, false)
-      @from_states = @states.keys
-      @to_states   = @states.values
-      @from_state  = @from_states.first
+      @from_state  = @states.keys.first
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
@@ -156,6 +149,7 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
+    # TODO: rename to can?
     def valid?(*args, &block)
       if transition_choice?
         machine.check_choice_conditions(name, *args, &block)
@@ -170,13 +164,7 @@ module FiniteMachine
     #
     # @api private
     def update_transitions
-      from_states.each do |from|
-        if (value = machine.transitions[name][from])
-          machine.transitions[name][from] = [value, states[from]].flatten
-        else
-          machine.transitions[name][from] = states[from] || ANY_STATE
-        end
-      end
+      machine.transitions.import(name, states)
       self
     end
 
@@ -186,7 +174,7 @@ module FiniteMachine
     #
     # @api private
     def define_state_query_methods
-      from_states.concat(to_states).each do |state|
+      states.to_a.flatten.each do |state|
         define_state_query_method(state)
       end
       self
@@ -210,7 +198,7 @@ module FiniteMachine
     def update_state(*args)
       if transition_choice?
         found_trans   = machine.select_transition(name, *args)
-        machine.state = found_trans.to_states.first
+        machine.state = found_trans.states.values.first
       else
         transitions   = machine.transitions[name]
         machine.state = transitions[machine.state] || transitions[ANY_STATE] || name
