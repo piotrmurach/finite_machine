@@ -11,7 +11,7 @@ module FiniteMachine
     include Threadable
     extend Forwardable
 
-    def_delegators :"@transitions", :keys
+    def_delegators :"@transitions", :keys, :inspect
 
     def initialize
       @transitions = Hash.new { |hash, name| hash[name] = Hash.new }
@@ -23,12 +23,14 @@ module FiniteMachine
     #
     # @api public
     def add(name, from, to = ANY_STATE)
-      if (value = transitions[name][from])
-        transitions[name][from] = [value, to].flatten
-      else
-        transitions[name][from] = to
+      sync_exclusive do
+        if (value = transitions[name][from])
+          transitions[name][from] = [value, to].flatten
+        else
+          transitions[name][from] = to
+        end
+        self
       end
-      self
     end
 
     # Retrieve transitions for event name
@@ -37,9 +39,27 @@ module FiniteMachine
     #
     # @api public
     def find(name)
-      transitions[name]
+      sync_shared { transitions[name] }
     end
     alias_method :[], :find
+
+    # Import transitions for a given name
+    #
+    # @param [Symbol] name
+    #   the event name
+    #
+    # @param [Hash[Symbol]] states
+    #   the hash of all state transitions
+    #
+    # @return [self]
+    #
+    # @api public
+    def import(name, states)
+      sync_exclusive do
+        states.each { |from, to| add(name, from, to) }
+        self
+      end
+    end
 
     private
 
