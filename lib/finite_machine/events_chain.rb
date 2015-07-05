@@ -98,9 +98,7 @@ module FiniteMachine
     #
     # @api public
     def check_choice_conditions(name, *args, &block)
-      chain[name].state_transitions.any? do |trans|
-        trans.current? && trans.check_conditions(*args, &block)
-      end
+      !chain[name].find_transition(*args).nil?
     end
 
     # Reset chain
