@@ -66,10 +66,8 @@ module FiniteMachine
     # @return [Hash]
     #
     # @api public
-    def call(event_type, event_state)
-      collection[event_type][event_state].each do |hook|
-        yield hook
-      end
+    def call(event_type, event_state, &block)
+      collection[event_type][event_state].each(&block)
     end
 
     # Check if collection has any elements
