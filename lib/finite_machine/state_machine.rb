@@ -63,7 +63,7 @@ module FiniteMachine
       @initial_state = DEFAULT_STATE
       @subscribers   = Subscribers.new(self)
       @observer      = Observer.new(self)
-      @transitions   = Hash.new { |hash, name| hash[name] = Hash.new }
+      @transitions   = Transitions.new
       @events_chain  = EventsChain.new(self)
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
