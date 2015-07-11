@@ -71,9 +71,7 @@ module FiniteMachine
     def run_transition(event_transition, *data)
       sync_exclusive do
         if !event_transition.cancelled? && event_transition.silent?
-          from_state = event_transition.from_state
-          to_state = event_transition.move_to(*data)
-          machine.send(:move_state, from_state, to_state)
+          machine.send(:transition!, event_transition, *data)
         else
           machine.send(:transition, event_transition, *data)
         end

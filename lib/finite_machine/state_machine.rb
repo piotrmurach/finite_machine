@@ -324,6 +324,13 @@ module FiniteMachine
       end
     end
 
+    # Perform transition without validation or callbacks
+    #
+    # @api private
+    def transition!(event_transition, *data, &block)
+      move_state(current, event_transition.move_to(*data))
+    end
+
     # Update this state machine state to new one
     #
     # @param [Symbol] from_state
