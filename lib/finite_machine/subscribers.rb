@@ -60,8 +60,10 @@ module FiniteMachine
     # @return [undefined]
     #
     # @api public
-    def visit(hook_event)
-      each { |subscriber| synchronize { hook_event.notify(subscriber) } }
+    def visit(hook_event, *data)
+      each { |subscriber|
+        synchronize { hook_event.notify(subscriber, *data) }
+      }
     end
 
     # Number of subscribed listeners
