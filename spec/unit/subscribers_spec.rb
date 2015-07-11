@@ -3,29 +3,40 @@
 require 'spec_helper'
 
 RSpec.describe FiniteMachine::Subscribers do
-  let(:machine)  { double }
-  let(:event)    { double }
   let(:listener) { double }
 
-  subject(:subscribers) { described_class.new(machine) }
-
-  before { subscribers.subscribe(listener) }
-
   it "checks if any subscribers exist" do
-    expect(subscribers.empty?).to be(false)
+    subscribers = described_class.new
+    expect(subscribers.empty?).to eq(true)
+    subscribers.subscribe(listener)
+    expect(subscribers.empty?).to eq(false)
+  end
+
+  it "allows to subscribe multiple listeners" do
+    subscribers = described_class.new
+    subscribers.subscribe(listener, listener)
+    expect(subscribers.size).to eq(2)
   end
 
   it "returns index for the subscriber" do
+    subscribers = described_class.new
+    subscribers.subscribe(listener)
     expect(subscribers.index(listener)).to eql(0)
   end
 
   it "visits all subscribed listeners for the event" do
-    expect(event).to receive(:notify).with(listener)
+    subscribers = described_class.new
+    subscribers.subscribe(listener)
+    event = spy(:event)
     subscribers.visit(event)
+    expect(event).to have_received(:notify).with(listener)
   end
 
   it "resets the subscribers" do
+    subscribers = described_class.new
+    subscribers.subscribe(listener)
+    expect(subscribers.empty?).to eq(false)
     subscribers.reset
-    expect(subscribers.empty?).to be(true)
+    expect(subscribers.empty?).to eq(true)
   end
 end

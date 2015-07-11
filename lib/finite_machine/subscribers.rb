@@ -11,9 +11,8 @@ module FiniteMachine
     # Initialize a subscribers collection
     #
     # @api public
-    def initialize(machine)
-      super()
-      @machine     = machine
+    def initialize
+      super
       @subscribers = []
     end
 
@@ -61,7 +60,16 @@ module FiniteMachine
     #
     # @api public
     def visit(event)
-      each { |subscriber| synchronize { event.notify subscriber } }
+      each { |subscriber| synchronize { event.notify(subscriber) } }
+    end
+
+    # Number of subscribed listeners
+    #
+    # @return [Integer]
+    #
+    # @api public
+    def size
+      synchronize { @subscribers.size }
     end
 
     # Reset subscribers
