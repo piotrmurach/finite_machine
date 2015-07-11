@@ -191,7 +191,7 @@ module FiniteMachine
     #
     # @api public
     def handlers(&block)
-      errors.call(&block)
+      errors_dsl.call(&block)
     end
 
     # Decide whether to log transitions

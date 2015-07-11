@@ -17,23 +17,11 @@ module FiniteMachine
     # Current state
     attr_threadsafe :state
 
-    # Events DSL
-    attr_threadsafe :events_dsl
-
-    # Errors DSL
-    attr_threadsafe :errors
-
     # The prefix used to name events.
     attr_threadsafe :namespace
 
     # The events and their transitions.
     attr_threadsafe :transitions
-
-    # The state machine observer
-    attr_threadsafe :observer
-
-    # The state machine subscribers
-    attr_threadsafe :subscribers
 
     # The state machine environment
     attr_threadsafe :env
@@ -50,7 +38,7 @@ module FiniteMachine
     def_delegators :@dsl, :initial, :terminal, :target, :trigger_init,
                    :alias_target
 
-    def_delegator :@events_dsl, :event
+    def_delegator :events_dsl, :event
 
     def_delegators :@events_chain, :check_choice_conditions, :select_transition,
                    :select_choice_transition
@@ -67,19 +55,21 @@ module FiniteMachine
       @events_chain  = EventsChain.new(self)
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
-      @errors        = ErrorsDSL.new(self)
+      @errors_dsl    = ErrorsDSL.new(self)
       @dsl           = DSL.new(self, attributes)
 
       @dsl.call(&block) if block_given?
       trigger_init
     end
 
+    # Subscribe observer for event notifications
+    #
     # @example
     #   machine.subscribe(Observer.new(machine))
     #
     # @api public
     def subscribe(*observers)
-      @subscribers.subscribe(*observers)
+      sync_exclusive { subscribers.subscribe(*observers) }
     end
 
     # TODO:  use trigger to actually fire state machine events!
@@ -243,6 +233,34 @@ module FiniteMachine
     end
 
     private
+
+    # Errors DSL
+    #
+    # @return [ErrorsDSL]
+    #
+    # @api private
+    attr_threadsafe :errors_dsl
+
+    # Events DSL
+    #
+    # @return [EventsDSL]
+    #
+    # @api private
+    attr_threadsafe :events_dsl
+
+    # The state machine observer
+    #
+    # @return [Observer]
+    #
+    # @api private
+    attr_threadsafe :observer
+
+    # The state machine subscribers
+    #
+    # @return [Subscribers]
+    #
+    # @api private
+    attr_threadsafe :subscribers
 
     # Check if state is reachable
     #
