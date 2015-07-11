@@ -2,21 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe FiniteMachine::HookEvent, 'new' do
-  let(:name)       { :green }
-  let(:transition) { double(:transition) }
-  let(:data)       { [:foo, :bar] }
-  let(:object)     { described_class }
+RSpec.describe FiniteMachine::HookEvent, '#new' do
+  it "allows to read event name" do
+    transition = double(:transition)
+    hook_event = described_class.new(:green, transition)
+    expect(hook_event.name).to eql(:green)
+  end
 
-  subject(:hook) { object.new(name, transition, *data) }
-
-  it "exposes readers" do
-    expect(hook.name).to eql(name)
-    expect(hook.data).to eql(data)
-    expect(hook.type).to eql(object)
+  it "allows to read event type" do
+    transition = double(:transition)
+    hook_event = described_class.new(:green, transition)
+    expect(hook_event.type).to eql(FiniteMachine::HookEvent)
   end
 
   it "freezes object" do
-    expect { hook.name = :red }.to raise_error(RuntimeError)
+    transition = double(:transition)
+    hook_event = described_class.new(:green, transition)
+    expect { hook_event.name = :red }.to raise_error(RuntimeError)
   end
 end

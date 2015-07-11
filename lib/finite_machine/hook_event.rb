@@ -6,70 +6,6 @@ module FiniteMachine
     include Threadable
     include Comparable
 
-    MESSAGE = :trigger
-
-    # HookEvent name
-    attr_threadsafe :name
-
-    # HookEvent type
-    attr_threadsafe :type
-
-    # Data associated with the event
-    attr_threadsafe :data
-
-    # Transition associated with the event
-    attr_threadsafe :transition
-
-    # Instantiate a new HookEvent object
-    #
-    # @param [Symbol] name
-    #   The action or state name
-    # @param [FiniteMachine::Transition]
-    #   The transition associated with this event.
-    # @param [Array[Object]] data
-    #
-    # @example
-    #   HookEvent.new(:green, ...)
-    #
-    # @return [Object]
-    #
-    # @api public
-    def initialize(name, transition, *data)
-      @name       = name
-      @transition = transition
-      @data       = *data
-      @type       = self.class
-      freeze
-    end
-
-    # Build event hook
-    #
-    # @param [Symbol] :state
-    #   The state name.
-    # @param [FiniteMachine::Transition] :event_transition
-    #   The transition associted with this hook.
-    # @param [Array[Object]] :data
-    #   The data associated with this hook
-    #
-    # @return [self]
-    #
-    # @api public
-    def self.build(state, event_transition, *data)
-      state_or_action = self < Anystate ? state : event_transition.name
-      new(state_or_action, event_transition, *data)
-    end
-
-    # Notify subscriber about this event
-    #
-    # @return [nil]
-    #
-    # @api public
-    def notify(subscriber, *args, &block)
-      if subscriber.respond_to? MESSAGE
-        subscriber.public_send(MESSAGE, self, *args, &block)
-      end
-    end
-
     class Anystate < HookEvent; end
 
     class Enter < Anystate; end
@@ -85,6 +21,69 @@ module FiniteMachine
     class After < Anyaction; end
 
     EVENTS = Anystate, Enter, Transition, Exit, Anyaction, Before, After
+
+    TRIGGER_MESSAGE = :trigger
+
+    # HookEvent name
+    attr_threadsafe :name
+
+    # HookEvent type
+    attr_threadsafe :type
+
+    # Transition associated with the event
+    attr_threadsafe :transition
+
+    # Instantiate a new HookEvent object
+    #
+    # @param [Symbol] name
+    #   The action or state name
+    # @param [FiniteMachine::Transition]
+    #   The transition associated with this event.
+    #
+    # @example
+    #   HookEvent.new(:green, ...)
+    #
+    # @return [self]
+    #
+    # @api public
+    def initialize(name, transition)
+      @name       = name
+      @type       = self.class
+      @transition = transition
+      freeze
+    end
+
+    # Build event hook
+    #
+    # @param [Symbol] :state
+    #   The state name.
+    # @param [FiniteMachine::Transition] :event_transition
+    #   The transition associted with this hook.
+    #
+    # @return [self]
+    #
+    # @api public
+    def self.build(state, event_transition)
+      state_or_action = self < Anystate ? state : event_transition.name
+      new(state_or_action, event_transition)
+    end
+
+    # Notify subscriber about this event
+    #
+    # @param [Observer] subscriber
+    #   the object subscribed to be notified about this event
+    #
+    # @param [Array] data
+    #   the data associated with the triggered event
+    #
+    # @return [nil]
+    #
+    # @api public
+    def notify(subscriber, *data)
+      if subscriber.respond_to?(TRIGGER_MESSAGE)
+        subscriber.public_send(TRIGGER_MESSAGE, self, *data)
+      end
+    end
 
     # Extract event name
     #
@@ -111,7 +110,7 @@ module FiniteMachine
     # @api public
     def <=>(other)
       other.is_a?(type) &&
-      [name, transition, data] <=> [other.name, other.transition, other.data]
+      [name, transition] <=> [other.name, other.transition]
     end
     alias_method :eql?, :==
 
