@@ -54,8 +54,21 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def valid_event?(event, *args, &block)
-      chain[event].next_transition.valid?(*args, &block)
+    def valid_event?(event_name, *args, &block)
+      next_transition(event_name).valid?(*args, &block)
+    end
+
+    # Find next transition
+    #
+    # @return [Transition]
+    #   the next available transition
+    #
+    # @api private
+    def next_transition(name)
+      sync_shared do
+        chain[name].state_transitions.find { |transition| transition.current? } ||
+        chain[name].state_transitions.first
+      end
     end
 
     # Select transition that passes constraints condition

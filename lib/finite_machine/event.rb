@@ -55,19 +55,6 @@ module FiniteMachine
     end
     alias_method :add, :<<
 
-    # Find next transition
-    #
-    # @return [Transition]
-    #   the next available transition
-    #
-    # @api private
-    def next_transition
-      sync_shared do
-        state_transitions.find { |transition| transition.current? } ||
-        state_transitions.first
-      end
-    end
-
     # Find transition matching conditions
     #
     # @param [Array[Object]] args
