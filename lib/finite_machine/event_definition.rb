@@ -52,8 +52,8 @@ module FiniteMachine
     # @api private
     def define_event_transition(event_name)
       context = self
-      machine.send(:define_singleton_method, name) do |*data|
-        event_transition = machine.events_chain.next_transition(name)
+      machine.send(:define_singleton_method, event_name) do |*data|
+        event_transition = machine.events_chain.next_transition(event_name)
         context.send(:run_transition, event_transition, *data)
       end
     end
