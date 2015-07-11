@@ -83,31 +83,6 @@ module FiniteMachine
       end
     end
 
-    # Trigger this event
-    #
-    # If silent option is passed the event will not fire any callbacks
-    #
-    # @example
-    #   transition = Event.new(machine, {})
-    #   transition.trigger
-    #
-    # @return [Boolean]
-    #   true is transition succeeded, false otherwise
-    #
-    # @api public
-    def trigger(*data)
-      sync_exclusive do
-        event_transition = next_transition
-        if !event_transition.cancelled? && event_transition.silent?
-          from_state = event_transition.from_state
-          to_state = event_transition.move_to(*data)
-          machine.send(:move_state, from_state, to_state)
-        else
-          machine.send(:transition, event_transition, *data)
-        end
-      end
-    end
-
     # Return event name
     #
     # @return [String]

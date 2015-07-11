@@ -61,8 +61,22 @@ module FiniteMachine
       _event << transition
       machine.events_chain.add(name, _event)
 
-      machine.send(:define_singleton_method, name) do |*args, &block|
-        _event.trigger(*args, &block)
+      context = self
+      machine.send(:define_singleton_method, name) do |*data|
+        event_transition = _event.next_transition
+        context.send(:run_transition, event_transition, *data)
+      end
+    end
+
+    def run_transition(event_transition, *data)
+      sync_exclusive do
+        if !event_transition.cancelled? && event_transition.silent?
+          from_state = event_transition.from_state
+          to_state = event_transition.move_to(*data)
+          machine.send(:move_state, from_state, to_state)
+        else
+          machine.send(:transition, event_transition, *data)
+        end
       end
     end
 
