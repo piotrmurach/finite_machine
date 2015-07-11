@@ -142,7 +142,8 @@ module FiniteMachine
 
     # Check if transition can be performed according to constraints
     #
-    # @param [Array] args
+    # @param [Array] data
+    #   the data associated with this transition
     #
     # @param [Proc] block
     #
@@ -194,14 +195,20 @@ module FiniteMachine
 
     # Set state on the machine
     #
+    # @param [Array] data
+    #   the data associated with this transition
+    #
+    # @return [Symbol]
+    #   the state to transition to
+    #
     # @api private
-    def update_state(*args)
+    def update_state(*data)
       if transition_choice?
-        found_trans   = machine.select_transition(name, *args)
-        machine.state = found_trans.states.values.first
+        found_trans = machine.select_transition(name, *data)
+        found_trans.states.values.first
       else
-        transitions   = machine.transitions[name]
-        machine.state = transitions[machine.state] || transitions[ANY_STATE] || name
+        transitions = machine.transitions[name]
+        transitions[machine.state] || transitions[ANY_STATE]
       end
     end
 
@@ -221,14 +228,17 @@ module FiniteMachine
 
     # Execute current transition
     #
+    # @param [Array] data
+    #   the data associated with this transition
+    #
     # @return [nil]
     #
-    # @api private
-    def execute(*args)
+    # @api public
+    def execute(*data)
       sync_exclusive do
         return if cancelled
         self.from_state = machine.state
-        update_state(*args)
+        machine.state = update_state(*data)
         machine.previous_state = machine.state
         machine.initial_state = machine.state if from_state == DEFAULT_STATE
       end
