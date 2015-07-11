@@ -48,9 +48,7 @@ module FiniteMachine
         if machine.singleton_class.send(:method_defined?, name)
           machine.events_chain.insert(name, transition)
         else
-          _event = Event.new(machine, name: name)
-          _event << transition
-          machine.events_chain.add(name, _event)
+          machine.events_chain.add(name, transition)
 
           event_definition.apply(name)
         end
