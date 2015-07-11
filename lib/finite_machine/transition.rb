@@ -44,6 +44,10 @@ module FiniteMachine
       @cancelled   = false
     end
 
+    def cancelled?
+      @cancelled
+    end
+
     # Create transition with associated helper methods
     #
     # @param [FiniteMachine::StateMachine] machine
@@ -235,13 +239,10 @@ module FiniteMachine
     #
     # @api public
     def execute(*data)
-      sync_exclusive do
-        return if cancelled
-        self.from_state = machine.state
-        machine.state = update_state(*data)
-        machine.previous_state = machine.state
-        machine.initial_state = machine.state if from_state == DEFAULT_STATE
-      end
+      self.from_state = machine.state
+      machine.state = update_state(*data)
+      machine.previous_state = machine.state
+      machine.initial_state = machine.state if from_state == DEFAULT_STATE
     end
 
     # Return transition name
