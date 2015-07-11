@@ -72,25 +72,6 @@ module FiniteMachine
       sync_exclusive { subscribers.subscribe(*observers) }
     end
 
-    # TODO:  use trigger to actually fire state machine events!
-    # Notify about event all the subscribers
-    #
-    # @param [FiniteMachine::HookEvent] :event_type
-    #   The hook event type.
-    # @param [FiniteMachine::Transition] :event_transition
-    #   The event transition.
-    # @param [Array[Object]] :data
-    #   The data associated with the hook event.
-    #
-    # @return [nil]
-    #
-    # @api public
-    def notify(event_type, event_transition, *data)
-      sync_shared do
-        hook_event = event_type.build(state, event_transition, *data)
-        subscribers.visit(hook_event)
-      end
-    end
 
     # Help to mark the event as synchronous
     #
@@ -281,40 +262,59 @@ module FiniteMachine
       return true
     end
 
+    # Notify about event all the subscribers
+    #
+    # @param [HookEvent] :hook_event
+    #   The hook event type.
+    # @param [FiniteMachine::Transition] :event_transition
+    #   The event transition.
+    # @param [Array[Object]] :data
+    #   The data associated with the hook event.
+    #
+    # @return [nil]
+    #
+    # @api private
+    def notify(hook_event, event_transition, *data)
+      sync_shared do
+        hook_event = hook_event.build(state, event_transition, *data)
+        subscribers.visit(hook_event)
+      end
+    end
+
     # Performs transition
     #
     # @param [Transition] event_transition
-    # @param [Array] args
+    # @param [Array] data
     #
     # @return [Integer]
     #   the status code for the transition
     #
     # @api private
-    def transition(event_transition, *args, &block)
+    def transition(event_transition, *data, &block)
       sync_exclusive do
-        notify HookEvent::Before, event_transition, *args
+        notify HookEvent::Before, event_transition, *data
 
         if valid_state?(event_transition.name) &&
-           event_transition.valid?(*args, &block)
+           event_transition.valid?(*data, &block)
 
-          notify HookEvent::Exit, event_transition, *args
+          notify HookEvent::Exit, event_transition, *data
 
           begin
-            event_transition.execute(*args)
-            Logger.report_transition(event_transition, *args) if log_transitions
+            event_transition.execute(*data)
+            Logger.report_transition(event_transition, *data) if log_transitions
 
-            notify HookEvent::Transition, event_transition, *args
+            notify HookEvent::Transition, event_transition, *data
           rescue Exception => e
             catch_error(e) || raise_transition_error(e)
           end
 
-          notify HookEvent::Enter, event_transition, *args
+          notify HookEvent::Enter, event_transition, *data
 
-          notify HookEvent::After, event_transition, *args
+          notify HookEvent::After, event_transition, *data
 
           event_transition.same?(state) ? NOTRANSITION : SUCCEEDED
         else
-          notify HookEvent::After, event_transition, *args
+          notify HookEvent::After, event_transition, *data
 
           CANCELLED
         end

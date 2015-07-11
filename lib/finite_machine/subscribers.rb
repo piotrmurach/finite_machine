@@ -54,13 +54,14 @@ module FiniteMachine
 
     # Visit subscribers and notify
     #
-    # @param [FiniteMachine::Event] event
+    # @param [HookEvent] hook_event
+    #   the callback event to notify about
     #
     # @return [undefined]
     #
     # @api public
-    def visit(event)
-      each { |subscriber| synchronize { event.notify(subscriber) } }
+    def visit(hook_event)
+      each { |subscriber| synchronize { hook_event.notify(subscriber) } }
     end
 
     # Number of subscribed listeners
