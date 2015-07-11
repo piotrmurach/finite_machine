@@ -264,13 +264,14 @@ module FiniteMachine
 
     # Check if state is reachable
     #
-    # @param [FiniteMachine::Transition]
+    # @param [Symbol] event_name
+    #   the event name for all transitions
     #
     # @return [Boolean]
     #
     # @api private
-    def valid_state?(event_transition)
-      current_states = transitions[event_transition.name].keys
+    def valid_state?(event_name)
+      current_states = transitions[event_name].keys
       if !current_states.include?(state) && !current_states.include?(ANY_STATE)
         exception = InvalidStateError
         catch_error(exception) ||
@@ -293,7 +294,9 @@ module FiniteMachine
       sync_exclusive do
         notify HookEvent::Before, event_transition, *args
 
-        if valid_state?(event_transition) && event_transition.valid?(*args, &block)
+        if valid_state?(event_transition.name) &&
+           event_transition.valid?(*args, &block)
+
           notify HookEvent::Exit, event_transition, *args
 
           begin
