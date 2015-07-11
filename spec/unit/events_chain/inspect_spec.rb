@@ -9,16 +9,16 @@ RSpec.describe FiniteMachine::EventsChain, '#insert' do
   end
 
   it "inspect events chain" do
-    event = double(:event)
+    transition = double(:transition)
     events_chain = described_class.new
-    events_chain.add(:validated, event)
-    expect(events_chain.inspect).to eq("<#FiniteMachine::EventsChain @chain=#{{validated: event}}>")
+    events_chain.add(:validated, transition)
+    expect(events_chain.inspect).to eq("<#FiniteMachine::EventsChain @chain=#{{validated: [transition]}}>")
   end
 
   it "prints events chain" do
-    event = double(:event)
+    transition = double(:transition)
     events_chain = described_class.new
-    events_chain.add(:validated, event)
-    expect(events_chain.to_s).to eq("#{{validated: event}}")
+    events_chain.add(:validated, transition)
+    expect(events_chain.to_s).to eq("#{{validated: [transition]}}")
   end
 end

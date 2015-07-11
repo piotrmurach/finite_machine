@@ -38,8 +38,8 @@ module FiniteMachine
     # @return [nil]
     #
     # @api public
-    def add(name, event)
-      chain[name] = event
+    def add(name, transition)
+      chain[name] = [transition]
     end
 
     # Check if event is valid and transition can be performed
@@ -59,8 +59,8 @@ module FiniteMachine
     # @api private
     def next_transition(name)
       sync_shared do
-        chain[name].state_transitions.find { |transition| transition.current? } ||
-        chain[name].state_transitions.first
+        chain[name].find { |transition| transition.current? } ||
+        chain[name].first
       end
     end
 
@@ -73,7 +73,7 @@ module FiniteMachine
     # @api private
     def find_transition(name, *conditions)
       sync_shared do
-        chain[name].state_transitions.find do |trans|
+        chain[name].find do |trans|
           trans.current? && trans.check_conditions(*conditions)
         end
       end
@@ -104,7 +104,7 @@ module FiniteMachine
     #
     # @api public
     def select_choice_transition(name, from_state, *args, &block)
-      chain[name].state_transitions.find do |trans|
+      chain[name].find do |trans|
         [from_state, ANY_STATE].include?(trans.from_state) &&
         trans.check_conditions(*args, &block)
       end
