@@ -45,7 +45,7 @@ module FiniteMachine
         transition = Transition.create(machine, attributes)
         name = transition.name
 
-        if machine.singleton_class.send(:method_defined?, name)
+        if machine.events_chain.exists?(name)
           machine.events_chain.insert(name, transition)
         else
           machine.events_chain.add(name, transition)

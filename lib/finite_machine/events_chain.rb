@@ -18,6 +18,10 @@ module FiniteMachine
       @chain = {}
     end
 
+    def exists?(name)
+      !chain[name].nil?
+    end
+
     # Insert transition under given event name
     #
     # @param [Symbol] name
