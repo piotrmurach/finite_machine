@@ -102,15 +102,15 @@ module FiniteMachine
     #   true is transition succeeded, false otherwise
     #
     # @api public
-    def trigger(*args, &block)
+    def trigger(*data)
       sync_exclusive do
         event_transition = next_transition
         if silent
           if !event_transition.cancelled?
-            event_transition.execute(*args, &block)
+            machine.send(:move_state, *event_transition.execute(*data))
           end
         else
-          machine.send(:transition, event_transition, *args, &block)
+          machine.send(:transition, event_transition, *data)
         end
       end
     end

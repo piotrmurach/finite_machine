@@ -240,9 +240,9 @@ module FiniteMachine
     # @api public
     def execute(*data)
       self.from_state = machine.state
-      machine.state = update_state(*data)
-      machine.previous_state = machine.state
-      machine.initial_state = machine.state if from_state == DEFAULT_STATE
+      to_state = update_state(*data)
+
+      [from_state, to_state]
     end
 
     # Return transition name
