@@ -55,21 +55,6 @@ module FiniteMachine
     end
     alias_method :add, :<<
 
-    # Find transition matching conditions
-    #
-    # @param [Array[Object]] args
-    #
-    # return [Transition]
-    #
-    # @api private
-    def find_transition(*args)
-      sync_shared do
-        state_transitions.find do |trans|
-          trans.current? && trans.check_conditions(*args)
-        end
-      end
-    end
-
     # Return event name
     #
     # @return [String]

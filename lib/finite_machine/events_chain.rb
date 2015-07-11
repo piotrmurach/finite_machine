@@ -71,6 +71,21 @@ module FiniteMachine
       end
     end
 
+    # Find transition matching conditions
+    #
+    # @param [Array[Object]] args
+    #
+    # return [Transition]
+    #
+    # @api private
+    def find_transition(name, *conditions)
+      sync_shared do
+        chain[name].state_transitions.find do |trans|
+          trans.current? && trans.check_conditions(*conditions)
+        end
+      end
+    end
+
     # Select transition that passes constraints condition
     #
     # @param [Symbol] name
@@ -79,8 +94,8 @@ module FiniteMachine
     # @return [Transition]
     #
     # @api public
-    def select_transition(name, *args)
-      chain[name].find_transition(*args)
+    def select_transition(name, *conditions)
+      find_transition(name, *conditions)
     end
 
     # Examine choice transitions to find one matching condition
@@ -110,8 +125,8 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def check_choice_conditions(name, *args, &block)
-      !chain[name].find_transition(*args).nil?
+    def check_choice_conditions(name, *conditions, &block)
+      !find_transition(name, *conditions).nil?
     end
 
     # Reset chain
