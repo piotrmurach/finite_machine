@@ -61,7 +61,7 @@ module FiniteMachine
     def initialize(*args, &block)
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
       @initial_state = DEFAULT_STATE
-      @subscribers   = Subscribers.new(self)
+      @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
       @transitions   = Transitions.new
       @events_chain  = EventsChain.new(self)
