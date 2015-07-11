@@ -25,20 +25,13 @@ module FiniteMachine
     # @return [StateMachine]
     attr_threadsafe :machine
 
-    # The silent option for this transition
-    #
-    # @return [Boolean]
-    attr_threadsafe :silent
-
     # Initialize an Event
     #
     # @api private
     def initialize(machine, attrs = {})
       @machine = machine
       @name    = attrs.fetch(:name, DEFAULT_STATE)
-      @silent  = attrs.fetch(:silent, false)
       @state_transitions = []
-      # TODO: add event conditions
       freeze
     end
 
@@ -105,10 +98,8 @@ module FiniteMachine
     def trigger(*data)
       sync_exclusive do
         event_transition = next_transition
-        if silent
-          if !event_transition.cancelled?
-            machine.send(:move_state, *event_transition.execute(*data))
-          end
+        if !event_transition.cancelled? && event_transition.silent?
+          machine.send(:move_state, *event_transition.execute(*data))
         else
           machine.send(:transition, event_transition, *data)
         end
@@ -130,7 +121,7 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      "<##{self.class} @name=#{name}, @silent=#{silent}, " \
+      "<##{self.class} @name=#{name}, " \
       "@transitions=#{state_transitions.inspect}>"
     end
 
@@ -140,8 +131,8 @@ module FiniteMachine
     #
     # @api public
     def <=>(other)
-      other.is_a?(self.class) && [name, silent, state_transitions] <=>
-        [other.name, other.silent, other.state_transitions]
+      other.is_a?(self.class) && [name, state_transitions] <=>
+        [other.name, other.state_transitions]
     end
     alias_method :eql?, :==
   end # Event
