@@ -31,21 +31,10 @@ module FiniteMachine
     # @return [Transition]
     #
     # @api private
-    def apply(transition)
-      name = transition.name
-      detect_event_conflict!(name)
-
-      if machine.singleton_class.send(:method_defined?, name)
-        machine.events_chain.insert(name, transition)
-      else
-        _event = Event.new(machine, name: name)
-        _event << transition
-        machine.events_chain.add(name, _event)
-
-        define_event_transition(name)
-        define_event_bang(name)
-      end
-      transition
+    def apply(event_name)
+      detect_event_conflict!(event_name)
+      define_event_transition(event_name)
+      define_event_bang(event_name)
     end
 
     private
@@ -61,7 +50,7 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def define_event_transition(name)
+    def define_event_transition(event_name)
       context = self
       machine.send(:define_singleton_method, name) do |*data|
         event_transition = machine.events_chain.next_transition(name)
@@ -69,6 +58,7 @@ module FiniteMachine
       end
     end
 
+    # @api private
     def run_transition(event_transition, *data)
       sync_exclusive do
         if !event_transition.cancelled? && event_transition.silent?

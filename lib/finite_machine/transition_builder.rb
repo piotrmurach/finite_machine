@@ -3,6 +3,8 @@
 module FiniteMachine
   # A class reponsible for building transition out of parsed states
   #
+  # Used internally by {DSL} to
+  #
   # @api private
   class TransitionBuilder
     include Threadable
@@ -41,7 +43,19 @@ module FiniteMachine
       FiniteMachine::StateParser.new(states).parse do |from, to|
         attributes.merge!(parsed_states: { from => to })
         transition = Transition.create(machine, attributes)
-        event_definition.apply(transition)
+        name = transition.name
+
+        if machine.singleton_class.send(:method_defined?, name)
+          machine.events_chain.insert(name, transition)
+        else
+          _event = Event.new(machine, name: name)
+          _event << transition
+          machine.events_chain.add(name, _event)
+
+          event_definition.apply(name)
+        end
+
+        transition
       end
     end
   end # TransitionBuilder
