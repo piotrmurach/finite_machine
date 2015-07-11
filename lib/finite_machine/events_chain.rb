@@ -6,9 +6,6 @@ module FiniteMachine
     include Threadable
     extend Forwardable
 
-    # The current state machine
-    attr_threadsafe :machine
-
     # The chain of events
     attr_threadsafe :chain
 
@@ -16,13 +13,9 @@ module FiniteMachine
 
     # Initialize a EventsChain
     #
-    # @param [StateMachine] machine
-    #   the state machine
-    #
     # @api public
-    def initialize(machine)
-      @machine = machine
-      @chain   = {}
+    def initialize
+      @chain = {}
     end
 
     # Insert transition under given event name

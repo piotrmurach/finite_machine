@@ -3,16 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe FiniteMachine::EventsChain, '#insert' do
-  let(:object)  { described_class }
-
-  let(:machine) { double(:machine) }
-
   let(:transition) { double(:transition) }
-
-  subject(:chain) { object.new(machine) }
 
   it "inserts transition" do
     event = double(:event)
+    chain = described_class.new
     chain.add(:validated, event)
     expect(chain[:validated]).to eq(event)
 
@@ -21,6 +16,7 @@ RSpec.describe FiniteMachine::EventsChain, '#insert' do
   end
 
   it "fails to insert transition" do
+    chain = described_class.new
     expect(chain.insert(:validated, transition)).to be false
   end
 end

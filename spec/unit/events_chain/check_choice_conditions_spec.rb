@@ -3,18 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe FiniteMachine::EventsChain, '#clear' do
-  let(:object)  { described_class }
-
-  let(:machine) { double(:machine) }
-
-  subject(:chain) { object.new(machine) }
-
   it "clears chain events" do
     event = double(:event)
-    chain.add(:validated, event)
-    expect(chain.empty?).to be(false)
+    events_chain = described_class.new
+    events_chain.add(:validated, event)
+    expect(events_chain.empty?).to be(false)
 
-    chain.clear
-    expect(chain.empty?).to be(true)
+    events_chain.clear
+    expect(events_chain.empty?).to be(true)
   end
 end

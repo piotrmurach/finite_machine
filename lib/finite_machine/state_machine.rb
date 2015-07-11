@@ -52,7 +52,7 @@ module FiniteMachine
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
       @transitions   = Transitions.new
-      @events_chain  = EventsChain.new(self)
+      @events_chain  = EventsChain.new
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
@@ -280,7 +280,6 @@ module FiniteMachine
         subscribers.visit(hook_event, *data)
       end
     end
-
 
     # Performs transition
     #

@@ -3,21 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe FiniteMachine::EventsChain, '#select_transition' do
-  let(:object)  { described_class }
-
-  let(:machine) { double(:machine) }
-
-  let(:transition) { double(:transition) }
-
-  subject(:chain) { object.new(machine) }
-
   it "selects transition" do
-    event = double(:event)
-    args = double(:args)
-    chain.add(:validated, event)
-    expect(chain[:validated]).to eq(event)
+    event = spy(:event)
+    conditions = double(:conditions)
+    events_chain = described_class.new
 
-    expect(event).to receive(:find_transition).with(args)
-    chain.select_transition(:validated, args)
+    events_chain.add(:validated, event)
+    expect(events_chain[:validated]).to eq(event)
+
+    events_chain.select_transition(:validated, conditions)
+    expect(event).to have_received(:state_transitions)
   end
 end
