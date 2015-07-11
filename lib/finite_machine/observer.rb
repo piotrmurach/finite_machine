@@ -107,12 +107,12 @@ module FiniteMachine
     # Trigger all listeners
     #
     # @api public
-    def trigger(event, *args, &block)
+    def trigger(event, *data)
       sync_exclusive do
         [event.type].each do |event_type|
           [event.name, ANY_STATE, ANY_EVENT].each do |event_name|
             hooks.call(event_type, event_name) do |hook|
-              handle_callback(hook, event)
+              handle_callback(hook, event, *data)
               off(event_type, event_name, &hook) if hook.is_a?(Once)
             end
           end
@@ -143,8 +143,7 @@ module FiniteMachine
     # Handle callback and decide if run synchronously or asynchronously
     #
     # @api private
-    def handle_callback(hook, event)
-      data        = event.data
+    def handle_callback(hook, event, *data)
       trans_event = TransitionEvent.new(event.transition, *data)
       callable    = create_callable(hook)
 

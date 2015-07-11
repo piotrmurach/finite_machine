@@ -264,7 +264,7 @@ module FiniteMachine
 
     # Notify about event all the subscribers
     #
-    # @param [HookEvent] :hook_event
+    # @param [HookEvent] :hook_event_type
     #   The hook event type.
     # @param [FiniteMachine::Transition] :event_transition
     #   The event transition.
@@ -274,10 +274,10 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def notify(hook_event, event_transition, *data)
+    def notify(hook_event_type, event_transition, *data)
       sync_shared do
-        hook_event = hook_event.build(state, event_transition, *data)
-        subscribers.visit(hook_event)
+        hook_event = hook_event_type.build(state, event_transition)
+        subscribers.visit(hook_event, *data)
       end
     end
 
