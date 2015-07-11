@@ -14,21 +14,13 @@ RSpec.describe FiniteMachine::Event, 'new' do
     it "sets name to :none" do
       expect(event.name).to eql(:none)
     end
-
-    it "sets silent to false"do
-      expect(event.silent).to eql(false)
-    end
   end
 
   context "with custom data" do
-    let(:options) { {silent: true, name: name} }
+    let(:options) { {name: name} }
 
     it "sets name to :green" do
       expect(event.name).to eql(name)
-    end
-
-    it "sets silent to true"do
-      expect(event.silent).to eql(true)
     end
   end
 

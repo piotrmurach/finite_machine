@@ -12,7 +12,7 @@ RSpec.describe FiniteMachine::Event, '#inspect' do
   it "adds multiple transitions" do
     transition = double(:transition)
     event << transition
-    expect(event.inspect).to eq("<#FiniteMachine::Event @name=test, @silent=false, @transitions=[#{transition.inspect}]>")
+    expect(event.inspect).to eq("<#FiniteMachine::Event @name=test, @transitions=[#{transition.inspect}]>")
   end
 
   it "prints event name" do
