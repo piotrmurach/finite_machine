@@ -300,7 +300,9 @@ module FiniteMachine
           notify HookEvent::Exit, event_transition, *data
 
           begin
-            event_transition.execute(*data)
+            if !event_transition.cancelled?
+              event_transition.execute(*data)
+            end
             Logger.report_transition(event_transition, *data) if log_transitions
 
             notify HookEvent::Transition, event_transition, *data

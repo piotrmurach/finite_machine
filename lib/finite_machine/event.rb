@@ -106,7 +106,9 @@ module FiniteMachine
       sync_exclusive do
         event_transition = next_transition
         if silent
-          event_transition.execute(*args, &block)
+          if !event_transition.cancelled?
+            event_transition.execute(*args, &block)
+          end
         else
           machine.send(:transition, event_transition, *args, &block)
         end
