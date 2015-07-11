@@ -281,11 +281,6 @@ module FiniteMachine
       end
     end
 
-    def move_state(from_state, to_state)
-      self.state = to_state
-      self.previous_state = to_state
-      self.initial_state = to_state if from_state == DEFAULT_STATE
-    end
 
     # Performs transition
     #
@@ -307,7 +302,7 @@ module FiniteMachine
 
           begin
             if !event_transition.cancelled?
-              move_state(*event_transition.execute(*data))
+              move_state(current, event_transition.move_to(*data))
             end
             Logger.report_transition(event_transition, *data) if log_transitions
 
@@ -327,6 +322,18 @@ module FiniteMachine
           CANCELLED
         end
       end
+    end
+
+    # Update this state machine state to new one
+    #
+    # @param [Symbol] from_state
+    # @param [Symbol] to_state
+    #
+    # @api private
+    def move_state(from_state, to_state)
+      self.state = to_state
+      self.previous_state = to_state
+      self.initial_state = to_state if from_state == DEFAULT_STATE
     end
 
     # Raise when failed to transition between states

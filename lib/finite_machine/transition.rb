@@ -44,6 +44,10 @@ module FiniteMachine
       @cancelled   = false
     end
 
+    def silent?
+      @silent
+    end
+
     def cancelled?
       @cancelled
     end
@@ -197,25 +201,6 @@ module FiniteMachine
       end
     end
 
-    # Set state on the machine
-    #
-    # @param [Array] data
-    #   the data associated with this transition
-    #
-    # @return [Symbol]
-    #   the state to transition to
-    #
-    # @api private
-    def update_state(*data)
-      if transition_choice?
-        found_trans = machine.select_transition(name, *data)
-        found_trans.states.values.first
-      else
-        transitions = machine.transitions[name]
-        transitions[machine.state] || transitions[ANY_STATE]
-      end
-    end
-
     # Find latest from state
     #
     # Note that for the exit hook the call hasn't happened yet so
@@ -230,19 +215,24 @@ module FiniteMachine
       end
     end
 
-    # Execute current transition
+    # Find this transition can move to
     #
     # @param [Array] data
     #   the data associated with this transition
     #
-    # @return [nil]
+    # @return [Symbol]
+    #   the state to transition
     #
     # @api public
-    def execute(*data)
+    def move_to(*data)
       self.from_state = machine.state
-      to_state = update_state(*data)
-
-      [from_state, to_state]
+      if transition_choice?
+        found_trans = machine.select_transition(name, *data)
+        found_trans.states.values.first
+      else
+        transitions = machine.transitions[name]
+        transitions[machine.state] || transitions[ANY_STATE]
+      end
     end
 
     # Return transition name
