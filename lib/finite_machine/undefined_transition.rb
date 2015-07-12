@@ -4,18 +4,24 @@ module FiniteMachine
   class UndefinedTransition
     include Threadable
 
-    attr_threadsafe :event_name
+    def initialize(name)
+      self.name = name
+    end
 
-    def initialize(event_name)
-      self.event_name = event_name
+    def cancelled?
+      false
+    end
+
+    def silent?
+      false
     end
 
     def execute(*args)
-      raise UndefinedError, "No transition for: #{event_name}"
+      raise UndefinedError, "No transition for: #{name}"
     end
 
     def ==(other)
-      other.is_a?(UndefinedTransition) && event_name == other.event_name
+      other.is_a?(UndefinedTransition) && name == other.name
     end
 
     protected
