@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FiniteMachine::EventsChain, '#insert' do
+RSpec.describe FiniteMachine::EventsChain, '#inspect' do
   it "inspects empty events chain" do
     events_chain = described_class.new
     expect(events_chain.inspect).to eq("<#FiniteMachine::EventsChain @chain={}>")

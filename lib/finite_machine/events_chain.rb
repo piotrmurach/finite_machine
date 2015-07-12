@@ -29,29 +29,17 @@ module FiniteMachine
     end
     alias_method :[], :find
 
-    # Insert transition under given event name
-    #
-    # @param [Symbol] name
-    #  the event name
-    #
-    # @param [Transition]
-    #
-    # @return [nil]
-    #
-    # @api public
-    def insert(name, transition)
-      if exists?(name)
-        chain[name] << transition
-      end
-    end
-
     # Add event under name
     #
     # @return [nil]
     #
     # @api public
     def add(name, transition)
-      chain[name] = [transition]
+      if exists?(name)
+        chain[name] << transition
+      else
+        chain[name] = [transition]
+      end
     end
 
     # Check if event is valid and transition can be performed

@@ -11,7 +11,7 @@ RSpec.describe FiniteMachine::EventsChain, '.next_transition' do
 
     events_chain = described_class.new
     events_chain.add(:go, transition_a)
-    events_chain.insert(:go, transition_b)
+    events_chain.add(:go, transition_b)
 
     expect(events_chain.next_transition(:go)).to eq(transition_b)
   end
@@ -22,7 +22,7 @@ RSpec.describe FiniteMachine::EventsChain, '.next_transition' do
 
     events_chain = described_class.new
     events_chain.add(:go, transition_a)
-    events_chain.insert(:go, transition_b)
+    events_chain.add(:go, transition_b)
 
     expect(events_chain.next_transition(:go)).to eq(transition_a)
   end
