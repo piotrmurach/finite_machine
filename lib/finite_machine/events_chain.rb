@@ -59,8 +59,7 @@ module FiniteMachine
     # @api private
     def next_transition(name)
       sync_shared do
-        chain[name].find { |transition| transition.current? } ||
-        chain[name].first
+        chain[name].find(&:current?) || UndefinedTransition.new(name)
       end
     end
 
