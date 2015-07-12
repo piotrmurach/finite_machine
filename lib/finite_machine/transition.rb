@@ -123,7 +123,7 @@ module FiniteMachine
       states[state] == state || (states[ANY_STATE] == state && from_state == state)
     end
 
-    # Check if from matches current state
+    # Check if machine current state matches any of the from states
     #
     # @example
     #   transition.current? # => true
@@ -133,7 +133,7 @@ module FiniteMachine
     #
     # @api public
     def current?
-      [machine.current, ANY_STATE].any? { |state| state == from_state }
+      states.keys.any? { |state| state == machine.current || state == ANY_STATE }
     end
 
     # Check if this transition has branching choice or not
