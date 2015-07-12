@@ -20,17 +20,17 @@ module FiniteMachine
     #
     # @api private
     def initialize(machine)
-      @machine = machine
+      self.machine = machine
     end
 
     # Define transition event names as state machine events
     #
-    # @param [Transition] transition
-    #   the transition for which event definition is created
+    # @param [Symbol] event_name
+    #   the event name for which definition is created
     #
-    # @return [Transition]
+    # @return [nil]
     #
-    # @api private
+    # @api public
     def apply(event_name)
       detect_event_conflict!(event_name)
       define_event_transition(event_name)
@@ -41,11 +41,8 @@ module FiniteMachine
 
     # Define transition event
     #
-    # @param [Symbol] name
+    # @param [Symbol] event_name
     #   the event name
-    #
-    # @param [FiniteMachine::Transition] transition
-    #   the transition this event is associated with
     #
     # @return [nil]
     #
@@ -71,15 +68,15 @@ module FiniteMachine
 
     # Define event that skips validations
     #
-    # @param [Symbol] name
+    # @param [Symbol] event_name
     #   the event name
     #
     # @return [nil]
     #
     # @api private
-    def define_event_bang(name)
-      machine.send(:define_singleton_method, "#{name}!") do
-        transitions   = machine.transitions[name]
+    def define_event_bang(event_name)
+      machine.send(:define_singleton_method, "#{event_name}!") do
+        transitions   = machine.transitions[event_name]
         machine.state = transitions.values[0]
       end
     end
