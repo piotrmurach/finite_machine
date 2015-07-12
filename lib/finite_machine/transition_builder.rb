@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 require 'finite_machine/state_parser'
+require 'finite_machine/event_definition'
+require 'finite_machine/state_definition'
 
 module FiniteMachine
   # A class reponsible for building transition out of parsed states
@@ -18,6 +20,8 @@ module FiniteMachine
 
     attr_threadsafe :event_definition
 
+    attr_threadsafe :state_definition
+
     # Initialize a TransitionBuilder
     #
     # @example
@@ -28,6 +32,7 @@ module FiniteMachine
       @machine = machine
       @attributes = attributes
       @event_definition = EventDefinition.new(machine)
+      @state_definition = StateDefinition.new(machine)
     end
 
     # Creates transitions for the states
@@ -53,6 +58,7 @@ module FiniteMachine
           machine.events_chain.add(name, transition)
           event_definition.apply(name)
         end
+        state_definition.apply({from => to})
 
         transition
       end
