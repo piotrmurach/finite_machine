@@ -34,7 +34,7 @@ module FiniteMachine
     # @api public
     def initialize(machine, attrs = {})
       @machine     = machine
-      @name        = attrs.fetch(:name, DEFAULT_STATE)
+      @name        = attrs[:name]
       @states      = attrs.fetch(:parsed_states, {})
       @silent      = attrs.fetch(:silent, false)
       @from_state  = @states.keys.first
