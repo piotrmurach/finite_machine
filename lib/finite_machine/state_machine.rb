@@ -40,7 +40,7 @@ module FiniteMachine
 
     def_delegator :events_dsl, :event
 
-    def_delegators :@events_chain, :select_transition,
+    def_delegators :@events_chain,
                    :select_choice_transition
 
     # Initialize state machine

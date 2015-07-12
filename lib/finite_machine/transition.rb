@@ -227,7 +227,7 @@ module FiniteMachine
     def move_to(*data)
       self.from_state = machine.state
       if transition_choice?
-        found_trans = machine.select_transition(name, *data)
+        found_trans = machine.events_chain.find_transition(name, *data)
         found_trans.states.values.first
       else
         transitions = machine.transitions[name]

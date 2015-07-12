@@ -65,7 +65,7 @@ module FiniteMachine
 
     # Find transition matching conditions
     #
-    # @param [Array[Object]] args
+    # @param [Symbol] name
     #
     # return [Transition]
     #
@@ -76,18 +76,6 @@ module FiniteMachine
           trans.current? && trans.check_conditions(*conditions)
         end
       end
-    end
-
-    # Select transition that passes constraints condition
-    #
-    # @param [Symbol] name
-    #   the event name
-    #
-    # @return [Transition]
-    #
-    # @api public
-    def select_transition(name, *conditions)
-      find_transition(name, *conditions)
     end
 
     # Examine choice transitions to find one matching condition
