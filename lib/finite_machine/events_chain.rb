@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'finite_machine/undefined_transition'
+
 module FiniteMachine
   # A class responsible for storing chain of events
   class EventsChain
@@ -9,7 +11,7 @@ module FiniteMachine
     # The chain of events
     attr_threadsafe :chain
 
-    def_delegators :@chain, :[], :empty?
+    def_delegators :@chain, :empty?
 
     # Initialize a EventsChain
     #
@@ -22,6 +24,11 @@ module FiniteMachine
       !chain[name].nil?
     end
 
+    def find(name)
+      chain.fetch(name) { UndefinedTransition.new(name) }
+    end
+    alias_method :[], :find
+
     # Insert transition under given event name
     #
     # @param [Symbol] name
@@ -33,8 +40,9 @@ module FiniteMachine
     #
     # @api public
     def insert(name, transition)
-      return false unless chain[name]
-      chain[name] << transition
+      if exists?(name)
+        chain[name] << transition
+      end
     end
 
     # Add event under name

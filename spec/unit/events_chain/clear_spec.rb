@@ -18,6 +18,9 @@ RSpec.describe FiniteMachine::EventsChain, '#insert' do
     transition = double(:transition)
     events_chain = described_class.new
 
-    expect(events_chain.insert(:validated, transition)).to be(false)
+    expect(events_chain.insert(:validated, transition)).to be(nil)
+
+    undefined_transition = FiniteMachine::UndefinedTransition.new(:validated)
+    expect(events_chain.find(:validated)).to eq(undefined_transition)
   end
 end
