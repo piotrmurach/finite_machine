@@ -295,7 +295,7 @@ module FiniteMachine
         notify HookEvent::Before, event_transition, *data
 
         if valid_state?(event_transition.name) &&
-           event_transition.valid?(*data, &block)
+           event_transition.can_perform?(*data, &block)
 
           notify HookEvent::Exit, event_transition, *data
 

@@ -156,13 +156,14 @@ module FiniteMachine
     # @param [Proc] block
     #
     # @return [Boolean]
+    #   true when transition can be performed, false otherwise
     #
     # @api public
-    def valid?(*args, &block)
+    def can_perform?(*data, &block)
       if transition_choice?
-        machine.events_chain.can_perform?(name, *args, &block)
+        machine.events_chain.can_perform?(name, *data, &block)
       else
-        check_conditions(*args, &block)
+        check_conditions(*data, &block)
       end
     end
 
