@@ -49,16 +49,16 @@ module FiniteMachine
     def call(states)
       StateParser.new(states).parse do |from, to|
         attributes.merge!(parsed_states: { from => to })
-        transition = Transition.create(machine, attributes)
-        name = transition.name
+        transition = Transition.new(machine, attributes)
+        name = attributes[:name]
 
-        if machine.events_chain.exists?(name)
-          machine.events_chain.add(name, transition)
-        else
-          machine.events_chain.add(name, transition)
+        machine.events_chain.add(name, transition)
+        machine.transitions.import(name, { from => to })
+
+        unless machine.respond_to?(name)
           event_definition.apply(name)
         end
-        state_definition.apply({from => to})
+        state_definition.apply({ from => to })
 
         transition
       end

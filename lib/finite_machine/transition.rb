@@ -28,8 +28,15 @@ module FiniteMachine
 
     # Initialize a Transition
     #
+    # @example
+    #   attributes = {parsed_states: {green: :yellow}, silent: true}
+    #   Transition.new(machine, attrbiutes)
+    #
     # @param [StateMachine] machine
+    #
     # @param [Hash] attrs
+    #
+    # @return [Transition]
     #
     # @api public
     def initialize(machine, attrs = {})
@@ -50,25 +57,6 @@ module FiniteMachine
 
     def cancelled?
       @cancelled
-    end
-
-    # Create transition with associated helper methods
-    #
-    # @param [FiniteMachine::StateMachine] machine
-    #
-    # @param [Hash] attrs
-    #
-    # @example
-    #   attributes = {parsed_states: {green: :yellow}, silent: true}
-    #   Transition.create(machine, attrbiutes)
-    #
-    # @return [Transition]
-    #
-    # @api public
-    def self.create(machine, attrs = {})
-      transition = new(machine, attrs)
-      transition.update_transitions
-      transition
     end
 
     # Decide :to state from available transitions for this event
@@ -145,16 +133,6 @@ module FiniteMachine
       [matching[from_state], matching[ANY_STATE]].any? do |match|
         match.is_a?(Array)
       end
-    end
-
-    # Add transition to the machine
-    #
-    # @return [Transition]
-    #
-    # @api private
-    def update_transitions
-      machine.transitions.import(name, states)
-      self
     end
 
     # Find latest from state
