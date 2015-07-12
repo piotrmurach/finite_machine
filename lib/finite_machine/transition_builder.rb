@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'finite_machine/state_parser'
+
 module FiniteMachine
   # A class reponsible for building transition out of parsed states
   #
@@ -31,7 +33,7 @@ module FiniteMachine
     # Creates transitions for the states
     #
     # @example
-    #   transition_parser.call([:green, :yellow] => :red)
+    #   transition_builder.call([:green, :yellow] => :red)
     #
     # @param [Hash[Symbol]] states
     #   The states to extract
@@ -40,16 +42,15 @@ module FiniteMachine
     #
     # @api public
     def call(states)
-      FiniteMachine::StateParser.new(states).parse do |from, to|
+      StateParser.new(states).parse do |from, to|
         attributes.merge!(parsed_states: { from => to })
         transition = Transition.create(machine, attributes)
         name = transition.name
 
         if machine.events_chain.exists?(name)
-          machine.events_chain.insert(name, transition)
+          machine.events_chain.add(name, transition)
         else
           machine.events_chain.add(name, transition)
-
           event_definition.apply(name)
         end
 
