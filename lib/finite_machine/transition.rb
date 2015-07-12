@@ -148,25 +148,6 @@ module FiniteMachine
       end
     end
 
-    # Check if transition can be performed according to constraints
-    #
-    # @param [Array] data
-    #   the data associated with this transition
-    #
-    # @param [Proc] block
-    #
-    # @return [Boolean]
-    #   true when transition can be performed, false otherwise
-    #
-    # @api public
-    def can_perform?(*data, &block)
-      if transition_choice?
-        machine.events_chain.can_perform?(name, *data, &block)
-      else
-        check_conditions(*data, &block)
-      end
-    end
-
     # Add transition to the machine
     #
     # @return [Transition]
