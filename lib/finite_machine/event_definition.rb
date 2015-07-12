@@ -14,9 +14,9 @@ module FiniteMachine
     # The current state machine
     attr_threadsafe :machine
 
-    # Initialize an EventBuilder
+    # Initialize an EventDefinition
     #
-    # @param [FiniteMachine::StateMachine] machine
+    # @param [StateMachine] machine
     #
     # @api private
     def initialize(machine)

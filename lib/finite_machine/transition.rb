@@ -68,7 +68,6 @@ module FiniteMachine
     def self.create(machine, attrs = {})
       transition = new(machine, attrs)
       transition.update_transitions
-      transition.define_state_query_methods
       transition
     end
 
@@ -156,30 +155,6 @@ module FiniteMachine
     def update_transitions
       machine.transitions.import(name, states)
       self
-    end
-
-    # Define helper state mehods for the transition states
-    #
-    # @return [Transition]
-    #
-    # @api private
-    def define_state_query_methods
-      states.to_a.flatten.each do |state|
-        define_state_query_method(state)
-      end
-      self
-    end
-
-    # Define state helper method
-    #
-    # @param [Symbol] state
-    #
-    # @api private
-    def define_state_query_method(state)
-      return if machine.respond_to?("#{state}?")
-      machine.send(:define_singleton_method, "#{state}?") do
-        machine.is?(state.to_sym)
-      end
     end
 
     # Find latest from state
