@@ -40,7 +40,7 @@ module FiniteMachine
 
     def_delegator :events_dsl, :event
 
-    def_delegators :@events_chain, :check_choice_conditions, :select_transition,
+    def_delegators :@events_chain, :select_transition,
                    :select_choice_transition
 
     # Initialize state machine
@@ -161,10 +161,10 @@ module FiniteMachine
     #
     # @api public
     def can?(*args, &block)
-      event       = args.shift
-      valid_state = transitions[event].key?(current)
-      valid_state ||= transitions[event].key?(ANY_STATE)
-      valid_state && events_chain.valid_event?(event, *args, &block)
+      event_name  = args.shift
+      valid_state = transitions[event_name].key?(current)
+      valid_state ||= transitions[event_name].key?(ANY_STATE)
+      valid_state && events_chain.can_perform?(event_name, *args, &block)
     end
 
     # Checks if event cannot be triggered

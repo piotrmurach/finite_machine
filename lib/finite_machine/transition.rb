@@ -158,10 +158,9 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    # TODO: rename to can?
     def valid?(*args, &block)
       if transition_choice?
-        machine.check_choice_conditions(name, *args, &block)
+        machine.events_chain.can_perform?(name, *args, &block)
       else
         check_conditions(*args, &block)
       end

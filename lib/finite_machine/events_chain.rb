@@ -47,8 +47,8 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def valid_event?(event_name, *args, &block)
-      next_transition(event_name).valid?(*args, &block)
+    def can_perform?(event_name, *conditions, &block)
+      !find_transition(event_name, *conditions).nil?
     end
 
     # Find next transition
@@ -107,18 +107,6 @@ module FiniteMachine
         [from_state, ANY_STATE].include?(trans.from_state) &&
         trans.check_conditions(*args, &block)
       end
-    end
-
-    # Check if any of the transition constraints passes
-    #
-    # @param [Symbol] name
-    #   the event name
-    #
-    # @return [Boolean]
-    #
-    # @api public
-    def check_choice_conditions(name, *conditions, &block)
-      !find_transition(name, *conditions).nil?
     end
 
     # Reset chain
