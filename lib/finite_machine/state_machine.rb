@@ -159,9 +159,7 @@ module FiniteMachine
     # @api public
     def can?(*args, &block)
       event_name  = args.shift
-      valid_state = transitions[event_name].key?(current)
-      valid_state ||= transitions[event_name].key?(ANY_STATE)
-      valid_state && events_chain.can_perform?(event_name, *args, &block)
+      events_chain.can_perform?(event_name, *args, &block)
     end
 
     # Checks if event cannot be triggered
