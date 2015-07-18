@@ -58,7 +58,7 @@ module FiniteMachine
     # @api private
     def run_transition(event_transition, *data)
       sync_exclusive do
-        if !event_transition.cancelled? && event_transition.silent?
+        if event_transition.silent?
           machine.send(:transition!, event_transition, *data)
         else
           machine.send(:transition, event_transition, *data)
