@@ -607,7 +607,7 @@ fm.go(:yellow) # doesn't transition
 fm.go          # raises ArgumentError
 ```
 
-**Note** If you specify condition with a given arguments then you need to call an event with the exact number of arguments, otherwise you will get `ArgumentError`. Thus in above scenario to prevent errors specify condition like so:
+**Note** If you specify condition with a given number of arguments then you need to call an event with the exact number of arguments, otherwise you will get `ArgumentError`. Thus in above scenario to prevent errors specify condition like so:
 
 ```ruby
 if: -> (context, *args) { ... }
@@ -805,7 +805,7 @@ end
 
 ## 5 Callbacks
 
-You can watch state machine events and the information they provide by registering a callback. The following 5 types of callbacks are available in **FiniteMachine**:
+You can watch state machine events and the information they provide by registering one or more predefined callback types. The following 5 types of callbacks are available in **FiniteMachine**:
 
 * `on_enter`
 * `on_transition`
@@ -813,9 +813,15 @@ You can watch state machine events and the information they provide by registeri
 * `on_before`
 * `on_after`
 
-Use the `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered. Use the state or event name as a first parameter to the callback followed by a list arguments that you expect to receive.
+Use the `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered.
 
-When you subscribe to the `:green` state change, the callback will be called whenever someone instruments change for that state. The same will happen on subscription to event `ready`, namely, the callback will be called each time the state transition method is called.
+Use the state or event name as a first parameter to the callback helper followed by block with event argument and a list arguments that you expect to receive like so:
+
+```ruby
+on_enter :green { |event, a, b, c| ... }
+```
+
+When you subscribe to the `:green` state change, the callback will be called whenever someone triggers event that transitions in or out of that state. The same will happen on subscription to event `ready`, namely, the callback will be called each time the state transition method is triggered regardless of the states it transitions from or to.
 
 ```ruby
 fm = FiniteMachine.define do
@@ -837,6 +843,8 @@ end
 fm.ready(1, 2, 3)
 fm.go('Piotr!')
 ```
+
+**Note** Regardless of how the state is entered or exited, all the associated callbacks will be executed. This provides means for guaranteed initialization and cleanup.
 
 ### 5.1 on_enter
 
@@ -878,8 +886,8 @@ event :go, :red => :yellow
 
 then by calling `go` event the following callbacks in the following sequence will be executed:
 
-* `on_before :go` - callback before the `go` event
 * `on_before` - generic callback before `any` event
+* `on_before :go` - callback before the `go` event
 * `on_exit :red` - callback for the `:red` state exit
 * `on_exit` - generic callback for exit from `any` state
 * `on_transition :yellow` - callback for the `:red` to `:yellow` transition
