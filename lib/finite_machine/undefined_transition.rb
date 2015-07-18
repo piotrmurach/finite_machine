@@ -16,6 +16,14 @@ module FiniteMachine
       false
     end
 
+    def same?(_)
+      false
+    end
+
+    def current?
+      false
+    end
+
     def execute(*args)
       raise UndefinedError, "No transition for: #{name}"
     end
