@@ -43,7 +43,7 @@ module FiniteMachine
     # @param [Hash[Symbol]] states
     #   The states to extract
     #
-    # @return [nil]
+    # @return [self]
     #
     # @api public
     def call(states)
@@ -59,9 +59,8 @@ module FiniteMachine
           event_definition.apply(name)
         end
         state_definition.apply({ from => to })
-
-        transition
       end
+      self
     end
   end # TransitionBuilder
 end # FiniteMachine
