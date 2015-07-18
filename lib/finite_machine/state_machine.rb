@@ -306,15 +306,21 @@ module FiniteMachine
           end
 
           notify HookEvent::Enter, event_transition, *data
-
-          notify HookEvent::After, event_transition, *data
-
-          event_transition.same?(state) ? NOTRANSITION : SUCCEEDED
-        else
-          notify HookEvent::After, event_transition, *data
-
-          CANCELLED
         end
+        notify HookEvent::After, event_transition, *data
+
+        infer_code(event_transition)
+      end
+    end
+
+    # @api private
+    def infer_code(event_transition)
+      if event_transition.cancelled?
+        CANCELLED
+      elsif event_transition.same?(current)
+        NOTRANSITION
+      else
+        SUCCEEDED
       end
     end
 

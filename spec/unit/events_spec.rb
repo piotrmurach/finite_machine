@@ -314,7 +314,7 @@ RSpec.describe FiniteMachine, 'events' do
       }
 
       callbacks {
-        on_before(:drive) { }
+        on_before(:drive) { FiniteMachine::CANCELLED }
         on_after(:stop)   { }
       }
     end
