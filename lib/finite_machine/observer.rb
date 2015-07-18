@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'set'
+require 'finite_machine/hooks'
 
 module FiniteMachine
   # A class responsible for observing state changes
