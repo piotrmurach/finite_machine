@@ -78,7 +78,8 @@ module FiniteMachine
       end
     end
 
-    # Examine choice transitions to find one matching condition
+    # Examine transitions for event name that start in from state
+    # and find one matching condition.
     #
     # @param [Symbol] name
     #   the event name
@@ -90,10 +91,10 @@ module FiniteMachine
     #   The choice transition that matches
     #
     # @api public
-    def select_choice_transition(name, from_state, *args, &block)
+    def transition_from(name, from_state, *conditions, &block)
       chain[name].find do |trans|
         [ANY_STATE, from_state].include?(trans.from_state) &&
-        trans.check_conditions(*args, &block)
+        trans.check_conditions(*conditions, &block)
       end
     end
 
