@@ -285,7 +285,9 @@ module FiniteMachine
     #   the status code for the transition
     #
     # @api private
-    def transition(event_transition, *data, &block)
+    def transition(event_name, *data, &block)
+      event_transition = machine.events_chain.next_transition(event_name)
+
       sync_exclusive do
         notify HookEvent::Before, event_transition, *data
 
@@ -327,7 +329,8 @@ module FiniteMachine
     # Perform transition without validation or callbacks
     #
     # @api private
-    def transition!(event_transition, *data, &block)
+    def transition!(event_name, *data, &block)
+      event_transition = machine.events_chain.next_transition(event_name)
       move_state(current, event_transition.move_to(*data))
     end
 

@@ -51,12 +51,13 @@ module FiniteMachine
         attributes.merge!(parsed_states: { from => to })
         transition = Transition.new(machine, attributes)
         name = attributes[:name]
+        silent = attributes.fetch(:silent, false)
 
         machine.events_chain.add(name, transition)
         machine.transitions.import(name, { from => to })
 
         unless machine.respond_to?(name)
-          event_definition.apply(name)
+          event_definition.apply(name, silent)
         end
         state_definition.apply({ from => to })
       end
