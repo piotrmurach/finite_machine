@@ -176,7 +176,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       initial :previous, silent: false
 
       events {
-        event :go, :previous => :next, if: -> { true } # called << 'guard'; true}
+        event :go, :previous => :next, if: -> { called << 'guard'; true}
       }
 
       callbacks {
@@ -196,7 +196,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       'enter_previous',
       'after_init',
       'before_go',
-      # 'guard',
+      'guard',
       'exit_previous',
       'transition_previous_next',
       'enter_next',
@@ -907,8 +907,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm.advance
     expect(fsm.current).to eq(:active)
     expect(called).to eq([
-      'before_advance_active_active',
-      'after_advance_active_active'
+      'before_advance_active_inactive',
+      'after_advance_active_inactive'
     ])
   end
 end

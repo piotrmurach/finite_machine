@@ -80,18 +80,6 @@ module FiniteMachine
       end
     end
 
-    # Check if moved to different state or not
-    #
-    # @param [Symbol] state
-    #   the current state name
-    #
-    # @return [Boolean]
-    #
-    # @api public
-    # def same?(state)
-    #   states[state] == state || (states[ANY_STATE] == state && from_state == state)
-    # end
-
     # Check if this transition matches from state
     #
     # @param [Symbol] from
@@ -120,11 +108,7 @@ module FiniteMachine
     def move_to(*data)
       return from_state if cancelled?
 
-      transition = if machine.events_chain.choice_transition?(name, machine.current)
-        machine.events_chain.transition_from(name, machine.current, *data)
-      else
-        machine.events_chain.find_transition(name, machine.current)
-      end
+      transition = machine.events_chain.select_transition(name, machine.current, *data)
       transition.states.values.first
     end
 

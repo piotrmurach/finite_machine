@@ -128,12 +128,21 @@ module FiniteMachine
       end
     end
 
+    # @api public
+    def select_transition(name, from_state, *conditions, &block)
+      if choice_transition?(name, from_state)
+        transition_from(name, from_state, *conditions)
+      else
+        find_transition(name, from_state)
+      end
+    end
+
     # @return [Symbol]
     #  The to state
     #
     # @api public
     def detect_to_state(name, from_state, *conditions, &block)
-      transition = transition_from(name, from_state, *conditions)
+      transition = select_transition(name, from_state, *conditions)
       if transition.nil?
         from_state
       else
