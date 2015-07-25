@@ -45,15 +45,15 @@ Or install it yourself as:
 ## Contents
 
 * [1. Usage](#1-usage)
-    * [1.1 Current](#11-current)
-    * [1.2 Initial](#12-initial)
-    * [1.3 Terminal](#13-terminal)
+    * [1.1 current](#11-current)
+    * [1.2 initial](#12-initial)
+    * [1.3 terminal](#13-terminal)
     * [1.4 is?](#14-is)
     * [1.5 can? and cannot?](#15-can-and-cannot)
-    * [1.6 states](#16-states)
-    * [1.7 target](#17-target)
-    * [1.8 Alias target](#18-alias-target)
-    * [1.9 restore!](#19-restore)
+    * [1.6 target](#16-target)
+    * [1.7 Alias target](#17-alias-target)
+    * [1.8 restore!](#18-restore)
+    * [1.9 states](#19-states)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Forcing transitions](#22-forcing-transitions)
@@ -305,15 +305,7 @@ fm.can?(:stop, :breaks)    # => true
 fm.can?(:stop, :no_breaks) # => false
 ```
 
-### 1.6 states
-
-You can use the `states` method to return an array of all the states for a given state machine.
-
-```ruby
-fm.states # => [:none, :green, :yellow, :red]
-```
-
-### 1.7 target
+### 1.6 target
 
 If you need to execute some external code in the context of the current state machine use `target` helper.
 
@@ -376,7 +368,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 1.8 Alias target
+### 1.7 Alias target
 
 If you need to better express the intention behind the target name, in particular when calling actions in callbacks, you can use the `alias_target` helper:
 
@@ -401,7 +393,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 1.9 restore!
+### 1.8 restore!
 
 In order to set the machine to a given state and thus skip triggering callbacks use the `restore!` method:
 
@@ -410,6 +402,14 @@ fm.restore!(:neutral)
 ```
 
 This method may be suitable when used testing your state machine or in restoring the state from datastore.
+
+### 1.9 states
+
+You can use the `states` method to return an array of all the states for a given state machine.
+
+```ruby
+fm.states # => [:none, :green, :yellow, :red]
+```
 
 ## 2 Transitions
 
