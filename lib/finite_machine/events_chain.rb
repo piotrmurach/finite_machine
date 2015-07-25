@@ -137,13 +137,13 @@ module FiniteMachine
       end
     end
 
-    # Find this transition can move to
+    # Find transition can move to
     #
     # @param [Array] data
     #   the data associated with this transition
     #
     # @return [Symbol]
-    #   the state to transition
+    #   the state transition to
     #
     # @api public
     def move_to(name, from_state, *data, &block)

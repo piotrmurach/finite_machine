@@ -297,11 +297,13 @@ module FiniteMachine
           notify HookEvent::Exit, event_name, from, *data
 
           begin
-            event_transition = events_chain.find_transition(event_name, from)
-            to = event_transition.move_to(*data)
+            to = events_chain.move_to(event_name, from, *data, &block)
             move_state(from, to)
             status = NOTRANSITION if from == to
-            Logger.report_transition(event_transition, *data) if log_transitions
+
+            if log_transitions
+              Logger.report_transition(event_name, from, to, *data)
+            end
 
             notify HookEvent::Transition, event_name, from, *data
           rescue Exception => e
@@ -322,8 +324,7 @@ module FiniteMachine
     #
     # @api private
     def transition!(event_name, *data, &block)
-      event_transition = events_chain.find_transition(event_name, current)
-      move_state(current, event_transition.move_to(*data))
+      move_state(current, events_chain.move_to(event_name, current, *data))
     end
 
     # Update this state machine state to new one
