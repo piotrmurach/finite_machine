@@ -35,10 +35,11 @@ module FiniteMachine
     # @return [self]
     #
     # @api private
-    def initialize(transition, *data)
-      @name = transition.name
-      @from = transition.latest_from_state
-      @to   = transition.to_state(*data)
+    # def initialize(transition, *data)
+    def initialize(hook_event, to)
+      @name = hook_event.event_name
+      @from = hook_event.from
+      @to   = to
       freeze
     end
   end # TransitionEvent
