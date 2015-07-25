@@ -74,18 +74,6 @@ module FiniteMachine
       !transition_from(event_name, from_state, *conditions).nil?
     end
 
-    # Find next transition
-    #
-    # @return [Transition]
-    #   the next available transition
-    #
-    # @api private
-    def next_transition(name)
-      sync_shared do
-        chain[name].find(&:current?) || UndefinedTransition.new(name)
-      end
-    end
-
     # Find transition matching conditions
     #
     # @param [Symbol] name
