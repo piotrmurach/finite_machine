@@ -59,27 +59,9 @@ module FiniteMachine
       @cancelled
     end
 
-    # Decide :to state from available transitions for this event
-    #
-    # @return [Symbol]
-    #
-    # @api public
-    def to_state(*args)
-      if transition_choice?
-        found_trans = machine.events_chain.transition_from(name, from_state, *args)
-
-        if found_trans.nil? # no choice found
-          from_state
-        else
-          found_trans.states[from_state] || found_trans.states[ANY_STATE]
-        end
-      else
-        available_trans = machine.transitions[name]
-        available_trans[from_state] || available_trans[ANY_STATE]
-      end
-    end
-
     # Reduce conditions
+    #
+    # @return [Array[Callable]]
     #
     # @api private
     def make_conditions
@@ -106,9 +88,9 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def same?(state)
-      states[state] == state || (states[ANY_STATE] == state && from_state == state)
-    end
+    # def same?(state)
+    #   states[state] == state || (states[ANY_STATE] == state && from_state == state)
+    # end
 
     # Check if machine current state matches any of the from states
     #
@@ -135,20 +117,6 @@ module FiniteMachine
       end
     end
 
-    # Find latest from state
-    #
-    # Note that for the exit hook the call hasn't happened yet so
-    # we need to find previous to state when the from is :any.
-    #
-    # @return [Object] from_state
-    #
-    # @api private
-    def latest_from_state
-      sync_shared do
-        from_state == ANY_STATE ? machine.previous_state : from_state
-      end
-    end
-
     # Find this transition can move to
     #
     # @param [Array] data
@@ -159,7 +127,8 @@ module FiniteMachine
     #
     # @api public
     def move_to(*data)
-      self.from_state = machine.state
+      return from_state if cancelled?
+
       if transition_choice?
         found_trans = machine.events_chain.find_transition(name, *data)
         found_trans.states.values.first
