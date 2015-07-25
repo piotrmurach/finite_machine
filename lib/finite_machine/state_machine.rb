@@ -129,12 +129,13 @@ module FiniteMachine
     #
     # @api public
     def states
-      sync_shared do
-        event_names.map { |event| transitions[event].to_a }.flatten.uniq
-      end
+      sync_shared { events_chain.states }
     end
 
     # Retireve all event names
+    #
+    # @example
+    #   fsm.event_names # => [:init, :start, :stop]
     #
     # @return [Array[Symbol]]
     #

@@ -31,12 +31,25 @@ module FiniteMachine
 
     # Retrieve all event names
     #
+    # @example
+    #   events_chain.events # => [:init, :start, :stop]
+    #
     # @return [Array[Symbol]]
     #   All event names
     #
     # @api public
     def events
       chain.keys
+    end
+
+    # Retreive all states
+    #
+    # @example
+    #   events_chain.states # => [:yellow, :green, :red]
+    #
+    # @api public
+    def states
+      chain.values.flatten.map(&:states).map(&:to_a).flatten.uniq
     end
 
     # Add event under name
