@@ -269,9 +269,9 @@ module FiniteMachine
     # @return [nil]
     #
     # @api private
-    def notify(hook_event_type, event_transition, *data)
+    def notify(hook_event_type, event_name, from, *data)
       sync_shared do
-        hook_event = hook_event_type.build(state, event_transition)
+        hook_event = hook_event_type.build(current, event_name, from)
         subscribers.visit(hook_event, *data)
       end
     end
@@ -287,42 +287,34 @@ module FiniteMachine
     # @api private
     def transition(event_name, *data, &block)
       event_transition = machine.events_chain.next_transition(event_name)
+      from = current
+      status = SUCCEEDED
 
       sync_exclusive do
-        notify HookEvent::Before, event_transition, *data
+        notify HookEvent::Before, event_name, from, *data
 
-        if valid_state?(event_transition.name) &&
-           can?(event_transition.name, *data)
+        if valid_state?(event_name) && can?(event_name, *data)
 
-          notify HookEvent::Exit, event_transition, *data
+          notify HookEvent::Exit, event_name, from, *data
 
           begin
-            if !event_transition.cancelled?
-              move_state(current, event_transition.move_to(*data))
-            end
+            to = event_transition.move_to(*data)
+            move_state(from, to)
+            status = NOTRANSITION if from == to
             Logger.report_transition(event_transition, *data) if log_transitions
 
-            notify HookEvent::Transition, event_transition, *data
+            notify HookEvent::Transition, event_name, from, *data
           rescue Exception => e
             catch_error(e) || raise_transition_error(e)
           end
 
-          notify HookEvent::Enter, event_transition, *data
+          notify HookEvent::Enter, event_name, from, *data
+        else
+          status = CANCELLED
         end
-        notify HookEvent::After, event_transition, *data
+        notify HookEvent::After, event_name, from, *data
 
-        infer_code(event_transition)
-      end
-    end
-
-    # @api private
-    def infer_code(event_transition)
-      if event_transition.cancelled?
-        CANCELLED
-      elsif event_transition.same?(current)
-        NOTRANSITION
-      else
-        SUCCEEDED
+        status
       end
     end
 
