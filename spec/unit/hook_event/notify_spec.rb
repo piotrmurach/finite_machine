@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe FiniteMachine::HookEvent, '.notify' do
   it "triggers event on the subscriber" do
     subscriber = spy(:subscriber)
-    transition = double(:transition)
-    hook_event = described_class.new(:green, transition)
+    hook_event = described_class.new(:green, :go, :red)
 
     hook_event.notify(subscriber, 1, 2)
 

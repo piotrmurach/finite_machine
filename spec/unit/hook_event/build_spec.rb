@@ -4,14 +4,12 @@ require 'spec_helper'
 
 RSpec.describe FiniteMachine::HookEvent, '#build' do
   it "builds action event" do
-    transition = double(:transition, name: :go)
-    hook_event = FiniteMachine::HookEvent::Before.build(:green, transition)
+    hook_event = FiniteMachine::HookEvent::Before.build(:green, :go, :red)
     expect(hook_event.name).to eq(:go)
   end
 
   it "builds state event" do
-    transition = double(:transition, name: :go)
-    hook_event = FiniteMachine::HookEvent::Enter.build(:green, transition)
+    hook_event = FiniteMachine::HookEvent::Enter.build(:green, :go, :red)
     expect(hook_event.name).to eq(:green)
   end
 end

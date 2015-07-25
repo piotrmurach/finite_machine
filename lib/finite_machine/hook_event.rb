@@ -24,48 +24,54 @@ module FiniteMachine
 
     TRIGGER_MESSAGE = :trigger
 
-    # HookEvent name
+    # HookEvent state or action
     attr_threadsafe :name
 
     # HookEvent type
     attr_threadsafe :type
 
-    # Transition associated with the event
-    attr_threadsafe :transition
+    # The from state this hook has been fired
+    attr_threadsafe :from
+
+    # The event name triggering this hook event
+    attr_threadsafe :event_name
 
     # Instantiate a new HookEvent object
     #
     # @param [Symbol] name
     #   The action or state name
-    # @param [FiniteMachine::Transition]
-    #   The transition associated with this event.
+    #
+    # @param [Symbol] event_name
+    #   The event name associated with this hook event.
     #
     # @example
-    #   HookEvent.new(:green, ...)
+    #   HookEvent.new(:green, :move, :green)
     #
     # @return [self]
     #
     # @api public
-    def initialize(name, transition)
+    def initialize(name, event_name, from)
       @name       = name
       @type       = self.class
-      @transition = transition
+      @event_name = event_name
+      @from       = from
       freeze
     end
 
     # Build event hook
     #
     # @param [Symbol] :state
-    #   The state name.
-    # @param [FiniteMachine::Transition] :event_transition
-    #   The transition associted with this hook.
+    #   The state or action name.
+    #
+    # @param [Symbol] :event_name
+    #   The event name associted with this hook.
     #
     # @return [self]
     #
     # @api public
-    def self.build(state, event_transition)
-      state_or_action = self < Anystate ? state : event_transition.name
-      new(state_or_action, event_transition)
+    def self.build(state, event_name, from)
+      state_or_action = self < Anystate ? state : event_name
+      new(state_or_action, event_name, from)
     end
 
     # Notify subscriber about this event
@@ -110,7 +116,7 @@ module FiniteMachine
     # @api public
     def <=>(other)
       other.is_a?(type) &&
-      [name, transition] <=> [other.name, other.transition]
+      [name, from, event_name] <=> [other.name, other.from, other.event_name]
     end
     alias_method :eql?, :==
 
