@@ -20,8 +20,32 @@ module FiniteMachine
       @chain = {}
     end
 
+    # Check if event is present
+    #
+    # @return [Boolean]
+    #   true if event is present, false otherwise
+    #
+    # @api public
     def exists?(name)
       !chain[name].nil?
+    end
+
+    # Add transition under name
+    #
+    # @param [Symbol] the event name
+    #
+    # @param [Transition] transition
+    #   the transition to add under event name
+    #
+    # @return [nil]
+    #
+    # @api public
+    def add(name, transition)
+      if exists?(name)
+        chain[name] << transition
+      else
+        chain[name] = [transition]
+      end
     end
 
     def find(name)
@@ -52,19 +76,6 @@ module FiniteMachine
       chain.values.flatten.map(&:states).map(&:to_a).flatten.uniq
     end
 
-    # Add event under name
-    #
-    # @return [nil]
-    #
-    # @api public
-    def add(name, transition)
-      if exists?(name)
-        chain[name] << transition
-      else
-        chain[name] = [transition]
-      end
-    end
-
     # Check if event is valid and transition can be performed
     #
     # @return [Boolean]
@@ -72,17 +83,6 @@ module FiniteMachine
     # @api public
     def can_perform?(event_name, from_state, *conditions, &block)
       !transition_from(event_name, from_state, *conditions).nil?
-    end
-
-    # Find transition matching conditions
-    #
-    # @param [Symbol] name
-    #
-    # return [Transition]
-    #
-    # @api private
-    def find_transition(name, from_state)
-      chain[name].find { |trans| trans.matches?(from_state) }
     end
 
     # Check if event has branching choice transitions or not
@@ -95,6 +95,17 @@ module FiniteMachine
     # @api public
     def choice_transition?(name, from_state)
       chain[name].select { |trans| trans.matches?(from_state) }.size > 1
+    end
+
+    # Find transition matching conditions
+    #
+    # @param [Symbol] name
+    #
+    # return [Transition]
+    #
+    # @api private
+    def find_transition(name, from_state)
+      chain[name].find { |trans| trans.matches?(from_state) }
     end
 
     # Examine transitions for event name that start in from state
