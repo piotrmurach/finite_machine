@@ -149,20 +149,7 @@ module FiniteMachine
     def move_to(name, from_state, *data, &block)
       transition = select_transition(name, from_state, *data, &block)
 
-      if transition.cancelled?
-        from_state
-      else
-        transition.states.values.first
-      end
-    end
-
-    # @return [Symbol]
-    #  The to state
-    #
-    # @api public
-    def detect_to_state(name, from_state, *conditions, &block)
-      transition = select_transition(name, from_state, *conditions)
-      if transition.nil?
+      if transition.nil? || transition.cancelled?
         from_state
       else
         transition.states[from_state] || transition.states[ANY_STATE]

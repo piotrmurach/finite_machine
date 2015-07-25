@@ -152,8 +152,7 @@ module FiniteMachine
     #
     # @api private
     def handle_callback(hook, event, *data)
-      to = machine.events_chain.detect_to_state(event.event_name,
-                                                event.from, *data)
+      to = machine.events_chain.move_to(event.event_name, event.from, *data)
       trans_event = TransitionEvent.new(event, to)
       callable    = create_callable(hook)
 
