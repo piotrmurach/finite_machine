@@ -70,8 +70,8 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def can_perform?(event_name, *conditions, &block)
-      !find_transition(event_name, *conditions).nil?
+    def can_perform?(event_name, from_state, *conditions, &block)
+      !transition_from(event_name, from_state, *conditions).nil?
     end
 
     # Find next transition
@@ -93,13 +93,13 @@ module FiniteMachine
     # return [Transition]
     #
     # @api private
-    def find_transition(name, *conditions)
-      sync_shared do
-        chain[name].find do |trans|
-          trans.current? && trans.check_conditions(*conditions)
-        end
-      end
-    end
+    # def find_transition(name, *conditions)
+    #   sync_shared do
+    #     chain[name].find do |trans|
+    #       trans.current? && trans.check_conditions(*conditions)
+    #     end
+    #   end
+    # end
 
     # Examine transitions for event name that start in from state
     # and find one matching condition.

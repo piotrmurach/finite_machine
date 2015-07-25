@@ -130,8 +130,9 @@ module FiniteMachine
       return from_state if cancelled?
 
       if transition_choice?
-        found_trans = machine.events_chain.find_transition(name, *data)
-        found_trans.states.values.first
+        # found_trans = machine.events_chain.find_transition(name, *data)
+        transition = machine.events_chain.transition_from(name, machine.current, *data)
+        transition.states.values.first
       else
         transitions = machine.transitions[name]
         transitions[machine.state] || transitions[ANY_STATE]

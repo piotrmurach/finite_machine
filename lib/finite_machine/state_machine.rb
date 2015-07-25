@@ -159,7 +159,7 @@ module FiniteMachine
     # @api public
     def can?(*args, &block)
       event_name  = args.shift
-      events_chain.can_perform?(event_name, *args, &block)
+      events_chain.can_perform?(event_name, current, *args, &block)
     end
 
     # Checks if event cannot be triggered
@@ -286,7 +286,6 @@ module FiniteMachine
     #
     # @api private
     def transition(event_name, *data, &block)
-      event_transition = machine.events_chain.next_transition(event_name)
       from = current
       status = SUCCEEDED
 
@@ -298,6 +297,7 @@ module FiniteMachine
           notify HookEvent::Exit, event_name, from, *data
 
           begin
+            event_transition = events_chain.next_transition(event_name)
             to = event_transition.move_to(*data)
             move_state(from, to)
             status = NOTRANSITION if from == to
@@ -322,7 +322,7 @@ module FiniteMachine
     #
     # @api private
     def transition!(event_name, *data, &block)
-      event_transition = machine.events_chain.next_transition(event_name)
+      event_transition = events_chain.next_transition(event_name)
       move_state(current, event_transition.move_to(*data))
     end
 
