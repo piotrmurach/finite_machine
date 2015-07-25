@@ -98,6 +98,26 @@ module FiniteMachine
       end
     end
 
+    # @return [Symbol]
+    #  The to state
+    #
+    # @api public
+    def detect_to_state(name, from_state, *conditions, &block)
+      transition = transition_from(name, from_state, *conditions)
+      if transition.nil?
+        from_state
+      else
+        transition.states[from_state] || transition.states[ANY_STATE]
+      end
+    end
+
+    # @api public
+    def cancel_transitions(name, status)
+      chain[name].each do |trans|
+        trans.cancelled = status
+      end
+    end
+
     # Reset chain
     #
     # @return [self]
