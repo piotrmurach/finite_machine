@@ -93,13 +93,25 @@ module FiniteMachine
     # return [Transition]
     #
     # @api private
-    # def find_transition(name, *conditions)
-    #   sync_shared do
-    #     chain[name].find do |trans|
-    #       trans.current? && trans.check_conditions(*conditions)
-    #     end
-    #   end
-    # end
+    def find_transition(name, from_state)
+      chain[name].find do |trans|
+        [ANY_STATE, from_state].include?(trans.from_state)
+      end
+    end
+
+    # Check if event has branching choice transitions or not
+    #
+    # @example
+    #   events_chain.choice_transition?(:go, :green) # => true
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def choice_transition?(name, from_state)
+      chain[name].select do |trans|
+        [ANY_STATE, from_state].include?(trans.from_state)
+      end.size > 1
+    end
 
     # Examine transitions for event name that start in from state
     # and find one matching condition.

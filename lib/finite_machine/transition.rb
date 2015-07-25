@@ -105,18 +105,6 @@ module FiniteMachine
       states.keys.any? { |state| state == machine.current || state == ANY_STATE }
     end
 
-    # Check if this transition has branching choice or not
-    #
-    # @return [Boolean]
-    #
-    # @api public
-    def transition_choice?
-      matching = machine.transitions[name]
-      [matching[from_state], matching[ANY_STATE]].any? do |match|
-        match.is_a?(Array)
-      end
-    end
-
     # Find this transition can move to
     #
     # @param [Array] data
@@ -129,14 +117,12 @@ module FiniteMachine
     def move_to(*data)
       return from_state if cancelled?
 
-      if transition_choice?
-        # found_trans = machine.events_chain.find_transition(name, *data)
-        transition = machine.events_chain.transition_from(name, machine.current, *data)
-        transition.states.values.first
+      transition = if machine.events_chain.choice_transition?(name, machine.current)
+        machine.events_chain.transition_from(name, machine.current, *data)
       else
-        transitions = machine.transitions[name]
-        transitions[machine.state] || transitions[ANY_STATE]
+        machine.events_chain.find_transition(name, machine.current)
       end
+      transition.states.values.first
     end
 
     # Return transition name
