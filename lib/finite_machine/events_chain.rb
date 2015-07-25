@@ -152,7 +152,7 @@ module FiniteMachine
       if transition.nil? || transition.cancelled?
         from_state
       else
-        transition.states[from_state] || transition.states[ANY_STATE]
+        transition.to_state(from_state)
       end
     end
 

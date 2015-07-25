@@ -14,9 +14,6 @@ module FiniteMachine
     # The current state machine
     attr_threadsafe :machine
 
-    # The original from state
-    attr_threadsafe :from_state
-
     # Check if transition should be cancelled
     attr_threadsafe :cancelled
 
@@ -44,7 +41,6 @@ module FiniteMachine
       @name        = attrs[:name]
       @states      = attrs.fetch(:parsed_states, {})
       @silent      = attrs.fetch(:silent, false)
-      @from_state  = @states.keys.first
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
@@ -94,6 +90,10 @@ module FiniteMachine
     # @api public
     def matches?(from)
       states.keys.any? { |state| [ANY_STATE, from].include?(state) }
+    end
+
+    def to_state(from)
+      states[from] || states[ANY_STATE]
     end
 
     # Return transition name
