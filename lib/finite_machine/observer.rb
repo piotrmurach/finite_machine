@@ -134,17 +134,27 @@ module FiniteMachine
     #
     # @api private
     def create_callable(hook)
-      deferred_hook = proc do |_trans_event, *_data|
-        machine.instance_exec(_trans_event, *_data, &hook)
+      callback = proc do |trans_event, *data|
+        machine.instance_exec(trans_event, *data, &hook)
       end
-      Callable.new(deferred_hook)
+      Callable.new(callback)
     end
 
     # Handle callback and decide if run synchronously or asynchronously
     #
+    # @param [Proc] :hook
+    #   The hook to evaluate
+    #
+    # @param [HookEvent] :event
+    #   The event for which the hook is called
+    #
+    # @param [Array[Object]] :data
+    #
     # @api private
     def handle_callback(hook, event, *data)
-      trans_event = TransitionEvent.new(event.transition, *data)
+      to = machine.events_chain.detect_to_state(event.event_name,
+                                                event.from, *data)
+      trans_event = TransitionEvent.new(event, to)
       callable    = create_callable(hook)
 
       if hook.is_a?(Async)
@@ -154,7 +164,8 @@ module FiniteMachine
         result = callable.call(trans_event, *data)
       end
 
-      event.transition.cancelled = (result == CANCELLED)
+      machine.events_chain.cancel_transitions(event.event_name,
+                                              (result == CANCELLED))
     end
 
     # Callback names including all states and events
