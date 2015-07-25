@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe FiniteMachine::Logger do
   let(:message) { 'error' }
-  let(:log) { double }
+  let(:log) { spy }
 
   subject(:logger) { described_class }
 
@@ -31,9 +31,8 @@ RSpec.describe FiniteMachine::Logger do
   end
 
   it "reports transition" do
-    expect(log).to receive(:info).with("Transition: @event=go red -> green")
-    machine = double(:machine, current: :green)
-    transition = double(:transition, name: "go", from_state: :red, machine: machine)
-    logger.report_transition(transition)
+    logger.report_transition(:go, :red, :green)
+
+    expect(log).to have_received(:info).with("Transition: @event=go red -> green")
   end
 end

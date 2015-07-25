@@ -29,13 +29,12 @@ module FiniteMachine
       end
     end
 
-    def report_transition(event_transition, *args)
-      message = "Transition: @event=#{event_transition.name} "
+    def report_transition(name, from, to, *args)
+      message = "Transition: @event=#{name} "
       unless args.empty?
         message << "@with=[#{args.join(',')}] "
       end
-      message << "#{event_transition.from_state} -> "
-      message << "#{event_transition.machine.current}"
+      message << "#{from} -> #{to}"
       info(message)
     end
   end # Logger
