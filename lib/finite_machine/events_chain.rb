@@ -29,6 +29,16 @@ module FiniteMachine
     end
     alias_method :[], :find
 
+    # Retrieve all event names
+    #
+    # @return [Array[Symbol]]
+    #   All event names
+    #
+    # @api public
+    def events
+      chain.keys
+    end
+
     # Add event under name
     #
     # @return [nil]

@@ -69,7 +69,6 @@ module FiniteMachine
       sync_exclusive { subscribers.subscribe(*observers) }
     end
 
-
     # Help to mark the event as synchronous
     #
     # @example
@@ -141,7 +140,7 @@ module FiniteMachine
     #
     # @api public
     def event_names
-      sync_shared { transitions.keys }
+      sync_shared { events_chain.events }
     end
 
     # Checks if event can be triggered
