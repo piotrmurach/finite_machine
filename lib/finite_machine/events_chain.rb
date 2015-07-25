@@ -137,6 +137,25 @@ module FiniteMachine
       end
     end
 
+    # Find this transition can move to
+    #
+    # @param [Array] data
+    #   the data associated with this transition
+    #
+    # @return [Symbol]
+    #   the state to transition
+    #
+    # @api public
+    def move_to(name, from_state, *data, &block)
+      transition = select_transition(name, from_state, *data, &block)
+
+      if transition.cancelled?
+        from_state
+      else
+        transition.states.values.first
+      end
+    end
+
     # @return [Symbol]
     #  The to state
     #

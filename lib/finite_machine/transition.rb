@@ -96,22 +96,6 @@ module FiniteMachine
       states.keys.any? { |state| [ANY_STATE, from].include?(state) }
     end
 
-    # Find this transition can move to
-    #
-    # @param [Array] data
-    #   the data associated with this transition
-    #
-    # @return [Symbol]
-    #   the state to transition
-    #
-    # @api public
-    def move_to(*data)
-      return from_state if cancelled?
-
-      transition = machine.events_chain.select_transition(name, machine.current, *data)
-      transition.states.values.first
-    end
-
     # Return transition name
     #
     # @return [String]
