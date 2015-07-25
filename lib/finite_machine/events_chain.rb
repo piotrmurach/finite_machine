@@ -94,9 +94,7 @@ module FiniteMachine
     #
     # @api private
     def find_transition(name, from_state)
-      chain[name].find do |trans|
-        [ANY_STATE, from_state].include?(trans.from_state)
-      end
+      chain[name].find { |trans| trans.matches?(from_state) }
     end
 
     # Check if event has branching choice transitions or not
@@ -108,9 +106,7 @@ module FiniteMachine
     #
     # @api public
     def choice_transition?(name, from_state)
-      chain[name].select do |trans|
-        [ANY_STATE, from_state].include?(trans.from_state)
-      end.size > 1
+      chain[name].select { |trans| trans.matches?(from_state) }.size > 1
     end
 
     # Examine transitions for event name that start in from state
@@ -128,7 +124,7 @@ module FiniteMachine
     # @api public
     def transition_from(name, from_state, *conditions, &block)
       chain[name].find do |trans|
-        [ANY_STATE, from_state].include?(trans.from_state) &&
+        trans.matches?(from_state) &&
         trans.check_conditions(*conditions, &block)
       end
     end

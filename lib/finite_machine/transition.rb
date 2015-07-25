@@ -92,17 +92,20 @@ module FiniteMachine
     #   states[state] == state || (states[ANY_STATE] == state && from_state == state)
     # end
 
-    # Check if machine current state matches any of the from states
+    # Check if this transition matches from state
+    #
+    # @param [Symbol] from
+    #   the from state to match against
     #
     # @example
-    #   transition.current? # => true
+    #   transition.matches?(:green) # => true
     #
     # @return [Boolean]
     #   Return true if match is found, false otherwise.
     #
     # @api public
-    def current?
-      states.keys.any? { |state| state == machine.current || state == ANY_STATE }
+    def matches?(from)
+      states.keys.any? { |state| [ANY_STATE, from].include?(state) }
     end
 
     # Find this transition can move to
