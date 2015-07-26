@@ -247,8 +247,8 @@ module FiniteMachine
     #
     # @api private
     def valid_state?(event_name)
-      current_states = transitions[event_name].keys
-      if !current_states.include?(state) && !current_states.include?(ANY_STATE)
+      current_states = events_chain.states_for(event_name)
+      if !current_states.any? { |state| state == current || state == ANY_STATE }
         exception = InvalidStateError
         catch_error(exception) ||
           fail(exception, "inappropriate current state '#{state}'")
@@ -333,6 +333,7 @@ module FiniteMachine
     # @param [Symbol] to_state
     #
     # @api private
+    # TODO: rename to be called actual transition
     def move_state(from_state, to_state)
       self.state = to_state
       self.previous_state = to_state
