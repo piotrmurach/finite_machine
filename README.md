@@ -158,7 +158,7 @@ fm = FiniteMachine.define do
 end
 
 fm.current # => :none
-fm.start
+fm.start   # => true
 fm.current # => :green
 ```
 
@@ -253,9 +253,9 @@ When the terminal state has been specified, you can use `terminated?` method on 
 
 ```ruby
 fm.terminated?  # => false
-fm.slow
+fm.slow         # => true
 fm.terminated?  # => false
-fm.stop
+fm.stop         # => true
 fm.terminated?  # => true
 ```
 
@@ -300,7 +300,7 @@ end
 fm.can?(:slow) # => true
 fm.can?(:stop) # => false
 
-fm.slow
+fm.slow                    # => true
 fm.can?(:stop, :breaks)    # => true
 fm.can?(:stop, :no_breaks) # => false
 ```
@@ -434,17 +434,17 @@ The following methods trigger transitions for the example state machine.
 
 ### 2.1 Performing transitions
 
-In order to transition to the next reachable state, simply call the event's name on the **FiniteMachine** instance.
+In order to transition to the next reachable state, simply call the event's name on the **FiniteMachine** instance. If the transition succeeds the `true` value is returned, otherwise `false`.
 
 ```ruby
-fm.ready
+fm.ready         # => true
 fm.current       # => :yellow
 ```
 
-Furthermore, you can pass additional parameters with the method call that will be available in the triggered callback.
+Furthermore, you can pass additional parameters with the method call that will be available in the triggered callback as well as used by any present guarding conditions.
 
 ```ruby
-fm.go('Piotr!')
+fm.go('Piotr!')  # => true
 fm.current       # => :green
 ```
 
