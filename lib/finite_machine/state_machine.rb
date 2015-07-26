@@ -14,17 +14,11 @@ module FiniteMachine
     # Final state, defaults to :none
     attr_threadsafe :final_state
 
-    # Current state
-    attr_threadsafe :state
-
     # The prefix used to name events.
     attr_threadsafe :namespace
 
     # The state machine environment
     attr_threadsafe :env
-
-    # The previous state before transition
-    attr_threadsafe :previous_state
 
     # The state machine event definitions
     attr_threadsafe :events_chain
@@ -228,6 +222,13 @@ module FiniteMachine
     # @api private
     attr_threadsafe :observer
 
+    # Current state
+    #
+    # @return [Symbol]
+    #
+    # @api private
+    attr_threadsafe :state
+
     # The state machine subscribers
     #
     # @return [Subscribers]
@@ -333,7 +334,6 @@ module FiniteMachine
     # TODO: rename to be called actual transition
     def move_state(from_state, to_state)
       self.state = to_state
-      self.previous_state = to_state
       self.initial_state = to_state if from_state == DEFAULT_STATE
     end
 
