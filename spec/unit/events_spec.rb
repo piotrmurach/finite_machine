@@ -320,10 +320,10 @@ RSpec.describe FiniteMachine, 'events' do
     end
 
     expect(fsm.current).to eql(:neutral)
-    expect(fsm.start).to eql(FiniteMachine::SUCCEEDED)
-    expect(fsm.drive).to eql(FiniteMachine::CANCELLED)
-    expect(fsm.stop).to eql(FiniteMachine::SUCCEEDED)
-    expect(fsm.stop).to eql(FiniteMachine::NOTRANSITION)
+    expect(fsm.start).to eql(true)
+    expect(fsm.drive).to eql(false)
+    expect(fsm.stop).to eql(true)
+    expect(fsm.stop).to eql(true)
   end
 
   it "allows for self transition events" do

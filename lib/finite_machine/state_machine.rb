@@ -284,10 +284,8 @@ module FiniteMachine
     #
     # @api private
     def transition(event_name, *data, &block)
-      from = current
-      status = SUCCEEDED
-
       sync_exclusive do
+        from = current
         notify HookEvent::Before, event_name, from, *data
 
         if valid_state?(event_name) && can?(event_name, *data)
@@ -295,13 +293,7 @@ module FiniteMachine
           notify HookEvent::Exit, event_name, from, *data
 
           begin
-            to = events_chain.move_to(event_name, from, *data, &block)
-            move_state(from, to)
-            status = NOTRANSITION if from == to
-
-            if log_transitions
-              Logger.report_transition(event_name, from, to, *data)
-            end
+            status = move_state(event_name, from, *data, &block)
 
             notify HookEvent::Transition, event_name, from, *data
           rescue Exception => e
@@ -310,7 +302,7 @@ module FiniteMachine
 
           notify HookEvent::Enter, event_name, from, *data
         else
-          status = CANCELLED
+          status = false
         end
         notify HookEvent::After, event_name, from, *data
 
@@ -322,7 +314,7 @@ module FiniteMachine
     #
     # @api private
     def transition!(event_name, *data, &block)
-      move_state(current, events_chain.move_to(event_name, current, *data))
+      move_state(event_name, current, *data, &block)
     end
 
     # Update this state machine state to new one
@@ -331,10 +323,16 @@ module FiniteMachine
     # @param [Symbol] to_state
     #
     # @api private
-    # TODO: rename to be called actual transition
-    def move_state(from_state, to_state)
+    def move_state(event_name, from_state, *data, &block)
+      to_state = events_chain.move_to(event_name, from_state, *data, &block)
+
+      if log_transitions
+        Logger.report_transition(event_name, from_state, to_state, *data)
+      end
+
       self.state = to_state
       self.initial_state = to_state if from_state == DEFAULT_STATE
+      true
     end
 
     # Raise when failed to transition between states

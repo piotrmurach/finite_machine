@@ -49,9 +49,6 @@ module FiniteMachine
   # Returned when transition is cancelled in callback
   CANCELLED = 2
 
-  # Returned when transition has not changed the state
-  NOTRANSITION = 3
-
   # When transition between states is invalid
   TransitionError = Class.new(::StandardError)
 
