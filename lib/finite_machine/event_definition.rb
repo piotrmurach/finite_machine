@@ -57,7 +57,7 @@ module FiniteMachine
       end
     end
 
-    # Define event that skips validations
+    # Define event that skips validations and callbacks
     #
     # @param [Symbol] event_name
     #   the event name
@@ -67,8 +67,8 @@ module FiniteMachine
     # @api private
     def define_event_bang(event_name)
       machine.send(:define_singleton_method, "#{event_name}!") do
-        transitions   = machine.transitions[event_name]
-        machine.state = transitions.values[0]
+        transitions = machine.events_chain.find(event_name)
+        machine.state = transitions.map(&:states).flat_map(&:values)[0]
       end
     end
   end # EventBuilder
