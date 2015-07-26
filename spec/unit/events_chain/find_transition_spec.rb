@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe FiniteMachine::EventsChain, '#transition_from' do
-  it "finds transition" do
-    transition = spy(:transition, from_state: :green)
+  it "finds transition matching conditions from a given state" do
+    transition = spy(:transition)
     conditions = double(:conditions)
     events_chain = described_class.new
 

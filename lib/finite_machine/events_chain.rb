@@ -48,8 +48,19 @@ module FiniteMachine
       end
     end
 
+    # Finds transitions for the event name
+    #
+    # @param [Symbol] name
+    #
+    # @example
+    #   events_chain[:start] # => []
+    #
+    # @return [Array[Transition]]
+    #   the transitions matching event name
+    #
+    # @api public
     def find(name)
-      chain.fetch(name) { UndefinedTransition.new(name) }
+      chain.fetch(name) { [] }
     end
     alias_method :[], :find
 
@@ -74,6 +85,18 @@ module FiniteMachine
     # @api public
     def states
       chain.values.flatten.map(&:states).map(&:to_a).flatten.uniq
+    end
+
+    # Retrieve from states for the event name
+    #
+    # @param [Symbol] event_name
+    #
+    # @example
+    #   events_chain.states_for(:start) # => [:yellow, :green]
+    #
+    # @api public
+    def states_for(event_name)
+      find(event_name).map(&:states).flat_map(&:keys)
     end
 
     # Check if event is valid and transition can be performed
