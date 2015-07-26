@@ -136,11 +136,11 @@ module FiniteMachine
       chain[name].select { |trans| trans.matches?(from_state) }.size > 1
     end
 
-    # Find transition matching conditions
+    # Find transition without checking conditions
     #
     # @param [Symbol] name
     #
-    # return [Transition]
+    # @return [Transition]
     #
     # @api private
     def find_transition(name, from_state)
@@ -187,8 +187,9 @@ module FiniteMachine
     # @api public
     def move_to(name, from_state, *data, &block)
       transition = select_transition(name, from_state, *data, &block)
+      transition ||= UndefinedTransition.new(name)
 
-      if transition.nil? || transition.cancelled?
+      if transition.cancelled?
         from_state
       else
         transition.to_state(from_state)
