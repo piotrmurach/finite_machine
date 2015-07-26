@@ -200,7 +200,8 @@ module FiniteMachine
     def inspect
       sync_shared do
         "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
-        "@events=#{event_names}, @transitions=#{transitions.inspect}>"
+        "@events=#{event_names}, " \
+        "@transitions=#{events_chain.state_transitions}>"
       end
     end
 
