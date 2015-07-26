@@ -54,7 +54,6 @@ module FiniteMachine
         silent = attributes.fetch(:silent, false)
 
         machine.events_chain.add(name, transition)
-        machine.transitions.import(name, { from => to })
 
         unless machine.respond_to?(name)
           event_definition.apply(name, silent)

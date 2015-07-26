@@ -20,9 +20,6 @@ module FiniteMachine
     # The prefix used to name events.
     attr_threadsafe :namespace
 
-    # The events and their transitions.
-    attr_threadsafe :transitions
-
     # The state machine environment
     attr_threadsafe :env
 
@@ -48,7 +45,6 @@ module FiniteMachine
       @initial_state = DEFAULT_STATE
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
-      @transitions   = Transitions.new
       @events_chain  = EventsChain.new
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
