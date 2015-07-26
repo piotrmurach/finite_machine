@@ -3,7 +3,11 @@
 require 'finite_machine/undefined_transition'
 
 module FiniteMachine
-  # A class responsible for storing chain of events
+  # A class responsible for storing chain of events.
+  #
+  # Used internally by {StateMachine}.
+  #
+  # @api private
   class EventsChain
     include Threadable
     extend Forwardable
@@ -77,14 +81,26 @@ module FiniteMachine
       chain.keys
     end
 
-    # Retreive all states
+    # Retreive all unique states
     #
     # @example
     #   events_chain.states # => [:yellow, :green, :red]
     #
+    # @return [Array[Symbol]]
+    #   the array of all unique states
+    #
     # @api public
     def states
       chain.values.flatten.map(&:states).map(&:to_a).flatten.uniq
+    end
+
+    # Retrieves all state transitions
+    #
+    # @return [Array[Hash]]
+    #
+    # @api public
+    def state_transitions
+      chain.values.flatten.map(&:states)
     end
 
     # Retrieve from states for the event name
