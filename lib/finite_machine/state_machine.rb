@@ -311,7 +311,9 @@ module FiniteMachine
     # @api private
     def transition(event_name, *data, &block)
       from_state = current
-      to_state   = events_chain.move_to(event_name, from_state, *data, &block)
+      to_state   = events_chain.move_to(event_name, from_state, *data)
+
+      block.call(from_state, to_state) if block
 
       if log_transitions
         Logger.report_transition(event_name, from_state, to_state, *data)

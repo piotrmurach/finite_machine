@@ -160,15 +160,15 @@ module FiniteMachine
     #   The choice transition that matches
     #
     # @api public
-    def transition_from(name, from_state, *conditions, &block)
+    def transition_from(name, from_state, *conditions)
       chain[name].find do |trans|
         trans.matches?(from_state) &&
-        trans.check_conditions(*conditions, &block)
+        trans.check_conditions(*conditions)
       end
     end
 
     # @api public
-    def select_transition(name, from_state, *conditions, &block)
+    def select_transition(name, from_state, *conditions)
       if choice_transition?(name, from_state)
         transition_from(name, from_state, *conditions)
       else
@@ -185,8 +185,8 @@ module FiniteMachine
     #   the state transition to
     #
     # @api public
-    def move_to(name, from_state, *data, &block)
-      transition = select_transition(name, from_state, *data, &block)
+    def move_to(name, from_state, *data)
+      transition = select_transition(name, from_state, *data)
       transition ||= UndefinedTransition.new(name)
 
       if transition.cancelled?

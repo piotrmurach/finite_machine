@@ -367,5 +367,21 @@ RSpec.describe FiniteMachine, 'events' do
     }.to raise_error(FiniteMachine::AlreadyDefinedError)
   end
 
-  xit "executes event block"
+  it "executes event block" do
+    fsm = FiniteMachine.define do
+      initial :red
+
+      events {
+        event :start, :red => :green
+        event :stop,  :green => :red
+      }
+    end
+
+    expect(fsm.current).to eq(:red)
+    called = []
+    fsm.start do |from, to|
+      called << "execute_start_#{from}_#{to}"
+    end
+    expect(called).to eq(['execute_start_red_green'])
+  end
 end

@@ -67,12 +67,15 @@ module FiniteMachine
 
     # Verify conditions returning true if all match, false otherwise
     #
+    # @param [Array[Object]] args
+    #   the arguments for the condition
+    #
     # @return [Boolean]
     #
     # @api private
-    def check_conditions(*args, &block)
+    def check_conditions(*args)
       conditions.all? do |condition|
-        condition.call(machine.target, *args, &block)
+        condition.call(machine.target, *args)
       end
     end
 
