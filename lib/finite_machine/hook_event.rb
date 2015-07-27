@@ -22,7 +22,7 @@ module FiniteMachine
 
     EVENTS = Anystate, Enter, Transition, Exit, Anyaction, Before, After
 
-    TRIGGER_MESSAGE = :trigger
+    MESSAGE = :emit
 
     # HookEvent state or action
     attr_threadsafe :name
@@ -86,8 +86,8 @@ module FiniteMachine
     #
     # @api public
     def notify(subscriber, *data)
-      if subscriber.respond_to?(TRIGGER_MESSAGE)
-        subscriber.public_send(TRIGGER_MESSAGE, self, *data)
+      if subscriber.respond_to?(MESSAGE)
+        subscriber.public_send(MESSAGE, self, *data)
       end
     end
 

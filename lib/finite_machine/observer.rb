@@ -104,10 +104,17 @@ module FiniteMachine
       on HookEvent::After, *args, &callback.extend(Once)
     end
 
-    # Trigger all listeners
+    # Execute each of the hooks in order with supplied data
+    #
+    # @param [HookEvent] event
+    #   the hook event
+    #
+    # @param [Array[Object]] data
+    #
+    # @return [nil]
     #
     # @api public
-    def trigger(event, *data)
+    def emit(event, *data)
       sync_exclusive do
         [event.type].each do |event_type|
           [event.name, ANY_STATE, ANY_EVENT].each do |event_name|
