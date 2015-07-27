@@ -246,6 +246,7 @@ module FiniteMachine
 
   # A DSL for describing events
   class EventsDSL < GenericDSL
+    include Safety
     # Create event and associate transition
     #
     # @example
@@ -257,6 +258,7 @@ module FiniteMachine
     # @api public
     def event(name, attrs = {}, &block)
       sync_exclusive do
+        detect_event_conflict!(name)
         attributes = attrs.merge!(name: name)
         if block_given?
           merger = ChoiceMerger.new(machine, attributes)

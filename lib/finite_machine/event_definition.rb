@@ -9,7 +9,6 @@ module FiniteMachine
   # @api private
   class EventDefinition
     include Threadable
-    include Safety
 
     # The current state machine
     attr_threadsafe :machine
@@ -32,7 +31,6 @@ module FiniteMachine
     #
     # @api public
     def apply(event_name, silent = false)
-      detect_event_conflict!(event_name)
       define_event_transition(event_name, silent)
       define_event_bang(event_name)
     end
