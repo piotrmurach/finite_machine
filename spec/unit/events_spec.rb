@@ -358,10 +358,14 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "detects dangerous event names" do
-    expect { FiniteMachine.define do
-      events {
-        event :transition, :a => :b
-      }
-    end }.to raise_error(FiniteMachine::AlreadyDefinedError)
+    expect {
+      FiniteMachine.define do
+        events {
+          event :trigger, :a => :b
+        }
+      end
+    }.to raise_error(FiniteMachine::AlreadyDefinedError)
   end
+
+  xit "executes event block"
 end

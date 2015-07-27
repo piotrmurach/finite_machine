@@ -46,11 +46,11 @@ module FiniteMachine
     #
     # @api private
     def define_event_transition(event_name, silent)
-      machine.send(:define_singleton_method, event_name) do |*data|
+      machine.send(:define_singleton_method, event_name) do |*data, &block|
         if silent
-          machine.send(:transition!, event_name, *data)
+          machine.public_send(:transition, event_name, *data, &block)
         else
-          machine.send(:transition, event_name, *data)
+          machine.public_send(:trigger, event_name, *data, &block)
         end
       end
     end

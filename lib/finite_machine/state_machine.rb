@@ -23,6 +23,41 @@ module FiniteMachine
     # The state machine event definitions
     attr_threadsafe :events_chain
 
+    # Errors DSL
+    #
+    # @return [ErrorsDSL]
+    #
+    # @api private
+    attr_threadsafe :errors_dsl
+
+    # Events DSL
+    #
+    # @return [EventsDSL]
+    #
+    # @api private
+    attr_threadsafe :events_dsl
+
+    # The state machine observer
+    #
+    # @return [Observer]
+    #
+    # @api private
+    attr_threadsafe :observer
+
+    # Current state
+    #
+    # @return [Symbol]
+    #
+    # @api private
+    attr_threadsafe :state
+
+    # The state machine subscribers
+    #
+    # @return [Subscribers]
+    #
+    # @api private
+    attr_threadsafe :subscribers
+
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
@@ -186,56 +221,6 @@ module FiniteMachine
       sync_exclusive { self.state = state }
     end
 
-    # String representation of this machine
-    #
-    # @return [String]
-    #
-    # @api public
-    def inspect
-      sync_shared do
-        "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
-        "@events=#{event_names}, " \
-        "@transitions=#{events_chain.state_transitions}>"
-      end
-    end
-
-    private
-
-    # Errors DSL
-    #
-    # @return [ErrorsDSL]
-    #
-    # @api private
-    attr_threadsafe :errors_dsl
-
-    # Events DSL
-    #
-    # @return [EventsDSL]
-    #
-    # @api private
-    attr_threadsafe :events_dsl
-
-    # The state machine observer
-    #
-    # @return [Observer]
-    #
-    # @api private
-    attr_threadsafe :observer
-
-    # Current state
-    #
-    # @return [Symbol]
-    #
-    # @api private
-    attr_threadsafe :state
-
-    # The state machine subscribers
-    #
-    # @return [Subscribers]
-    #
-    # @api private
-    attr_threadsafe :subscribers
-
     # Check if state is reachable
     #
     # @param [Symbol] event_name
@@ -274,16 +259,17 @@ module FiniteMachine
       end
     end
 
-    # Performs transition
+    # Trigger transition event with data
     #
-    # @param [Transition] event_transition
+    # @param [Symbol] event_name
+    #   the event name
     # @param [Array] data
     #
-    # @return [Integer]
-    #   the status code for the transition
+    # @return [Boolean]
+    #   true when transition is successful, false otherwise
     #
     # @api private
-    def transition(event_name, *data, &block)
+    def trigger(event_name, *data, &block)
       sync_exclusive do
         from = current
         notify HookEvent::Before, event_name, from, *data
@@ -293,7 +279,7 @@ module FiniteMachine
           notify HookEvent::Exit, event_name, from, *data
 
           begin
-            status = move_state(event_name, from, *data, &block)
+            status = transition(event_name, *data, &block)
 
             notify HookEvent::Transition, event_name, from, *data
           rescue Exception => e
@@ -313,8 +299,8 @@ module FiniteMachine
     # Perform transition without validation or callbacks
     #
     # @api private
-    def transition!(event_name, *data, &block)
-      move_state(event_name, current, *data, &block)
+    def trigger!(event_name, *data, &block)
+      transition(event_name, *data, &block)
     end
 
     # Update this state machine state to new one
@@ -323,8 +309,9 @@ module FiniteMachine
     # @param [Symbol] to_state
     #
     # @api private
-    def move_state(event_name, from_state, *data, &block)
-      to_state = events_chain.move_to(event_name, from_state, *data, &block)
+    def transition(event_name, *data, &block)
+      from_state = current
+      to_state   = events_chain.move_to(event_name, from_state, *data, &block)
 
       if log_transitions
         Logger.report_transition(event_name, from_state, to_state, *data)
@@ -334,6 +321,21 @@ module FiniteMachine
       self.initial_state = to_state if from_state == DEFAULT_STATE
       true
     end
+
+    # String representation of this machine
+    #
+    # @return [String]
+    #
+    # @api public
+    def inspect
+      sync_shared do
+        "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
+        "@events=#{event_names}, " \
+        "@transitions=#{events_chain.state_transitions}>"
+      end
+    end
+
+    private
 
     # Raise when failed to transition between states
     #
