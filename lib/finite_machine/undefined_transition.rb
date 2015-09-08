@@ -9,7 +9,11 @@ module FiniteMachine
     end
 
     def cancelled?
-      true
+      false
+    end
+
+    def to_state(from)
+      from
     end
 
     def ==(other)

@@ -20,9 +20,6 @@ module FiniteMachine
     # All states for this transition event
     attr_threadsafe :states
 
-    # Silence callbacks
-    attr_threadsafe :silent
-
     # Initialize a Transition
     #
     # @example
@@ -44,13 +41,23 @@ module FiniteMachine
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
-      @cancelled   = false
+      @cancelled   = attrs.fetch(:cancelled, false)
     end
 
+    # Check if this transition will trigger callbacks or not
+    #
+    # @return [Boolean]
+    #
+    # @api public
     def silent?
       @silent
     end
 
+    # Check if this transition is cancelled or not
+    #
+    # @return [Boolean]
+    #
+    # @api public
     def cancelled?
       @cancelled
     end
@@ -85,6 +92,7 @@ module FiniteMachine
     #   the from state to match against
     #
     # @example
+    #   transition = Transition.new(machine, states: {:green => :red})
     #   transition.matches?(:green) # => true
     #
     # @return [Boolean]
@@ -95,11 +103,32 @@ module FiniteMachine
       states.keys.any? { |state| [ANY_STATE, from].include?(state) }
     end
 
+    # Find to state for this transition given the from state
+    #
+    # @param [Symbol] from
+    #   the from state to check
+    #
+    # @example
+    #   transition = Transition.new(machine, states: {:green => :red})
+    #   transition.to_state(:green) # => :red
+    #
+    # @return [Symbol]
+    #   the to state
+    #
+    # @api public
     def to_state(from)
-      states[from] || states[ANY_STATE]
+      if cancelled?
+        from
+      else
+        states[from] || states[ANY_STATE]
+      end
     end
 
     # Return transition name
+    #
+    # @example
+    #   transition = Transition.new(machine, name: :go)
+    #   transition.to_s # => 'go'
     #
     # @return [String]
     #
