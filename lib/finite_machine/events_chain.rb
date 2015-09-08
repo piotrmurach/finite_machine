@@ -189,11 +189,7 @@ module FiniteMachine
       transition = select_transition(name, from_state, *data)
       transition ||= UndefinedTransition.new(name)
 
-      if transition.cancelled?
-        from_state
-      else
-        transition.to_state(from_state)
-      end
+      transition.to_state(from_state)
     end
 
     # @api public
