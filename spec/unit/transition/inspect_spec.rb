@@ -8,7 +8,7 @@ RSpec.describe FiniteMachine::Transition, '#inspect' do
   subject(:transition) { described_class.new(machine, attrs) }
 
   context 'when inspecting' do
-    let(:attrs) { {name: :start, parsed_states: { :foo => :bar, :baz => :daz } } }
+    let(:attrs) { {name: :start, states: { :foo => :bar, :baz => :daz } } }
 
     it "displays name and transitions" do
       expect(transition.inspect).to eql("<#FiniteMachine::Transition @name=start, @transitions=foo -> bar, baz -> daz, @when=[]>")
@@ -16,7 +16,7 @@ RSpec.describe FiniteMachine::Transition, '#inspect' do
   end
 
   context 'when converting to string' do
-    let(:attrs) { {name: :start, parsed_states: { :foo => :bar } } }
+    let(:attrs) { {name: :start, states: { :foo => :bar } } }
 
     it "displays name and transitions" do
       expect(transition.to_s).to eql("start")

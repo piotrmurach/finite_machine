@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe FiniteMachine::Transition, 'parsed_states' do
+RSpec.describe FiniteMachine::Transition, '.states' do
   let(:machine) { double(:machine) }
 
   it "groups states with :to key only" do
-    attrs = {parsed_states: {:any => :red}}
+    attrs = {states: {:any => :red}}
     transition = FiniteMachine::Transition.new(machine, attrs)
     expect(transition.states).to eql({any: :red})
   end
 
   it "groups states when from array" do
-    attrs = {parsed_states: { :green => :red, :yellow => :red}}
+    attrs = {states: { :green => :red, :yellow => :red}}
     transition = FiniteMachine::Transition.new(machine, attrs)
     expect(transition.states.keys).to match_array([:green, :yellow])
     expect(transition.states.values).to eql([:red, :red])
@@ -20,7 +20,7 @@ RSpec.describe FiniteMachine::Transition, 'parsed_states' do
 
 
   it "groups states when hash of states" do
-    attrs = {parsed_states: {
+    attrs = {states: {
               :initial => :low,
               :low     => :medium,
               :medium  => :high }}

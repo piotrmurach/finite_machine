@@ -48,7 +48,7 @@ module FiniteMachine
     # @api public
     def call(states)
       StateParser.new(states).parse do |from, to|
-        attributes.merge!(parsed_states: { from => to })
+        attributes.merge!(states: { from => to })
         transition = Transition.new(machine, attributes)
         name = attributes[:name]
         silent = attributes.fetch(:silent, false)

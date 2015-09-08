@@ -39,7 +39,7 @@ module FiniteMachine
     def initialize(machine, attrs = {})
       @machine     = machine
       @name        = attrs[:name]
-      @states      = attrs.fetch(:parsed_states, {})
+      @states      = attrs.fetch(:states, {})
       @silent      = attrs.fetch(:silent, false)
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
