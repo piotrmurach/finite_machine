@@ -1,3 +1,6 @@
+<div align="center">
+  <a href="http://peter-murach.github.io/finite_machine/"><img width="236" height="165" src="https://cdn.rawgit.com/peter-murach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
+</div>
 # FiniteMachine
 [![Gem Version](https://badge.fury.io/rb/finite_machine.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.svg?branch=master)][travis]
