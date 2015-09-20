@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="http://peter-murach.github.io/finite_machine/"><img width="236" height="165" src="https://cdn.rawgit.com/peter-murach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
+  <a href="http://peter-murach.github.io/finite_machine/"><img width="236" src="https://raw.githubusercontent.com/peter-murach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
 </div>
 # FiniteMachine
 [![Gem Version](https://badge.fury.io/rb/finite_machine.svg)][gem]
