@@ -71,10 +71,13 @@ module FiniteMachine
     # @api private
     def initialize(*args, &block)
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
+      self.event_queue = EventQueue.new
+
       @initial_state = DEFAULT_STATE
+      @async_proxy   = AsyncProxy.new(self)
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
-      @events_chain  = EventsChain.new
+      @events_chain  = EventsChain.new()
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
@@ -110,7 +113,6 @@ module FiniteMachine
     #
     # @api public
     def async(method_name = nil, *args, &block)
-      @async_proxy = AsyncProxy.new(self)
       if method_name
         @async_proxy.method_missing method_name, *args, &block
       else

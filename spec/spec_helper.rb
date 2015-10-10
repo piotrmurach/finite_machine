@@ -16,6 +16,7 @@ if RUBY_VERSION > '1.9' and (ENV['COVERAGE'] || ENV['TRAVIS'])
 end
 
 require 'finite_machine'
+require 'thwait'
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true

@@ -72,26 +72,31 @@ RSpec.describe FiniteMachine, 'async_events' do
 
   it "ensure queue per thread" do
     called = []
-    fsmFoo = FiniteMachine.define do
-      initial :green
-      events { event :slow, :green => :yellow }
+    fsmFoo = nil
+    fsmBar = nil
+    foo_thread = Thread.new {
+      fsmFoo = FiniteMachine.define do
+        initial :green
+        events { event :slow, :green => :yellow }
 
-      callbacks {
-        on_enter :yellow do |event, a| called << "(foo)on_enter_yellow_#{a}" end
-      }
-    end
-    fsmBar = FiniteMachine.define do
-      initial :green
-      events { event :slow, :green => :yellow }
+        callbacks {
+          on_enter :yellow do |event, a| called << "(foo)on_enter_yellow_#{a}" end
+        }
+      end
+      fsmFoo.async.slow(:foo)
+    }
+    bar_thread = Thread.new {
+      fsmBar = FiniteMachine.define do
+        initial :green
+        events { event :slow, :green => :yellow }
 
-      callbacks {
-        on_enter :yellow do |event, a| called << "(bar)on_enter_yellow_#{a}" end
-      }
-    end
-    foo_thread = Thread.new { fsmFoo.async.slow(:foo) }
-    bar_thread = Thread.new { fsmBar.async.slow(:bar) }
-    [foo_thread, bar_thread].each(&:join)
-    [fsmFoo, fsmBar].each { |fsm| fsm.event_queue.join 0.02 }
+        callbacks {
+          on_enter :yellow do |event, a| called << "(bar)on_enter_yellow_#{a}" end
+        }
+      end
+      fsmBar.async.slow(:bar)
+    }
+    ThreadsWait.all_waits(foo_thread, bar_thread)
     expect(called).to match_array([
       '(foo)on_enter_yellow_foo',
       '(bar)on_enter_yellow_bar'
