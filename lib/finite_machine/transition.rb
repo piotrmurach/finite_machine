@@ -23,8 +23,8 @@ module FiniteMachine
     # Initialize a Transition
     #
     # @example
-    #   attributes = {parsed_states: {green: :yellow}, silent: true}
-    #   Transition.new(machine, attrbiutes)
+    #   attributes = {parsed_states: {green: :yellow}}
+    #   Transition.new(machine, attributes)
     #
     # @param [StateMachine] machine
     #
@@ -37,20 +37,10 @@ module FiniteMachine
       @machine     = machine
       @name        = attrs[:name]
       @states      = attrs.fetch(:states, {})
-      @silent      = attrs.fetch(:silent, false)
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
       @cancelled   = attrs.fetch(:cancelled, false)
-    end
-
-    # Check if this transition will trigger callbacks or not
-    #
-    # @return [Boolean]
-    #
-    # @api public
-    def silent?
-      @silent
     end
 
     # Check if this transition is cancelled or not
