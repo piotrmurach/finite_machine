@@ -453,6 +453,12 @@ fm.ready         # => true
 fm.current       # => :yellow
 ```
 
+If you prefer you can also use `trigger` method to fire any event by its name:
+
+```ruby
+fm.trigger(:ready)  # => true
+```
+
 Furthermore, you can pass additional parameters with the method call that will be available in the triggered callback as well as used by any present guarding conditions.
 
 ```ruby
