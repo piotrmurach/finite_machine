@@ -13,6 +13,8 @@ module FiniteMachine
     extend Forwardable
 
     # The chain of events
+    #
+    # @api private
     attr_threadsafe :chain
 
     def_delegators :@chain, :empty?, :size
@@ -25,6 +27,12 @@ module FiniteMachine
     end
 
     # Check if event is present
+    #
+    # @example
+    #   events_chain.exists?(:go) # => true
+    #
+    # @param [Symbol] name
+    #   the event name
     #
     # @return [Boolean]
     #   true if event is present, false otherwise
@@ -112,8 +120,8 @@ module FiniteMachine
     #   events_chain.states_for(:start) # => [:yellow, :green]
     #
     # @api public
-    def states_for(event_name)
-      find(event_name).map(&:states).flat_map(&:keys)
+    def states_for(name)
+      find(name).map(&:states).flat_map(&:keys)
     end
 
     # Check if event is valid and transition can be performed
@@ -122,7 +130,7 @@ module FiniteMachine
     #
     # @api public
     def can_perform?(name, from_state, *conditions)
-      !transition_from(name, from_state, *conditions).nil?
+      !match_transition_with(name, from_state, *conditions).nil?
     end
 
     # Check if event has branching choice transitions or not
@@ -141,18 +149,23 @@ module FiniteMachine
     #
     # @api public
     def choice_transition?(name, from_state)
-      chain[name].select { |trans| trans.matches?(from_state) }.size > 1
+      find(name).select { |trans| trans.matches?(from_state) }.size > 1
     end
 
     # Find transition without checking conditions
     #
     # @param [Symbol] name
+    #   the event name
     #
-    # @return [Transition]
+    # @param [Symbol] from_state
+    #   the transition from state
+    #
+    # @return [Transition, nil]
+    #   returns transition, nil otherwise
     #
     # @api private
-    def find_transition(name, from_state)
-      chain[name].find { |trans| trans.matches?(from_state) }
+    def match_transition(name, from_state)
+      find(name).find { |trans| trans.matches?(from_state) }
     end
 
     # Examine transitions for event name that start in from state
@@ -168,19 +181,30 @@ module FiniteMachine
     #   The choice transition that matches
     #
     # @api public
-    def transition_from(name, from_state, *conditions)
+    def match_transition_with(name, from_state, *conditions)
       chain[name].find do |trans|
         trans.matches?(from_state) &&
         trans.check_conditions(*conditions)
       end
     end
 
+    # Select transition that matches conditions
+    #
+    # @param [Symbol] name
+    #   the event name
+    # @param [Symbol] from_state
+    #   the transition from state
+    # @param [Array[Object]] conditions
+    #   the conditional data
+    #
+    # @return [Transition]
+    #
     # @api public
     def select_transition(name, from_state, *conditions)
       if choice_transition?(name, from_state)
-        transition_from(name, from_state, *conditions)
+        match_transition_with(name, from_state, *conditions)
       else
-        find_transition(name, from_state)
+        match_transition(name, from_state)
       end
     end
 
