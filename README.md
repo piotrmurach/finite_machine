@@ -57,6 +57,7 @@ Or install it yourself as:
     * [1.7 Alias target](#17-alias-target)
     * [1.8 restore!](#18-restore)
     * [1.9 states](#19-states)
+    * [1.10 event names](#110-event-names)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Forcing transitions](#22-forcing-transitions)
@@ -412,6 +413,14 @@ You can use the `states` method to return an array of all the states for a given
 
 ```ruby
 fm.states # => [:none, :green, :yellow, :red]
+```
+
+### 1.10 event names
+
+To find out all the event names supported by the state machine issue `event_names` method:
+
+```ruby
+fm.event_names # => [:init, :ready, :go, :stop]
 ```
 
 ## 2 Transitions
