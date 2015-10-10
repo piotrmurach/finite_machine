@@ -6,7 +6,7 @@ module FiniteMachine
 
     # @api public
     def event_queue
-      Thread.current[:finite_machine_event_queue] ||= FiniteMachine::EventQueue.new
+      Thread.current[:finite_machine_event_queue]
     end
 
     # @api public
