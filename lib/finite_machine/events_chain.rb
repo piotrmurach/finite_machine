@@ -15,11 +15,11 @@ module FiniteMachine
     # The chain of events
     attr_threadsafe :chain
 
-    def_delegators :@chain, :empty?
+    def_delegators :@chain, :empty?, :size
 
     # Initialize a EventsChain
     #
-    # @api public
+    # @api private
     def initialize
       @chain = {}
     end
@@ -50,6 +50,7 @@ module FiniteMachine
       else
         chain[name] = [transition]
       end
+      self
     end
 
     # Finds transitions for the event name
