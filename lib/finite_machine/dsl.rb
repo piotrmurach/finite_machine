@@ -207,9 +207,9 @@ module FiniteMachine
     #
     # @api private
     def initialize_attrs
-      attrs[:initial]  and initial(attrs[:initial])
-      attrs[:target]   and target(attrs[:target])
-      attrs[:terminal] and terminal(attrs[:terminal])
+      attrs[:initial]  && initial(attrs[:initial])
+      attrs[:target]   && target(attrs[:target])
+      attrs[:terminal] && terminal(attrs[:terminal])
       log_transitions(attrs.fetch(:log_transitions, false))
     end
 
@@ -222,9 +222,9 @@ module FiniteMachine
     #
     # @api private
     def parse_initial(options)
-      [value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
-        value.fetch(:defer) { false },
-        value.fetch(:silent) { true }]
+      [options.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
+       options.fetch(:defer) { false },
+       options.fetch(:silent) { true }]
     end
 
     # Raises missing state error
