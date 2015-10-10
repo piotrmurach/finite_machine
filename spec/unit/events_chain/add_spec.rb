@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FiniteMachine::EventsChain, '#insert' do
+RSpec.describe FiniteMachine::EventsChain, '.add' do
   it "adds transitions" do
     transition = double(:transition)
     events_chain = described_class.new
