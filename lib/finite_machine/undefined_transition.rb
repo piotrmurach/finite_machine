@@ -1,15 +1,19 @@
 # encoding: utf-8
 
 module FiniteMachine
+  # Stand in for lack of matching transition.
+  #
+  # Used internally by {EventsChain}
+  #
+  # @api private
   class UndefinedTransition
     include Threadable
 
+    # Initialize an undefined transition
+    #
+    # @api private
     def initialize(name)
       self.name = name
-    end
-
-    def cancelled?
-      false
     end
 
     def to_state(from)
