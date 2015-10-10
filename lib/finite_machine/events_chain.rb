@@ -129,7 +129,14 @@ module FiniteMachine
     # @example
     #   events_chain.choice_transition?(:go, :green) # => true
     #
+    # @param [Symbol] name
+    #   the event name
+    #
+    # @param [Symbol] from_state
+    #   the transition from state
+    #
     # @return [Boolean]
+    #   true if transition has any branches, false otherwise
     #
     # @api public
     def choice_transition?(name, from_state)
