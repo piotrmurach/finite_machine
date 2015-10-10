@@ -183,17 +183,26 @@ module FiniteMachine
       end
     end
 
-    # Find transition can move to
+    # Find state that this machine can move to
     #
-    # @param [Array] data
+    # @example
+    #   evenst_chain.move_to(:go, :green) # => :red
+    #
+    # @param [Symbol] name
+    #   the event name
+    #
+    # @param [Symbol] from_state
+    #   the transition from state
+    #
+    # @param [Array] conditions
     #   the data associated with this transition
     #
     # @return [Symbol]
-    #   the state transition to
+    #   the transition `to` state
     #
     # @api public
-    def move_to(name, from_state, *data)
-      transition = select_transition(name, from_state, *data)
+    def move_to(name, from_state, *conditions)
+      transition = select_transition(name, from_state, *conditions)
       transition ||= UndefinedTransition.new(name)
 
       transition.to_state(from_state)
