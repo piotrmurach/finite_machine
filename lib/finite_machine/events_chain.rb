@@ -120,8 +120,8 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def can_perform?(event_name, from_state, *conditions, &block)
-      !transition_from(event_name, from_state, *conditions).nil?
+    def can_perform?(name, from_state, *conditions)
+      !transition_from(name, from_state, *conditions).nil?
     end
 
     # Check if event has branching choice transitions or not

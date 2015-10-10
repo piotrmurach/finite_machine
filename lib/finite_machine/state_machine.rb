@@ -182,9 +182,9 @@ module FiniteMachine
     # @return [Boolean]
     #
     # @api public
-    def can?(*args, &block)
+    def can?(*args)
       event_name  = args.shift
-      events_chain.can_perform?(event_name, current, *args, &block)
+      events_chain.can_perform?(event_name, current, *args)
     end
 
     # Checks if event cannot be triggered
