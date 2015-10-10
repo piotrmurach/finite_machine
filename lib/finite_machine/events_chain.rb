@@ -182,7 +182,7 @@ module FiniteMachine
     #
     # @api public
     def match_transition_with(name, from_state, *conditions)
-      chain[name].find do |trans|
+      find(name).find do |trans|
         trans.matches?(from_state) &&
         trans.check_conditions(*conditions)
       end
