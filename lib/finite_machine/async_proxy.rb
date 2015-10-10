@@ -4,7 +4,6 @@ module FiniteMachine
   # An asynchronous messages proxy
   class AsyncProxy
     include Threadable
-    include ThreadContext
 
     attr_threadsafe :context
 
@@ -25,7 +24,7 @@ module FiniteMachine
       callable   = Callable.new(method_name)
       async_call = AsyncCall.new(context, callable, *args, &block)
 
-      event_queue << async_call
+      context.event_queue << async_call
     end
   end # AsyncProxy
 end # FiniteMachine
