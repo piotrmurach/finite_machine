@@ -89,7 +89,7 @@ module FiniteMachine
     # @api public
     def initial(value, options = {})
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
-      name, self.defer, silent = parse(options)
+      name, self.defer, silent = *parse_initial(options)
       self.initial_event = name
       event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
     end
@@ -215,19 +215,16 @@ module FiniteMachine
 
     # Parse initial options
     #
-    # @param [Object] value
+    # @param [Hash] options
+    #   the options to extract for initial state setup
     #
     # @return [Array[Symbol,String]]
     #
     # @api private
-    def parse(value)
-      if value.is_a?(Hash)
-        [value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
-         value.fetch(:defer) { false },
-         value.fetch(:silent) { true }]
-      else
-        [FiniteMachine::DEFAULT_EVENT_NAME, false, true]
-      end
+    def parse_initial(options)
+      [value.fetch(:event) { FiniteMachine::DEFAULT_EVENT_NAME },
+        value.fetch(:defer) { false },
+        value.fetch(:silent) { true }]
     end
 
     # Raises missing state error

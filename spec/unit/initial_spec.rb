@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FiniteMachine, 'initialize' do
+RSpec.describe FiniteMachine, 'initial' do
 
   before(:each) {
     stub_const("DummyLogger", Class.new do
