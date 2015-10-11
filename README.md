@@ -466,7 +466,7 @@ fm.go('Piotr!')  # => true
 fm.current       # => :green
 ```
 
-By default **FiniteMachine** will swallow all exceptions when and return `false` on failure. If you prefer to be notified when illegal transition occurs see[Dangerous transactions](#22-dangerous-transactions).
+By default **FiniteMachine** will swallow all exceptions when and return `false` on failure. If you prefer to be notified when illegal transition occurs see [Dangerous transitions](#22-dangerous-transitions).
 
 ### 2.2 Dangerous transitions
 
