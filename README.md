@@ -473,13 +473,13 @@ By default **FiniteMachine** will swallow all exceptions when and return `false`
 When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internall error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Errors](#6-errors)
 
 ```ruby
-fm.ready #  => raises FiniteMachine::InvalidStateError
+fm.ready!  #  => raises FiniteMachine::InvalidStateError
 ```
 
 If you prefer you can also use `trigger!` method to fire event:
 
 ```ruby
-fm.trigger(:ready)
+fm.trigger!(:ready)
 ```
 
 ### 2.3 Asynchronous transitions
