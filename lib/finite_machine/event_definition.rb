@@ -32,7 +32,7 @@ module FiniteMachine
     # @api public
     def apply(event_name, silent = false)
       define_event_transition(event_name, silent)
-      define_event_bang(event_name)
+      define_event_bang(event_name, silent)
     end
 
     private
@@ -41,6 +41,9 @@ module FiniteMachine
     #
     # @param [Symbol] event_name
     #   the event name
+    #
+    # @param [Boolean] silent
+    #   if true don't trigger callbacks, otherwise do
     #
     # @return [nil]
     #
@@ -60,12 +63,19 @@ module FiniteMachine
     # @param [Symbol] event_name
     #   the event name
     #
+    # @param [Boolean] silent
+    #   if true don't trigger callbacks, otherwise do
+    #
     # @return [nil]
     #
     # @api private
-    def define_event_bang(event_name)
+    def define_event_bang(event_name, silent)
       machine.send(:define_singleton_method, "#{event_name}!") do |*data, &block|
-        machine.public_send(:trigger!, event_name, *data, &block)
+        if silent
+          machine.transition!(event_name, *data, &block)
+        else
+          machine.trigger!(event_name, *data, &block)
+        end
       end
     end
   end # EventBuilder

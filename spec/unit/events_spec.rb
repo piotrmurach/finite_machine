@@ -169,38 +169,110 @@ RSpec.describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:green)
   end
 
-  it "raises error on invalid transition" do
+  it "doesn't raise error on invalid transition for non-dangerous version" do
+    called = []
     fsm = FiniteMachine.define do
       initial :green
 
       events {
-        event :slow,  from: :green,  to: :yellow
-        event :stop,  from: :yellow, to: :red
+        event :stop, from: :yellow, to: :red
+      }
+      callbacks {
+        on_before :stop do |event| called << 'on_before_stop' end
+        on_after  :stop do |event| called << 'on_before_stop' end
       }
     end
 
-    expect(fsm.current).to eql(:green)
-
-    expect {
-      fsm.stop!
-    }.to raise_error(FiniteMachine::InvalidStateError,
-                     /inappropriate current state 'green'/)
+    expect(fsm.current).to eq(:green)
+    expect(fsm.stop).to eq(false)
+    expect(fsm.current).to eq(:green)
+    expect(called).to match_array(['on_before_stop'])
   end
 
-  # it "allows to transition to any state" do
-  #   fsm = FiniteMachine.define do
-  #     initial :green
-  #
-  #     events {
-  #       event :slow,  from: :green,  to: :yellow
-  #       event :stop,  from: :yellow, to: :red
-  #     }
-  #   end
-  #   expect(fsm.current).to eql(:green)
-  #   expect(fsm.can?(:stop)).to be false
-  #   fsm.stop!
-  #   expect(fsm.current).to eql(:red)
-  # end
+  context 'for non-dangerous version' do
+    it "doesn't raise error on invalid transition and fires callbacks" do
+      called = []
+      fsm = FiniteMachine.define do
+        initial :green
+
+        events {
+          event :stop, from: :yellow, to: :red
+        }
+        callbacks {
+          on_before :stop do |event| called << 'on_before_stop' end
+          on_after  :stop do |event| called << 'on_before_stop' end
+        }
+      end
+
+      expect(fsm.current).to eq(:green)
+      expect(fsm.stop).to eq(false)
+      expect(fsm.current).to eq(:green)
+      expect(called).to match_array(['on_before_stop'])
+    end
+
+    it "raises error on invalid transition for dangerous version" do
+      called = []
+      fsm = FiniteMachine.define do
+        initial :green
+
+        events {
+          event :slow,  from: :green,  to: :yellow
+          event :stop,  from: :yellow, to: :red, silent: true
+        }
+        callbacks {
+          on_before :stop do |event| called << 'on_before_stop' end
+          on_after  :stop do |event| called << 'on_before_stop' end
+        }
+      end
+
+      expect(fsm.current).to eql(:green)
+      expect(fsm.stop).to eq(false)
+      expect(called).to match_array([])
+    end
+  end
+
+  context 'for dangerous version' do
+    it "raises error on invalid transition without callbacks" do
+      called = []
+      fsm = FiniteMachine.define do
+        initial :green
+
+        events {
+          event :start, :red => :yellow, silent: true
+        }
+        callbacks {
+          on_before :start do |event| called << 'on_before_start' end
+          on_after  :start do |event| called << 'on_after_start' end
+        }
+      end
+
+      expect(fsm.current).to eq(:green)
+      expect { fsm.start! }.to raise_error(FiniteMachine::InvalidStateError)
+      expect(called).to eq([])
+      expect(fsm.current).to eq(:green)
+    end
+
+    it "raises error on invalid transition with callbacks fired" do
+      called = []
+      fsm = FiniteMachine.define do
+        initial :green
+
+        events {
+          event :start, :red => :yellow
+        }
+        callbacks {
+          on_before :start do |event| called << 'on_before_start' end
+          on_after  :start do |event| called << 'on_after_start' end
+        }
+      end
+
+      expect(fsm.current).to eq(:green)
+      expect { fsm.start! }.to raise_error(FiniteMachine::InvalidStateError,
+                                           /inappropriate current state 'green'/)
+      expect(called).to eq(['on_before_start'])
+      expect(fsm.current).to eq(:green)
+    end
+  end
 
   context 'when multiple from states' do
     it "allows for array from key" do

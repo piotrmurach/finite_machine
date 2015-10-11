@@ -338,13 +338,12 @@ module FiniteMachine
         Logger.report_transition(event_name, from_state, to_state, *data)
       end
 
-      transition_to!(to_state)
-      true
+      try_trigger(event_name) { transition_to!(to_state) }
     end
 
     def transition(event_name, *data, &block)
       transition!(event_name, *data, &block)
-    rescue TransitionError
+    rescue InvalidStateError, TransitionError
       false
     end
 
