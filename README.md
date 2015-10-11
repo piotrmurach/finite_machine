@@ -60,7 +60,7 @@ Or install it yourself as:
     * [1.10 event names](#110-event-names)
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
-    * [2.2 Forcing transitions](#22-forcing-transitions)
+    * [2.2 Dangerous transitions](#22-dangerous-transitions)
     * [2.3 Asynchronous transitions](#23-asynchronous-transitions)
     * [2.4 Multiple from states](#24-multiple-from-states)
     * [2.5 From :any state](#25-from-any-state)
@@ -466,9 +466,21 @@ fm.go('Piotr!')  # => true
 fm.current       # => :green
 ```
 
-### 2.2 Forcing transitions
+By default **FiniteMachine** will swallow all exceptions when and return `false` on failure. If you prefer to be notified when illegal transition occurs see[Dangerous transactions](#22-dangerous-transactions).
 
-When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you need to perform transition disregarding current state reachable states, the `ready!` will transition without any validations or callbacks.
+### 2.2 Dangerous transitions
+
+When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internall error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Errors](#6-errors)
+
+```ruby
+fm.ready #  => raises FiniteMachine::InvalidStateError
+```
+
+If you prefer you can also use `trigger!` method to fire event:
+
+```ruby
+fm.trigger(:ready)
+```
 
 ### 2.3 Asynchronous transitions
 
