@@ -64,9 +64,8 @@ module FiniteMachine
     #
     # @api private
     def define_event_bang(event_name)
-      machine.send(:define_singleton_method, "#{event_name}!") do
-        transitions = machine.events_chain.find(event_name)
-        machine.state = transitions.map(&:states).flat_map(&:values)[0]
+      machine.send(:define_singleton_method, "#{event_name}!") do |*data, &block|
+        machine.public_send(:trigger!, event_name, *data, &block)
       end
     end
   end # EventBuilder

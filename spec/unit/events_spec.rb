@@ -182,25 +182,25 @@ RSpec.describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:green)
 
     expect {
-      fsm.stop
+      fsm.stop!
     }.to raise_error(FiniteMachine::InvalidStateError,
                      /inappropriate current state 'green'/)
   end
 
-  it "allows to transition to any state" do
-    fsm = FiniteMachine.define do
-      initial :green
-
-      events {
-        event :slow,  from: :green,  to: :yellow
-        event :stop,  from: :yellow, to: :red
-      }
-    end
-    expect(fsm.current).to eql(:green)
-    expect(fsm.can?(:stop)).to be false
-    fsm.stop!
-    expect(fsm.current).to eql(:red)
-  end
+  # it "allows to transition to any state" do
+  #   fsm = FiniteMachine.define do
+  #     initial :green
+  #
+  #     events {
+  #       event :slow,  from: :green,  to: :yellow
+  #       event :stop,  from: :yellow, to: :red
+  #     }
+  #   end
+  #   expect(fsm.current).to eql(:green)
+  #   expect(fsm.can?(:stop)).to be false
+  #   fsm.stop!
+  #   expect(fsm.current).to eql(:red)
+  # end
 
   context 'when multiple from states' do
     it "allows for array from key" do
