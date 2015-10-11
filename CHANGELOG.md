@@ -1,3 +1,19 @@
+0.11.0 (Oct 11, 2015)
+
+* Add UndefinedTransition to mark self transition(e.i. no transition found)
+* Add StateDefinition for state query methods
+* Add #trigger and #trigger! to StateMachine to allow manual firing of events and split between dangerous and non-dangerous versions of api.
+* Change ThreadContext to require per thread setup
+* Change Transition to stop relying on global transitions
+* Change EventChain to manage all internal transitions
+* Change Subscribers to remove unnecessary parameter dependency
+* Change StateMachine public interface to clarify available methods
+* Change HookEvent to accept event name and from state
+* Remove Event class as duplicate of Transition
+* Remove unnecessary checks for StateMachine#can?
+* Fix bug in Transition with current transition matching
+* Fix bug in Observer with cancelling inside event callback
+
 0.10.2 (July 5, 2015)
 
 * Fix to run 'on_after' callbacks even when event cancalled by @craiglittle
