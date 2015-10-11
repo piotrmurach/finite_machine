@@ -77,7 +77,7 @@ module FiniteMachine
       @async_proxy   = AsyncProxy.new(self)
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
-      @events_chain  = EventsChain.new()
+      @events_chain  = EventsChain.new
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
@@ -233,13 +233,7 @@ module FiniteMachine
     # @api private
     def valid_state?(event_name)
       current_states = events_chain.states_for(event_name)
-      if !current_states.any? { |state| state == current || state == ANY_STATE }
-        exception = InvalidStateError
-        catch_error(exception) ||
-          fail(exception, "inappropriate current state '#{state}'")
-        return false
-      end
-      return true
+      current_states.any? { |state| state == current || state == ANY_STATE }
     end
 
     # Notify about event all the subscribers
@@ -261,6 +255,24 @@ module FiniteMachine
       end
     end
 
+    # Attempt performing event trigger for valid state
+    #
+    # @return [Boolean]
+    #   true is trigger successful, false otherwise
+    #
+    # @api private
+    def try_trigger(event_name)
+      if valid_state?(event_name)
+        yield
+      else
+        exception = InvalidStateError
+        catch_error(exception) ||
+          fail(exception, "inappropriate current state '#{current}'")
+
+        false
+      end
+    end
+
     # Trigger transition event with data
     #
     # @param [Symbol] event_name
@@ -270,48 +282,53 @@ module FiniteMachine
     # @return [Boolean]
     #   true when transition is successful, false otherwise
     #
-    # @api private
-    def trigger(event_name, *data, &block)
+    # @api public
+    def trigger!(event_name, *data, &block)
       sync_exclusive do
-        from = current
+        from = current # Save away current state
+
         notify HookEvent::Before, event_name, from, *data
 
-        if valid_state?(event_name) && can?(event_name, *data)
+        status = try_trigger(event_name) do
+          if can?(event_name, *data)
+            notify HookEvent::Exit, event_name, from, *data
 
-          notify HookEvent::Exit, event_name, from, *data
-
-          begin
-            status = transition(event_name, *data, &block)
+            stat = transition!(event_name, *data, &block)
 
             notify HookEvent::Transition, event_name, from, *data
-          rescue Exception => e
-            catch_error(e) || raise_transition_error(e)
+            notify HookEvent::Enter, event_name, from, *data
+          else
+            stat = false
           end
-
-          notify HookEvent::Enter, event_name, from, *data
-        else
-          status = false
+          stat
         end
+
         notify HookEvent::After, event_name, from, *data
 
         status
       end
     end
 
-    # Perform transition without validation or callbacks
+    # Trigger transition event without raising any errors
     #
-    # @api private
-    def trigger!(event_name, *data, &block)
-      transition(event_name, *data, &block)
+    # @param [Symbol] event_name
+    #
+    # @return [Boolean]
+    #   true on successful transition, false otherwise
+    #
+    # @api public
+    def trigger(event_name, *data, &block)
+      trigger!(event_name, *data, &block)
+    rescue InvalidStateError, TransitionError
+      false
     end
 
-    # Update this state machine state to new one
+    # Find available state to transition to and transition
     #
-    # @param [Symbol] from_state
-    # @param [Symbol] to_state
+    # @param [Symbol] event_name
     #
     # @api private
-    def transition(event_name, *data, &block)
+    def transition!(event_name, *data, &block)
       from_state = current
       to_state   = events_chain.move_to(event_name, from_state, *data)
 
@@ -321,9 +338,30 @@ module FiniteMachine
         Logger.report_transition(event_name, from_state, to_state, *data)
       end
 
-      self.state = to_state
-      self.initial_state = to_state if from_state == DEFAULT_STATE
+      transition_to!(to_state)
       true
+    end
+
+    def transition(event_name, *data, &block)
+      transition!(event_name, *data, &block)
+    rescue TransitionError
+      false
+    end
+
+    # Update this state machine state to new one
+    #
+    # @param [Symbol] new_state
+    #
+    # @raise [TransitionError]
+    #
+    # @api private
+    def transition_to!(new_state)
+      from_state = current
+      self.state = new_state
+      self.initial_state = new_state if from_state == DEFAULT_STATE
+      true
+    rescue Exception => e
+      catch_error(e) || raise_transition_error(e)
     end
 
     # String representation of this machine
@@ -346,7 +384,7 @@ module FiniteMachine
     # @param [Exception] error
     #   the error to describe
     #
-    # @raise [FiniteMachine::TransitionError]
+    # @raise [TransitionError]
     #
     # @api private
     def raise_transition_error(error)
