@@ -233,19 +233,17 @@ module FiniteMachine
       transition.to_state(from_state)
     end
 
-    # Set cancelled status for all transitions matching event name
+    # Set status to cancelled for all transitions matching event name
     #
     # @param [Symbol] name
     #   the event name
-    # @param [Symbol] status
-    #   true to cancel, false otherwise
     #
     # @return [nil]
     #
     # @api public
-    def cancel_transitions(name, status)
+    def cancel_transitions(name)
       chain[name].each do |trans|
-        trans.cancelled = status
+        trans.cancelled = true
       end
     end
 

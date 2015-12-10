@@ -708,6 +708,32 @@ RSpec.describe FiniteMachine, 'callbacks' do
     expect(fsm.current).to eql(:green)
   end
 
+  it "stops executing callbacks when cancelled" do
+    called = []
+
+    fsm = FiniteMachine.define do
+      initial :initial
+
+      events { event :bump, initial: :low }
+
+      callbacks {
+        on_before do |event|
+          called << "enter_#{event.name}_#{event.from}_#{event.to}"
+
+          FiniteMachine::CANCELLED
+        end
+
+        on_transition do |event|
+          called << "exit_#{event.name}_#{event.from}_#{event.to}"
+        end
+      }
+    end
+
+    fsm.bump
+
+    expect(called).to eq(['enter_bump_initial_low'])
+  end
+
   xit "groups callbacks"
 
   it "groups states from separate events with the same name" do
