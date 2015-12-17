@@ -723,9 +723,11 @@ RSpec.describe FiniteMachine, 'callbacks' do
           FiniteMachine::CANCELLED
         end
 
-        on_transition do |event|
-          called << "exit_#{event.name}_#{event.from}_#{event.to}"
-        end
+        on_exit :initial do |event| called << "exit_initial" end
+        on_exit          do |event| called << "exit_any" end
+        on_enter :low    do |event| called << "enter_low" end
+        on_after :bump   do |event| called << "after_#{event.name}" end
+        on_after         do |event| called << "after_any" end
       }
     end
 

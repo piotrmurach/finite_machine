@@ -171,7 +171,7 @@ module FiniteMachine
       end
 
       if result == CANCELLED
-        hooks.collection.clear
+        hooks.clear
         machine.events_chain.cancel_transitions(event.event_name)
       end
     end
