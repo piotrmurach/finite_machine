@@ -2,3 +2,4 @@
 --format progress
 --order random
 --warnings
+--require spec_helper
