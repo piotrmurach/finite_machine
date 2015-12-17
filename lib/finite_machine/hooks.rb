@@ -61,7 +61,7 @@ module FiniteMachine
     # @param [Event] event
     #
     # @example
-    #   hooks.call(:entersate, :green, Event.new)
+    #   hooks.call(HookEvent::Enter, :green, Event.new)
     #
     # @return [Hash]
     #
@@ -77,6 +77,13 @@ module FiniteMachine
     # @api public
     def empty?
       collection.empty?
+    end
+
+    # Remove all callbacks
+    #
+    # @api public
+    def clear
+      collection.clear
     end
 
     # String representation
