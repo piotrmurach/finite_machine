@@ -1,8 +1,18 @@
-0.11.0 (Oct 11, 2015)
+# Change Log
 
+## [v0.11.1] - 2015-12-17
+
+### Fixed
+* Fix cancelling callbacks for halted transition by craiglittle
+
+## [v0.11.0] - 2015-10-11
+
+### Added
 * Add UndefinedTransition to mark self transition(e.i. no transition found)
 * Add StateDefinition for state query methods
 * Add #trigger and #trigger! to StateMachine to allow manual firing of events and split between dangerous and non-dangerous versions of api.
+
+### Changed
 * Change ThreadContext to require per thread setup
 * Change Transition to stop relying on global transitions
 * Change EventChain to manage all internal transitions
@@ -11,67 +21,91 @@
 * Change HookEvent to accept event name and from state
 * Remove Event class as duplicate of Transition
 * Remove unnecessary checks for StateMachine#can?
+
+### Fixed
 * Fix bug in Transition with current transition matching
 * Fix bug in Observer with cancelling inside event callback
 
-0.10.2 (July 5, 2015)
+## [v0.10.2] - 2015-07-05
 
-* Fix to run 'on_after' callbacks even when event cancalled by @craiglittle
-* Fix to cancel transition when no matching choice is found by @craiglittle
+### Changed
 * Change StateParser #parse method
 * Change EventBuilder to EventDefinition and invert dependencies
 * Change Event#call to #trigger
 * Change Transition#call to #execute
 
-0.10.1 (May 24, 2015)
+### Fixed
+* Fix to run 'on_after' callbacks even when event cancalled by @craiglittle
+* Fix to cancel transition when no matching choice is found by @craiglittle
 
+## [v0.10.1] - 2015-05-24
+
+### Added
 * Add ability to inherit state machine definitions
 * Add Env class for holiding machine envionment references
+
+### Changed
 * Change DSL to delegate calls to machine instance
 * Change ChoiceMerger to use machine directly
 
-0.10.0 (November 16, 2014)
+## [v0.10.0] - 2014-11-16
 
+### Added
 * Add #alias_target to allow renaming of target object by @reggieb
-* Fix issue with async calls passing wrong arguments to conditionals
-* Change TransitionEvent, AsyncCall to be immutable
 * Add :log_transitions option for easy transition debugging
+
+### Changed
+* Change TransitionEvent, AsyncCall to be immutable
 * Increase test coverage to 99%
 
-0.9.2 (September 27, 2014)
+### Fixed
+* Fix issue with async calls passing wrong arguments to conditionals
 
+## [v0.9.2] - 2014-09-27
+
+### Changed
 * Removes use of class variable to share Sync by @reggieb
+
+### Fixed
 * Fix observer to differentiate between any state and any event
 * [#23] Fix transition to correctly set :from and :to parameters for :any state
 * [#25] Fix passing parameters to choice events with same named events
 * Fix choice pseudostate to work with :any state
 
-0.9.1 (August 10, 2014)
+## [v0.9.1] - 2014-08-10
 
+### Added
 * Add TransitionBuilder to internally build transitions from states
-* Fix #choice to allow for multiple from states
 * Add #current? to Transition to determine if matches from state
 * Add #select_choice_transition to EventsChain to determine matching choice transition
+
+### Fixed
+* Fix #choice to allow for multiple from states
 * Fix #choice to work with same named events
 
-0.9.0 (August 3, 2014)
+## [v0.9.0] 2014-08-03
 
+### Added
 * Add Definition class to allow to define standalone state machine
-* Upgrade RSpec dependency and refactor specs
+* Add #build method to HookEvent
+
+### Changed
 * Change initial helper to simply state name with options
 * Change HookEvent to be immutable and extend comparison
 * Change Event to be immutable and extend comparison
-* Add #build method to HookEvent
 * Change finished? to terminated? and allow for multiple terminal states
 * Change to require explicit context to call target methods
+* Upgrade RSpec dependency and refactor specs
 
-0.8.1 (July 5, 2014)
+## [v0.8.1] - 2014-07-05
 
+### Added
 * Add EventsChain to handle internal events logic
 * Add EventBuilder to handle events construction
 
-0.8.0 (June 22, 2014)
+## [v0.8.0] - 2014-06-22
 
+### Added
 * Add silent option for state machine events to allow turning on/off
   selectively callbacks
 * Ensure that can? & cannot? take into account conditionl logic applied
@@ -80,83 +114,132 @@
 * Add ability to do dynamic conditional branching using the choice DSL or
   grouped events with different outgoing transitions [solves #13 and #6 issue]
 
-0.7.1 (June 8, 2014)
+## [v0.7.1] - 2014-06-08
 
+### Changed
 * Change to relax callback name checks to allow for duplicate state and event names
 * Change so that transition to initial state triggers callbacks
 
-0.7.0 (May 26, 2014)
+## [v0.7.0] - 2014-05-26
 
-* Change Event to EventHook for callback events
+### Added
 * Add Event to hold the logic for event specification
-* Fix issue #8 to preserve conditionals between event specifications
+* Add string inspection to hooks
+* Add check for callback name conflicts
+
+### Changed
+* Change Event to EventHook for callback events
 * Change to allow for self-transition - fixes issue #9
 * Change to detect attempt to overwrite already defined method - fixes issue #10
-* Fix #respond_to on state machine to include observer
-* Add string inspection to hooks
-* Fix observer missing methods resolution
 * Change to separate state and event callbacks. Introduced on_enter, on_before,
   once_on_enter, once_on_before new event callbacks.
 * Change generic callbacks to default to any state for on_enter, on_transition,
   on_exit and any event for on_before and on_after
-* Add check for callback name conflicts
-* Ensure proper callback lifecycle
+* Change to ensure proper callback lifecycle
 
-0.6.1 (May 10, 2014)
+### Fixed
+* Fix issue #8 to preserve conditionals between event specifications
+* Fix #respond_to on state machine to include observer
+* Fix observer missing methods resolution
 
+### [v0.6.1] - 2014-05-10
+
+### Fixed
 * Fix stdlib requirement
 
-0.6.0 (May 10, 2014)
+### [v0.6.0] - 2014-05-10
 
+### Added
 * Add StateParser to allow for grouping transition under same event name
-* Change Transition to store a map of transition for a given event
 * Add abilility to correctly extract :to state for Transition instance
+
+### Changed
+* Change Transition to store a map of transition for a given event
+
+### Fixed
 * Fix bug #6 with incorrect TransitionEvent payload information
 
-0.5.0 (April 28, 2014)
+## [v0.5.0] - 2014-04-28
 
-* Change to allow for machine to be constructed as plain object
-* Allow for :initial, :terminal and :target to be machine parameters
+### Added
 * Add generic Listener interface
-* Change EventQueue to allow for subscription
-* Increase test coverage to 98%
-* Change to allow access to target inside machine dsl
 * Add ability to fire callbacks asynchronously
 * Add initial state storage
 
-0.4.0 (April 13, 2014)
+### Changed
+* Change to allow for machine to be constructed as plain object
+* Allow for :initial, :terminal and :target to be machine parameters
+* Change EventQueue to allow for subscription
+* Increase test coverage to 98%
+* Change to allow access to target inside machine dsl
 
-* Change initial state to stop firing event notification
-* Fix initial to accept any state object
+## [v0.4.0] - 2014-04-13
+
+### Added
 * Add logger
 * Add ability to cancel transitions inside callbacks
-* Fix proc conditions to accept aditional arguments
-* Increase test coverage to 97%
 * Add ability to force transitions
 
-0.3.0 (March 30, 2014)
+### Changed
+* Change initial state to stop firing event notification
+* Increase test coverage to 97%
 
-* Move development dependencies to Gemfile
-* Increase test coverage to 95%
-* Fix bug with event methods dynamic redefinition
-* Change attr_threadsafe to accept default values
-* Fix observer respond_to
+### Fixed
+* Fix initial to accept any state object
+* Fix proc conditions to accept aditional arguments
+
+## [v0.3.0] - 2014-03-30
+
+### Added
 * Add ability to specify callbacks on machine instance
 * Add once_on type of callback
 * Add off method for removing callbacks
 * Add async method to state_machine for asynchronous events firing
-* Fix Callable to correctly forward arguments
 * Add state helpers fsm.green? to allow easily check current state
 
-0.2.0 (March 01, 2014)
+### Changed
+* Change attr_threadsafe to accept default values
+* Move development dependencies to Gemfile
+* Increase test coverage to 95%
 
-* Ensure correct transition object state
-* Add methods synchronization for thread safety
-* Fix bug - callback event object returns correct from state
-* Add ability to define custom initial event
-* Add hooks class for callbacks registration
-* Extend threadable accessors
+### Fixed
+* Fix bug with event methods dynamic redefinition
+* Fix observer respond_to
+* Fix Callable to correctly forward arguments
+
+## [v0.2.0] - 2014-03-01
+
+### Added
 * Add generic state and event listeners
 * Add target to allow integration with external objects,
   and allow easy method lookup through callback context
 * Add ability to specify custom handlers for error conditions
+* Add methods synchronization for thread safety
+* Add ability to define custom initial event
+* Add hooks class for callbacks registration
+
+### Changed
+* Change to ensure correct transition object state
+* Extend threadable accessors
+
+### Fixed
+* Fix bug - callback event object returns correct from state
+
+[v0.11.1]: https://github.com/peter-murach/finite_machine/compare/v0.11.0...v0.11.1
+[v0.11.0]: https://github.com/peter-murach/finite_machine/compare/v0.10.2...v0.11.0
+[v0.10.2]: https://github.com/peter-murach/finite_machine/compare/v0.10.1...v0.10.2
+[v0.10.1]: https://github.com/peter-murach/finite_machine/compare/v0.10.0...v0.10.1
+[v0.10.0]: https://github.com/peter-murach/finite_machine/compare/v0.9.2...v0.10.0
+[v0.9.2]: https://github.com/peter-murach/finite_machine/compare/v0.9.1...v0.9.2
+[v0.9.1]: https://github.com/peter-murach/finite_machine/compare/v0.9.0...v0.9.1
+[v0.9.0]: https://github.com/peter-murach/finite_machine/compare/v0.8.1...v0.9.0
+[v0.8.1]: https://github.com/peter-murach/finite_machine/compare/v0.8.0...v0.8.1
+[v0.8.0]: https://github.com/peter-murach/finite_machine/compare/v0.7.1...v0.8.0
+[v0.7.1]: https://github.com/peter-murach/finite_machine/compare/v0.7.0...v0.7.1
+[v0.7.0]: https://github.com/peter-murach/finite_machine/compare/v0.6.1...v0.7.0
+[v0.6.1]: https://github.com/peter-murach/finite_machine/compare/v0.6.0...v0.6.1
+[v0.6.0]: https://github.com/peter-murach/finite_machine/compare/v0.5.0...v0.6.0
+[v0.5.0]: https://github.com/peter-murach/finite_machine/compare/v0.4.0...v0.5.0
+[v0.4.0]: https://github.com/peter-murach/finite_machine/compare/v0.3.0...v0.4.0
+[v0.3.0]: https://github.com/peter-murach/finite_machine/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://github.com/peter-murach/finite_machine/compare/v0.1.0...v0.2.0
