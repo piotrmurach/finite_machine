@@ -4,7 +4,7 @@ gemspec
 
 group :development do
   gem 'pry',   '~> 0.10.1'
-  gem 'rspec', '~> 3.3.0'
+  gem 'rspec', '~> 3.4.0'
   gem 'yard',  '~> 0.8.7'
 end
 
