@@ -13,7 +13,7 @@ RSpec.describe FiniteMachine::EventsChain, '.cancel_transitions' do
     events_chain.add(:start, transition_b)
     events_chain.add(:finish, transition_c)
 
-    events_chain.cancel_transitions(:start, true)
+    events_chain.cancel_transitions(:start)
 
     expect(transition_a).to have_received(:cancelled=).with(true)
     expect(transition_b).to have_received(:cancelled=).with(true)
