@@ -74,6 +74,18 @@ module FiniteMachine
       new(state_or_action, event_name, from)
     end
 
+    # Deduce default name based on even type
+    #
+    # @param [HookEvent] event_type
+    #
+    # @return [Symbol]
+    #   out of :any or :any_event
+    #
+    # @api public
+    def self.infer_default_name(event_type)
+      event_type < Anyaction ? ANY_EVENT : ANY_STATE
+    end
+
     # Notify subscriber about this event
     #
     # @param [Observer] subscriber
