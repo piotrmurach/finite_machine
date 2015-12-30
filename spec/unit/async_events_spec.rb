@@ -56,13 +56,13 @@ RSpec.describe FiniteMachine, 'async_events' do
     end
     expect(fsm.current).to eql(:none)
     fsm.async.go(:foo)
-    fsm.event_queue.join 0.01
+    fsm.event_queue.join 0.02
     expect(fsm.current).to eql(:green)
     expect(called).to eql(["cond_none_green(#{fsm},foo)"])
 
     expect(fsm.current).to eql(:green)
     fsm.async.stop(:bar)
-    fsm.event_queue.join 0.01
+    fsm.event_queue.join 0.02
     expect(fsm.current).to eql(:red)
     expect(called).to match_array([
       "cond_none_green(#{fsm},foo)",
