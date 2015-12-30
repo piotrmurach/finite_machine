@@ -30,33 +30,34 @@ module FiniteMachine
       instance_eval(&block)
     end
 
-    # Register callback for a given event type
+    # Register callback for a given hook type
     #
-    # @param [Symbol, FiniteMachine::HookEvent] event_type
-    # @param [Array] args
-    # @param [Proc]  callback
+    # @param [HookEvent] hook_type
+    # @param [Symbol] state_or_event_name
+    # @param [Proc] callback
+    #
+    # @example
+    #   observer.on HookEvent::Enter, :green
     #
     # @api public
-    # TODO: throw error if event type isn't handled
-    def on(event_type = HookEvent, *args, &callback)
+    def on(hook_type, state_or_event_name = nil, async = nil, &callback)
       sync_exclusive do
-        name, async, _ = args
-        if name.nil?
-          name = event_type < HookEvent::Anyaction ? ANY_EVENT : ANY_STATE
+        if state_or_event_name.nil?
+          state_or_event_name = HookEvent.infer_default_name(hook_type)
         end
         async = false if async.nil?
-        ensure_valid_callback_name!(event_type, name)
+        ensure_valid_callback_name!(hook_type, state_or_event_name)
         callback.extend(Async) if async == :async
-        hooks.register event_type, name, callback
+        hooks.register(hook_type, state_or_event_name, callback)
       end
     end
 
     # Unregister callback for a given event
     #
     # @api public
-    def off(event_type, name = ANY_STATE, &callback)
+    def off(hook_type, name = ANY_STATE, &callback)
       sync_exclusive do
-        hooks.unregister event_type, name, callback
+        hooks.unregister hook_type, name, callback
       end
     end
 
@@ -116,11 +117,11 @@ module FiniteMachine
     # @api public
     def emit(event, *data)
       sync_exclusive do
-        [event.type].each do |event_type|
+        [event.type].each do |hook_type|
           [event.name, ANY_STATE, ANY_EVENT].each do |event_name|
-            hooks.call(event_type, event_name) do |hook|
+            hooks.call(hook_type, event_name) do |hook|
               handle_callback(hook, event, *data)
-              off(event_type, event_name, &hook) if hook.is_a?(Once)
+              off(hook_type, event_name, &hook) if hook.is_a?(Once)
             end
           end
         end

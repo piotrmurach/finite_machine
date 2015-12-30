@@ -30,6 +30,9 @@ module FiniteMachine
     # @example
     #   hooks.register HookEvent::Enter, :green do ... end
     #
+    # @example
+    #   hooks.register HookEvent::Before, :any do ... end
+    #
     # @return [Hash]
     #
     # @api public
