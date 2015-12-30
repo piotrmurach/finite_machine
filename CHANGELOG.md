@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.11.2] - 2015-12-30
+
+### Added
+* Add infering of state or event name based off hook type
+
+### Changed
+* Remove ThreadContext for global queue synchronization
+* Change EventQueue to use Threadable module to sync access
+
+### Fixed
+* Fix bug with two state machines locking up on callback events due to race condition with help from @domokos
+
 ## [v0.11.1] - 2015-12-17
 
 ### Fixed
@@ -225,6 +237,7 @@
 ### Fixed
 * Fix bug - callback event object returns correct from state
 
+[v0.11.2]: https://github.com/peter-murach/finite_machine/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/peter-murach/finite_machine/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/peter-murach/finite_machine/compare/v0.10.2...v0.11.0
 [v0.10.2]: https://github.com/peter-murach/finite_machine/compare/v0.10.1...v0.10.2
