@@ -13,7 +13,7 @@ RSpec.describe FiniteMachine::EventQueue do
     expect(event_queue.size).to be_zero
     event_queue << event1
     event_queue << event2
-    sleep 0.001
+    event_queue.join(0.001)
     expect(called).to match_array(['event1_dispatched', 'event2_dispatched'])
   end
 
@@ -21,7 +21,7 @@ RSpec.describe FiniteMachine::EventQueue do
     event = double(:event)
     expect(FiniteMachine::Logger).to receive(:error)
     event_queue << event
-    sleep 0.01
+    event_queue.join(0.01)
     expect(event_queue).to be_empty
   end
 
@@ -46,7 +46,7 @@ RSpec.describe FiniteMachine::EventQueue do
     event_queue << event2
     event_queue.shutdown
     event_queue << event3
-    sleep 0.001
+    event_queue.join(0.001)
     expect(event_queue.alive?).to be(false)
   end
 end
