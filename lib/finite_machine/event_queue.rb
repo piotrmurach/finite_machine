@@ -3,6 +3,8 @@
 module FiniteMachine
   # A class responsible for running asynchronous events
   class EventQueue
+    include Threadable
+
     # Initialize an event queue
     #
     # @example
@@ -11,7 +13,6 @@ module FiniteMachine
     # @api public
     def initialize
       @queue     = Queue.new
-      @mutex     = Mutex.new
       @dead      = false
       @listeners = []
 
@@ -26,7 +27,7 @@ module FiniteMachine
     #
     # @api private
     def next_event
-      @queue.pop
+      sync_shared { @queue.pop }
     end
 
     # Add asynchronous event to the event queue
@@ -40,7 +41,7 @@ module FiniteMachine
     #
     # @api public
     def <<(event)
-      @mutex.synchronize { @queue << event }
+      sync_exclusive { @queue << event }
       self
     end
 
@@ -48,9 +49,11 @@ module FiniteMachine
     #
     # @api public
     def subscribe(*args, &block)
-      listener = Listener.new(*args)
-      listener.on_delivery(&block)
-      @listeners << listener
+      sync_exclusive do
+        listener = Listener.new(*args)
+        listener.on_delivery(&block)
+        @listeners << listener
+      end
     end
 
     # Check if there are any events to handle
@@ -60,7 +63,7 @@ module FiniteMachine
     #
     # @api public
     def empty?
-      @queue.empty?
+      sync_shared { @queue.empty? }
     end
 
     # Check if the event queue is alive
@@ -72,7 +75,7 @@ module FiniteMachine
     #
     # @api public
     def alive?
-      !@dead
+      sync_shared { !@dead }
     end
 
     # Join the event queue from current thread
@@ -100,15 +103,13 @@ module FiniteMachine
     def shutdown
       fail EventQueueDeadError, 'event queue already dead' if @dead
 
-      @mutex.lock
-      begin
+      queue = []
+      sync_exclusive do
         queue = @queue
         @queue.clear
         @dead = true
-      ensure
-        @mutex.unlock rescue nil
       end
-      while(!queue.empty?)
+      while !queue.empty?
         Logger.debug "Discarded message: #{queue.pop}"
       end
       true
@@ -123,7 +124,7 @@ module FiniteMachine
     #
     # @api public
     def size
-      @mutex.synchronize { @queue.size }
+      sync_shared { @queue.size }
     end
 
     private
@@ -134,7 +135,9 @@ module FiniteMachine
     #
     # @api private
     def notify_listeners(event)
-      @listeners.each { |listener| listener.handle_delivery(event) }
+      sync_shared do
+        @listeners.each { |listener| listener.handle_delivery(event) }
+      end
     end
 
     # Process all the events
