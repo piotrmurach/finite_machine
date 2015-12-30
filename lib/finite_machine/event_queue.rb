@@ -88,8 +88,8 @@ module FiniteMachine
     # @return [nil, Thread]
     #
     # @api public
-    def join(timeout)
-      @thread.join timeout
+    def join(timeout = nil)
+      timeout.nil? ? @thread.join : @thread.join(timeout)
     end
 
     # Shut down this event queue and clean it up
