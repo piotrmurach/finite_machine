@@ -11,13 +11,13 @@ module FiniteMachine
     #
     # @api private
     def sync
-      @sync ||= Sync.new
+      @sync = Sync.new
     end
 
     # Synchronize given block of code
     #
     # @param [Symbol] mode
-    #   the synchronization mode out of :SH and :EX
+    #   the lock mode out of :SH, :EX, :UN
     #
     # @return [nil]
     #

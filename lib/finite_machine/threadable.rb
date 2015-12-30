@@ -4,7 +4,6 @@ module FiniteMachine
   # A mixin to allow instance methods to be synchronized
   module Threadable
     module InstanceMethods
-
       # Exclusive lock
       #
       # @return [nil]

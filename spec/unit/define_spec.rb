@@ -52,6 +52,4 @@ RSpec.describe FiniteMachine, 'define' do
       expect(called).to match_array(['on_enter_yellow', 'error_handler'])
     end
   end
-
-  xit "creates multiple machines"
 end
