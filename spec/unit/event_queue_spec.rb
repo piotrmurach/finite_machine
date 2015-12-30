@@ -32,7 +32,8 @@ RSpec.describe FiniteMachine::EventQueue do
     event3 = double(:event3, dispatch: true)
     event_queue.subscribe(:listener1) { |event| called << event }
     event_queue << event1 << event2 << event3
-    sleep 0.01
+    event_queue.join(0.02)
+    event_queue.shutdown
     expect(called).to match_array([event1, event2, event3])
   end
 
