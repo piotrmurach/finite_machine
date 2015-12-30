@@ -97,7 +97,8 @@ RSpec.describe FiniteMachine, 'async_events' do
       fsmBar.async.slow(:bar)
     }
     ThreadsWait.all_waits(foo_thread, bar_thread)
-    sleep 0.01
+    fsmFoo.event_queue.join(0.01)
+    fsmBar.event_queue.join(0.01)
     expect(called).to match_array([
       '(foo)on_enter_yellow_foo',
       '(bar)on_enter_yellow_bar'
