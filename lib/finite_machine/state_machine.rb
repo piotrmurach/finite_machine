@@ -5,7 +5,6 @@ module FiniteMachine
   class StateMachine
     include Threadable
     include Catchable
-    include ThreadContext
     extend Forwardable
 
     # Initial state, defaults to :none
@@ -58,6 +57,13 @@ module FiniteMachine
     # @api private
     attr_threadsafe :subscribers
 
+    # The queue for asynchronoous events
+    #
+    # @return [EventQueue]
+    #
+    # @api private
+    attr_threadsafe :event_queue
+
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
@@ -71,8 +77,8 @@ module FiniteMachine
     # @api private
     def initialize(*args, &block)
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
-      self.event_queue = EventQueue.new
 
+      @event_queue   = EventQueue.new
       @initial_state = DEFAULT_STATE
       @async_proxy   = AsyncProxy.new(self)
       @subscribers   = Subscribers.new
