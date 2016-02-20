@@ -91,6 +91,7 @@ module FiniteMachine
 
       @dsl.call(&block) if block_given?
       trigger_init
+      ObjectSpace.define_finalizer(self, self.class.cleanup(event_queue))
     end
 
     # Subscribe observer for event notifications
@@ -379,6 +380,15 @@ module FiniteMachine
         "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
         "@events=#{event_names}, " \
         "@transitions=#{events_chain.state_transitions}>"
+      end
+    end
+
+    def self.cleanup(queue)
+      proc do
+        begin
+          queue && queue.shutdown
+        rescue EventQueueDeadError
+        end
       end
     end
 
