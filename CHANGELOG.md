@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.12.0] - unreleased
+
+### Changed
+
+### Fixed
+* Fix memory leak - issue #42
+
 ## [v0.11.2] - 2015-12-30
 
 ### Added
