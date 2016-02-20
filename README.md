@@ -559,6 +559,7 @@ fm = FiniteMachine.define do
                  :low     => :medium,
                  :medium  => :high
   }
+end
 ```
 
 The same can be more naturally rewritten also as:
@@ -572,6 +573,7 @@ fm = FiniteMachine.define do
     event :bump, :low     => :medium
     event :bump, :medium  => :high
   }
+end
 ```
 
 ### 2.7 Silent transitions
@@ -1441,4 +1443,4 @@ Creating a standalone **FiniteMachine** brings a number of benefits, one of them
 
 ## Copyright
 
-Copyright (c) 2014-2015 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014-2016 Piotr Murach. See LICENSE for further details.
