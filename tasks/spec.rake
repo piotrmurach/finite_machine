@@ -5,7 +5,7 @@ begin
 
   desc 'Run all specs'
   RSpec::Core::RakeTask.new(:spec) do |task|
-    task.pattern = 'spec/{unit,integration}{,/*/**}/*_spec.rb'
+    task.pattern = 'spec/{unit,integration,performance}{,/*/**}/*_spec.rb'
   end
 
   namespace :spec do
@@ -17,6 +17,11 @@ begin
     desc 'Run integration specs'
     RSpec::Core::RakeTask.new(:integration) do |task|
       task.pattern = 'spec/integration{,/*/**}/*_spec.rb'
+    end
+
+    desc 'Run performance specs'
+    RSpec::Core::RakeTask.new(:perf) do |task|
+      task.pattern = 'spec/performance{,/*/**}/*_spec.rb'
     end
   end
 

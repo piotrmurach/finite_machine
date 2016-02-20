@@ -17,6 +17,7 @@ end
 
 require 'finite_machine'
 require 'thwait'
+require 'rspec-benchmark'
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
