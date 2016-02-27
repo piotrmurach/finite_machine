@@ -7,7 +7,7 @@ module FiniteMachine
   # Used internally by {Observer} and {StateMachine}
   #
   # @api private
-  class EventQueue
+  class MessageQueue
     include Threadable
 
     # Initialize an event queue
@@ -30,6 +30,7 @@ module FiniteMachine
       return if running?
 
       @thread = Thread.new do
+        Thread.current.abort_on_exception = true
         process_events
       end
     end

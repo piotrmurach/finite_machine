@@ -78,7 +78,7 @@ module FiniteMachine
     def initialize(*args, &block)
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
 
-      @event_queue   = EventQueue.new
+      @event_queue   = MessageQueue.new
       @initial_state = DEFAULT_STATE
       @async_proxy   = AsyncProxy.new(self)
       @subscribers   = Subscribers.new

@@ -1,8 +1,6 @@
 # encoding: utf-8
 
-require 'spec_helper'
-
-RSpec.describe FiniteMachine::EventQueue do
+RSpec.describe FiniteMachine::MessageQueue do
 
   subject(:event_queue) { described_class.new }
 
