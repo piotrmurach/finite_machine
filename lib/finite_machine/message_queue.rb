@@ -13,7 +13,7 @@ module FiniteMachine
     # Initialize an event queue
     #
     # @example
-    #  EventQueue.new
+    #   MessageQueue.new
     #
     # @api public
     def initialize

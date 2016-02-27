@@ -16,11 +16,17 @@ module FiniteMachine
 
     # Initialize an Observer
     #
+    # @param [StateMachine] machine
+    #   reference to the current machine
+    #
     # @api public
     def initialize(machine)
-      @machine = machine
+      @machine        = machine
+      @hooks          = FiniteMachine::Hooks.new
+      @callback_queue = MessageQueue.new
+
       @machine.subscribe(self)
-      @hooks = FiniteMachine::Hooks.new
+      ObjectSpace.define_finalizer(self, self.class.cleanup(@callback_queue))
     end
 
     # Evaluate in current context
@@ -130,24 +136,6 @@ module FiniteMachine
 
     private
 
-    # Defer callback execution
-    #
-    # @api private
-    def defer(callable, trans_event, *data)
-      async_call = AsyncCall.new(machine, callable, trans_event, *data)
-      machine.event_queue << async_call
-    end
-
-    # Create callable instance
-    #
-    # @api private
-    def create_callable(hook)
-      callback = proc do |trans_event, *data|
-        machine.instance_exec(trans_event, *data, &hook)
-      end
-      Callable.new(callback)
-    end
-
     # Handle callback and decide if run synchronously or asynchronously
     #
     # @param [Proc] :hook
@@ -175,6 +163,25 @@ module FiniteMachine
         hooks.clear
         machine.events_chain.cancel_transitions(event.event_name)
       end
+    end
+
+    # Defer callback execution
+    #
+    # @api private
+    def defer(callable, trans_event, *data)
+      async_call = AsyncCall.new(machine, callable, trans_event, *data)
+      @callback_queue.start unless @callback_queue.running?
+      @callback_queue << async_call
+    end
+
+    # Create callable instance
+    #
+    # @api private
+    def create_callable(hook)
+      callback = proc do |trans_event, *data|
+        machine.instance_exec(trans_event, *data, &hook)
+      end
+      Callable.new(callback)
     end
 
     # Callback names including all states and events
@@ -217,6 +224,18 @@ module FiniteMachine
     def respond_to_missing?(method_name, include_private = false)
       *_, callback_name = *method_name.to_s.match(/^(\w*?on_\w+?)_(\w+)$/)
       callback_name && callback_names.include?(:"#{callback_name}")
+    end
+
+    # Clean up callback queue
+    #
+    # @api private
+    def self.cleanup(queue)
+      proc do
+        begin
+          queue && queue.shutdown
+        rescue MessageQueueDeadError
+        end
+      end
     end
   end # Observer
 end # FiniteMachine

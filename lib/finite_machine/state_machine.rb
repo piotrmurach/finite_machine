@@ -57,13 +57,6 @@ module FiniteMachine
     # @api private
     attr_threadsafe :subscribers
 
-    # The queue for asynchronoous events
-    #
-    # @return [EventQueue]
-    #
-    # @api private
-    attr_threadsafe :event_queue
-
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
@@ -72,13 +65,14 @@ module FiniteMachine
 
     def_delegator :events_dsl, :event
 
+    def_delegator :@async_proxy, :event_queue
+
     # Initialize state machine
     #
     # @api private
     def initialize(*args, &block)
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
 
-      @event_queue   = MessageQueue.new
       @initial_state = DEFAULT_STATE
       @async_proxy   = AsyncProxy.new(self)
       @subscribers   = Subscribers.new
@@ -91,8 +85,6 @@ module FiniteMachine
 
       @dsl.call(&block) if block_given?
       trigger_init
-      @event_queue.start
-      ObjectSpace.define_finalizer(self, self.class.cleanup(event_queue))
     end
 
     # Subscribe observer for event notifications
@@ -381,15 +373,6 @@ module FiniteMachine
         "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
         "@events=#{event_names}, " \
         "@transitions=#{events_chain.state_transitions}>"
-      end
-    end
-
-    def self.cleanup(queue)
-      proc do
-        begin
-          queue && queue.shutdown
-        rescue EventQueueDeadError
-        end
       end
     end
 
