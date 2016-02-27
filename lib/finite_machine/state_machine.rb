@@ -91,6 +91,7 @@ module FiniteMachine
 
       @dsl.call(&block) if block_given?
       trigger_init
+      @event_queue.start
       ObjectSpace.define_finalizer(self, self.class.cleanup(event_queue))
     end
 
@@ -121,7 +122,7 @@ module FiniteMachine
     # @api public
     def async(method_name = nil, *args, &block)
       if method_name
-        @async_proxy.method_missing method_name, *args, &block
+        @async_proxy.method_missing(method_name, *args, &block)
       else
         @async_proxy
       end

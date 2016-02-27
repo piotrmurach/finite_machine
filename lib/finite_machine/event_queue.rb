@@ -1,7 +1,12 @@
 # encoding: utf-8
 
 module FiniteMachine
-  # A class responsible for running asynchronous events
+  # Allows for storage of asynchronous messages such as events
+  # and callbacks.
+  #
+  # Used internally by {Observer} and {StateMachine}
+  #
+  # @api private
   class EventQueue
     include Threadable
 
@@ -15,10 +20,22 @@ module FiniteMachine
       @queue     = Queue.new
       @dead      = false
       @listeners = []
+      @thread    = nil
+    end
+
+    # Start a new thread with a queue of callback events to run
+    #
+    # @api private
+    def start
+      return if running?
 
       @thread = Thread.new do
         process_events
       end
+    end
+
+    def running?
+      !@thread.nil? && alive?
     end
 
     # Retrieve the next event
@@ -41,7 +58,13 @@ module FiniteMachine
     #
     # @api public
     def <<(event)
-      sync_exclusive { @queue << event }
+      sync_exclusive do
+        if @dead
+          discard_message(event)
+        else
+          @queue << event
+        end
+      end
       self
     end
 
@@ -89,6 +112,7 @@ module FiniteMachine
     #
     # @api public
     def join(timeout = nil)
+      return unless @thread
       timeout.nil? ? @thread.join : @thread.join(timeout)
     end
 
@@ -110,7 +134,7 @@ module FiniteMachine
         @dead = true
       end
       while !queue.empty?
-        Logger.debug "Discarded message: #{queue.pop}"
+        discard_message(queue.pop)
       end
       true
     end
@@ -125,6 +149,10 @@ module FiniteMachine
     # @api public
     def size
       sync_shared { @queue.size }
+    end
+
+    def inspect
+      "#<#{self.class}:#{object_id.to_s(16)} @size=#{size}, @dead=#{@dead}>"
     end
 
     private
@@ -153,6 +181,10 @@ module FiniteMachine
       end
     rescue Exception => ex
       Logger.error "Error while running event: #{Logger.format_error(ex)}"
+    end
+
+    def discard_message(message)
+      Logger.debug "Discarded message: #{message}" if $DEBUG
     end
   end # EventQueue
 end # FiniteMachine

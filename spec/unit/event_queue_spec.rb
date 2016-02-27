@@ -7,6 +7,7 @@ RSpec.describe FiniteMachine::EventQueue do
   subject(:event_queue) { described_class.new }
 
   it "dispatches all events" do
+    event_queue.start
     called = []
     event1 = double(:event1, dispatch: called << 'event1_dispatched')
     event2 = double(:event2, dispatch: called << 'event2_dispatched')
@@ -18,7 +19,9 @@ RSpec.describe FiniteMachine::EventQueue do
   end
 
   it "logs error" do
-    event = double(:event)
+    event_queue.start
+    event = spy(:event)
+    allow(event).to receive(:dispatch) { raise }
     expect(FiniteMachine::Logger).to receive(:error)
     event_queue << event
     event_queue.join(0.01)
@@ -26,6 +29,7 @@ RSpec.describe FiniteMachine::EventQueue do
   end
 
   it "notifies listeners" do
+    event_queue.start
     called = []
     event1 = double(:event1, dispatch: true)
     event2 = double(:event2, dispatch: true)
@@ -38,6 +42,7 @@ RSpec.describe FiniteMachine::EventQueue do
   end
 
   it "allows to shutdown event queue" do
+    event_queue.start
     event1 = double(:event1, dispatch: true)
     event2 = double(:event2, dispatch: true)
     event3 = double(:event3, dispatch: true)
