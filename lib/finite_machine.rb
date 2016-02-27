@@ -66,7 +66,7 @@ module FiniteMachine
   MissingInitialStateError = Class.new(::StandardError)
 
   # Raised when event queue is already dead
-  EventQueueDeadError = Class.new(::StandardError)
+  MessageQueueDeadError = Class.new(::StandardError)
 
   # Raised when argument is already defined
   AlreadyDefinedError = Class.new(::ArgumentError)
