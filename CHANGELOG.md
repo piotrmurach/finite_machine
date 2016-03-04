@@ -1,11 +1,17 @@
 # Change Log
 
-## [v0.12.0] - unreleased
+## [v0.11.3] - 2016-03-04
+
+### Added
+* Add performance tests & memory usage benchmarks
 
 ### Changed
+* Change EventQueue to MessageQueue for handling generic asynchronous messages
+* Split async behaviour to use CallbackQueue for observed callbacks and EventQueue for async event triggers.
+* Change AsyncProxy and Observer to lazy load message queue
 
 ### Fixed
-* Fix memory leak - issue #42
+* Fix memory leak - issue #42 with help from @craiglittle
 
 ## [v0.11.2] - 2015-12-30
 
@@ -244,6 +250,7 @@
 ### Fixed
 * Fix bug - callback event object returns correct from state
 
+[v0.11.3]: https://github.com/peter-murach/finite_machine/compare/v0.11.2...v0.11.3
 [v0.11.2]: https://github.com/peter-murach/finite_machine/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/peter-murach/finite_machine/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/peter-murach/finite_machine/compare/v0.10.2...v0.11.0
