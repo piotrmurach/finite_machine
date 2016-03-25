@@ -1,20 +1,20 @@
 <div align="center">
-  <a href="http://peter-murach.github.io/finite_machine/"><img width="236" src="https://raw.githubusercontent.com/peter-murach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
+  <a href="http://piotrmurach.github.io/finite_machine/"><img width="236" src="https://raw.githubusercontent.com/piotrmurach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
 </div>
 # FiniteMachine
 [![Gem Version](https://badge.fury.io/rb/finite_machine.svg)][gem]
-[![Build Status](https://secure.travis-ci.org/peter-murach/finite_machine.svg?branch=master)][travis]
-[![Code Climate](https://codeclimate.com/github/peter-murach/finite_machine/badges/gpa.svg)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/peter-murach/finite_machine/badge.svg)][coverage]
-[![Inline docs](http://inch-ci.org/github/peter-murach/finite_machine.svg)][inchpages]
+[![Build Status](https://secure.travis-ci.org/piotrmurach/finite_machine.svg?branch=master)][travis]
+[![Code Climate](https://codeclimate.com/github/piotrmurach/finite_machine/badges/gpa.svg)][codeclimate]
+[![Coverage Status](https://coveralls.io/repos/piotrmurach/finite_machine/badge.svg)][coverage]
+[![Inline docs](http://inch-ci.org/github/piotrmurach/finite_machine.svg)][inchpages]
 [![Gitter](https://badges.gitter.im/Join Chat.svg)][gitter]
 
 [gem]: http://badge.fury.io/rb/finite_machine
-[travis]: http://travis-ci.org/peter-murach/finite_machine
-[codeclimate]: https://codeclimate.com/github/peter-murach/finite_machine
-[coverage]: https://coveralls.io/r/peter-murach/finite_machine
-[inchpages]: http://inch-ci.org/github/peter-murach/finite_machine
-[gitter]: https://gitter.im/peter-murach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[travis]: http://travis-ci.org/piotrmurach/finite_machine
+[codeclimate]: https://codeclimate.com/github/piotrmurach/finite_machine
+[coverage]: https://coveralls.io/r/piotrmurach/finite_machine
+[inchpages]: http://inch-ci.org/github/piotrmurach/finite_machine
+[gitter]: https://gitter.im/piotrmurach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 > A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
 

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = [""]
   spec.description   = %q{A minimal finite state machine with a straightforward syntax. You can quickly model states, add callbacks and use object-oriented techniques to integrate with ORMs.}
   spec.summary       = %q{A minimal finite state machine with a straightforward syntax.}
-  spec.homepage      = "http://peter-murach.github.io/finite_machine/"
+  spec.homepage      = "http://piotrmurach.github.io/finite_machine/"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
