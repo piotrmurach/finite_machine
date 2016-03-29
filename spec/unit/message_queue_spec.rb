@@ -25,7 +25,7 @@ RSpec.describe FiniteMachine::MessageQueue do
     allow(event).to receive(:dispatch) { raise }
     expect(FiniteMachine::Logger).to receive(:error)
     event_queue << event
-    event_queue.join(0.01)
+    event_queue.join(0.02)
     expect(event_queue).to be_empty
   end
 
