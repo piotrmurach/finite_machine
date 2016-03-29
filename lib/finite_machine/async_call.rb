@@ -1,14 +1,13 @@
 # encoding: utf-8
 
 module FiniteMachine
-  # An asynchronouse call representation
+  # An immutable asynchronouse call representation that wraps
+  # the {Callable} object
   #
-  # Used internally by {EventQueue} to schedule events
+  # Used internally by {MessageQueue} to dispatch events
   #
   # @api private
   class AsyncCall
-    include Threadable
-
     # Create asynchronous call instance
     #
     # @param [Object] context
@@ -19,15 +18,12 @@ module FiniteMachine
     # @example
     #   AsyncCall.new(context, Callable.new(:method), :a, :b)
     #
-    # @return [self]
-    #
     # @api public
     def initialize(context, callable, *args, &block)
       @context   = context
       @callable  = callable
       @arguments = args.dup
       @block     = block
-      @mutex     = Mutex.new
       freeze
     end
 
@@ -37,19 +33,7 @@ module FiniteMachine
     #
     # @api private
     def dispatch
-      @mutex.synchronize do
-        callable.call(context, *arguments, &block)
-      end
+      @callable.call(@context, *@arguments, &@block)
     end
-
-    protected
-
-    attr_threadsafe :context
-
-    attr_threadsafe :callable
-
-    attr_threadsafe :arguments
-
-    attr_threadsafe :block
   end # AsyncCall
 end # FiniteMachine
