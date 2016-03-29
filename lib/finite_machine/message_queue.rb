@@ -8,15 +8,15 @@ module FiniteMachine
   #
   # @api private
   class MessageQueue
-    include Threadable
-
-    # Initialize an event queue
+    # Initialize an event queue in separate thread
     #
     # @example
     #   MessageQueue.new
     #
     # @api public
     def initialize
+      @not_empty = ConditionVariable.new
+      @mutex     = Mutex.new
       @queue     = Queue.new
       @dead      = false
       @listeners = []
@@ -28,7 +28,13 @@ module FiniteMachine
     # @api private
     def start
       return if running?
+      @mutex.synchronize { spawn_thread }
+    end
 
+    # Spawn new background thread
+    #
+    # @api private
+    def spawn_thread
       @thread = Thread.new do
         Thread.current.abort_on_exception = true
         process_events
@@ -45,10 +51,10 @@ module FiniteMachine
     #
     # @api private
     def next_event
-      sync_shared { @queue.pop }
+      @queue.pop
     end
 
-    # Add asynchronous event to the event queue
+    # Add asynchronous event to the event queue to process
     #
     # @example
     #   event_queue << AsyncCall.build(...)
@@ -59,21 +65,21 @@ module FiniteMachine
     #
     # @api public
     def <<(event)
-      sync_exclusive do
+      @mutex.synchronize do
         if @dead
           discard_message(event)
         else
           @queue << event
+          @not_empty.signal
         end
       end
-      self
     end
 
     # Add listener to the queue to receive messages
     #
     # @api public
     def subscribe(*args, &block)
-      sync_exclusive do
+      @mutex.synchronize do
         listener = Listener.new(*args)
         listener.on_delivery(&block)
         @listeners << listener
@@ -87,7 +93,7 @@ module FiniteMachine
     #
     # @api public
     def empty?
-      sync_shared { @queue.empty? }
+      @mutex.synchronize { @queue.empty? }
     end
 
     # Check if the event queue is alive
@@ -99,7 +105,7 @@ module FiniteMachine
     #
     # @api public
     def alive?
-      sync_shared { !@dead }
+      @mutex.synchronize { !@dead }
     end
 
     # Join the event queue from current thread
@@ -129,10 +135,12 @@ module FiniteMachine
       fail EventQueueDeadError, 'event queue already dead' if @dead
 
       queue = []
-      sync_exclusive do
+      @mutex.synchronize do
+        @dead = true
+        @not_empty.broadcast
+
         queue = @queue
         @queue.clear
-        @dead = true
       end
       while !queue.empty?
         discard_message(queue.pop)
@@ -149,24 +157,24 @@ module FiniteMachine
     #
     # @api public
     def size
-      sync_shared { @queue.size }
+      @mutex.synchronize { @queue.size }
     end
 
     def inspect
-      "#<#{self.class}:#{object_id.to_s(16)} @size=#{size}, @dead=#{@dead}>"
+      @mutex.synchronize do
+        "#<#{self.class}:#{object_id.to_s(16)} @size=#{size}, @dead=#{@dead}>"
+      end
     end
 
     private
 
     # Notify consumers about process event
     #
-    # @param [FiniteMachine::AsyncCall] event
+    # @param [AsyncCall] event
     #
     # @api private
     def notify_listeners(event)
-      sync_shared do
-        @listeners.each { |listener| listener.handle_delivery(event) }
-      end
+      @listeners.each { |listener| listener.handle_delivery(event) }
     end
 
     # Process all the events
@@ -176,9 +184,14 @@ module FiniteMachine
     # @api private
     def process_events
       until @dead
-        event = next_event
-        notify_listeners(event)
-        event.dispatch
+        @mutex.synchronize do
+          while @queue.empty?
+            @not_empty.wait(@mutex)
+          end
+          event = next_event
+          notify_listeners(event)
+          event.dispatch
+        end
       end
     rescue Exception => ex
       Logger.error "Error while running event: #{Logger.format_error(ex)}"
