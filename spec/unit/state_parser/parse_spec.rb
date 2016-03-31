@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require 'spec_helper'
-
 RSpec.describe FiniteMachine::StateParser, '#parse' do
   let(:object) { described_class }
 
@@ -13,7 +11,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     it "raises error for no transitions" do
       expect {
         parser.parse
-      }.to raise_error(FiniteMachine::NotEnoughTransitionsError)
+      }.to raise_error(FiniteMachine::NotEnoughTransitionsError, /please provide state transitions/)
     end
   end
 

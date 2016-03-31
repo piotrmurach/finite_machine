@@ -7,10 +7,6 @@ module FiniteMachine
   #
   # @api private
   class StateParser
-    include Threadable
-
-    attr_threadsafe :attrs
-
     BLACKLIST = [:name, :if, :unless, :silent].freeze
 
     # Initialize a StateParser
@@ -57,7 +53,7 @@ module FiniteMachine
     #
     # @api public
     def contains_from_to_keys?
-      [:from, :to].any? { |key| attrs.keys.include?(key) }
+      [:from, :to].any? { |key| @attrs.keys.include?(key) }
     end
 
     # Return parser attributes
@@ -66,7 +62,7 @@ module FiniteMachine
     #
     # @api public
     def to_s
-      attrs.to_s
+      @attrs.to_s
     end
 
     # Return string representation
@@ -99,8 +95,8 @@ module FiniteMachine
     #
     # @api private
     def convert_from_to_attributes_to_states_hash
-      Array(attrs[:from] || ANY_STATE).reduce({}) do |hash, state|
-        hash[state] = attrs[:to] || state
+      Array(@attrs[:from] || ANY_STATE).reduce({}) do |hash, state|
+        hash[state] = @attrs[:to] || state
         hash
       end
     end
@@ -115,7 +111,7 @@ module FiniteMachine
     #
     # @api private
     def convert_attributes_to_states_hash
-      attrs.reduce({}) do |hash, (k, v)|
+      @attrs.reduce({}) do |hash, (k, v)|
         if k.respond_to?(:to_ary)
           k.each { |el| hash[el] = v }
         else
@@ -141,14 +137,13 @@ module FiniteMachine
     # Raise error when not enough transitions are provided
     #
     # @raise [NotEnoughTransitionsError]
-    #   if the event has not enough transition arguments
+    #   if the event has no transitions
     #
     # @return [nil]
     #
     # @api private
     def raise_not_enough_transitions
-      fail NotEnoughTransitionsError, "please provide state transitions for" \
-           " '#{attrs.inspect}'"
+      fail NotEnoughTransitionsError, 'please provide state transitions'
     end
   end # StateParser
 end # FiniteMachine
