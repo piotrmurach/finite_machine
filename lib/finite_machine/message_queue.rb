@@ -186,9 +186,11 @@ module FiniteMachine
       until @dead
         @mutex.synchronize do
           while @queue.empty?
+            break if @dead
             @not_empty.wait(@mutex)
           end
           event = next_event
+          break unless event
           notify_listeners(event)
           event.dispatch
         end
