@@ -57,6 +57,6 @@ RSpec.describe FiniteMachine do
       }
     end
 
-    expect { fsm.next }.to perform_at_least(400).ips
+    expect { fsm.next }.to perform_at_least(300).ips
   end
 end
