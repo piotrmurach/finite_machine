@@ -3,55 +3,43 @@
 module FiniteMachine
   # A generic DSL for describing the state machine
   class GenericDSL
-    include Threadable
-
-    class << self
-      # @api private
-      attr_accessor :top_level
-    end
-
-    attr_threadsafe :machine
-
-    attr_threadsafe :attrs
-
     # Initialize a generic DSL
     #
     # @api public
     def initialize(machine, attrs = {})
-      self.attrs = attrs
-      self.machine = machine
+      @attrs = attrs
+      @machine = machine
     end
 
     # Delegate attributes to machine instance
     #
     # @api private
     def method_missing(method_name, *args, &block)
-      if machine.respond_to?(method_name)
-        machine.send(method_name, *args, &block)
+      if @machine.respond_to?(method_name)
+        @machine.send(method_name, *args, &block)
       else
         super
       end
     end
 
+    # Configure state machine properties
+    #
+    # @api private
     def call(&block)
-      sync_exclusive { instance_eval(&block) }
-      # top_level.instance_eval(&block)
+      instance_eval(&block)
     end
   end # GenericDSL
 
   # A class responsible for adding state machine specific dsl
   class DSL < GenericDSL
-    attr_threadsafe :defer
-
-    attr_threadsafe :initial_event
-
     # Initialize top level DSL
     #
     # @api public
     def initialize(machine, attrs = {})
       super(machine, attrs)
-      machine.state = FiniteMachine::DEFAULT_STATE
-      self.defer    = true
+
+      @machine.state = FiniteMachine::DEFAULT_STATE
+      @defer         = true
 
       initialize_attrs
     end
@@ -89,8 +77,8 @@ module FiniteMachine
     # @api public
     def initial(value, options = {})
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
-      name, self.defer, silent = *parse_initial(options)
-      self.initial_event = name
+      name, @defer, silent = *parse_initial(options)
+      @initial_event = name
       event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
     end
 
@@ -100,7 +88,7 @@ module FiniteMachine
     #
     # @api private
     def trigger_init
-      public_send(:"#{initial_event}") unless defer
+      public_send(:"#{@initial_event}") unless @defer
     end
 
     # Attach state machine to an object
@@ -207,10 +195,10 @@ module FiniteMachine
     #
     # @api private
     def initialize_attrs
-      attrs[:initial]  && initial(attrs[:initial])
-      attrs[:target]   && target(attrs[:target])
-      attrs[:terminal] && terminal(attrs[:terminal])
-      log_transitions(attrs.fetch(:log_transitions, false))
+      @attrs[:initial]  && initial(@attrs[:initial])
+      @attrs[:target]   && target(@attrs[:target])
+      @attrs[:terminal] && terminal(@attrs[:terminal])
+      log_transitions(@attrs.fetch(:log_transitions, false))
     end
 
     # Parse initial options
@@ -250,20 +238,23 @@ module FiniteMachine
     #   event :go, :green => :yellow
     #   event :go, :green => :yellow, if: :lights_on?
     #
+    # @param [Symbol] name
+    #   the event name
+    # @param [Hash] attrs
+    #   the event transitions and conditions
+    #
     # @return [Transition]
     #
     # @api public
     def event(name, attrs = {}, &block)
-      sync_exclusive do
-        detect_event_conflict!(name)
-        attributes = attrs.merge!(name: name)
-        if block_given?
-          merger = ChoiceMerger.new(machine, attributes)
-          merger.instance_eval(&block)
-        else
-          transition_builder = TransitionBuilder.new(machine, attributes)
-          transition_builder.call(attrs)
-        end
+      detect_event_conflict!(name)
+      attributes = attrs.merge!(name: name)
+      if block_given?
+        merger = ChoiceMerger.new(@machine, attributes)
+        merger.instance_eval(&block)
+      else
+        transition_builder = TransitionBuilder.new(@machine, attributes)
+        transition_builder.call(attrs)
       end
     end
   end # EventsDSL
@@ -281,7 +272,7 @@ module FiniteMachine
     #
     # @api public
     def handle(*exceptions, &block)
-      machine.handle(*exceptions, &block)
+      @machine.handle(*exceptions, &block)
     end
   end # ErrorsDSL
 end # FiniteMachine
