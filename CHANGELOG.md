@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.11.4] - unreleased
+
+### Added
+
+### Changed
+* Change MessageQueue to use mutex to synchronize access
+
+### Fixed
+
+
 ## [v0.11.3] - 2016-03-04
 
 ### Added
