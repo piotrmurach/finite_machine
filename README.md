@@ -9,14 +9,14 @@
 [![Code Climate](https://codeclimate.com/github/piotrmurach/finite_machine/badges/gpa.svg)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/finite_machine/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/finite_machine.svg)][inchpages]
-[![Gitter](https://badges.gitter.im/Join Chat.svg)][gitter]
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
 
 [gem]: http://badge.fury.io/rb/finite_machine
 [travis]: http://travis-ci.org/piotrmurach/finite_machine
 [codeclimate]: https://codeclimate.com/github/piotrmurach/finite_machine
 [coverage]: https://coveralls.io/github/piotrmurach/finite_machine
 [inchpages]: http://inch-ci.org/github/piotrmurach/finite_machine
-[gitter]: https://gitter.im/piotrmurach/finite_machine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter]: https://gitter.im/piotrmurach/finite_machine
 
 > A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
 
