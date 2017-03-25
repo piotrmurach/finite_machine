@@ -1,7 +1,9 @@
 <div align="center">
   <a href="http://piotrmurach.github.io/finite_machine/"><img width="236" src="https://raw.githubusercontent.com/piotrmurach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
 </div>
+
 # FiniteMachine
+
 [![Gem Version](https://badge.fury.io/rb/finite_machine.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/finite_machine.svg?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/finite_machine/badges/gpa.svg)][codeclimate]
@@ -1443,4 +1445,4 @@ Creating a standalone **FiniteMachine** brings a number of benefits, one of them
 
 ## Copyright
 
-Copyright (c) 2014-2016 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014-2017 Piotr Murach. See LICENSE for further details.
