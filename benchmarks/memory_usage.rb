@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'finite_machine'
 
 3.times do
@@ -7,15 +5,18 @@ require 'finite_machine'
 
   GC.start
 
-  before = GC.stat
-  p ObjectSpace.count_objects
+  gc_before = GC.stat
+  objects_before = ObjectSpace.count_objects[:T_OBJECT]
+  p objects_before
 
   1_000.times do
     FiniteMachine.define
   end
 
-  p ObjectSpace.count_objects
-  after = GC.stat
+  objects_after = ObjectSpace.count_objects
+  gc_after = GC.stat
+  p objects_after
 
-  p "GC count: #{after[:count] - before[:count]}"
+  p "GC count: #{gc_after[:count] - gc_before[:count]}"
+  p "Objects count: #{}"
 end
