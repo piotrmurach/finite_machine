@@ -1,14 +1,16 @@
 # Change Log
 
-## [v0.11.4] - unreleased
+## [v0.12.0] - 2018-x-x
 
 ### Added
 
 ### Changed
 * Change MessageQueue to use mutex to synchronize access
+* Remove thread synchronization form AsyncCall since immutable
+* Remove thread synchronization from DSL
 
 ### Fixed
-
+* Fix StateParser to raise error without nil
 
 ## [v0.11.3] - 2016-03-04
 
