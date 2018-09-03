@@ -1,7 +1,7 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
-  # Module for responsible for safety checks against known methods
+  # Module responsible for safety checks against known methods
   module Safety
     EVENT_CONFLICT_MESSAGE = \
       "You tried to define an event named \"%{name}\", however this would " \
@@ -33,7 +33,7 @@ module FiniteMachine
     # @api public
     def detect_event_conflict!(event_name, method_name = event_name)
       if method_already_implemented?(method_name)
-        fail FiniteMachine::AlreadyDefinedError, EVENT_CONFLICT_MESSAGE % {
+        raise FiniteMachine::AlreadyDefinedError, EVENT_CONFLICT_MESSAGE % {
           name: event_name,
           type: :instance,
           method: method_name,
@@ -55,12 +55,12 @@ module FiniteMachine
     def ensure_valid_callback_name!(event_type, name)
       message = if wrong_event_name?(name, event_type)
         EVENT_CALLBACK_CONFLICT_MESSAGE % {
-          type: "on_#{event_type.to_s}",
+          type: "on_#{event_type}",
           name: name
         }
       elsif wrong_state_name?(name, event_type)
         STATE_CALLBACK_CONFLICT_MESSAGE % {
-          type: "on_#{event_type.to_s}",
+          type: "on_#{event_type}",
           name: name
         }
       elsif !callback_names.include?(name)
@@ -71,7 +71,7 @@ module FiniteMachine
       else
         nil
       end
-      message && fail_invalid_callback_error(message)
+      message && raise_invalid_callback_error(message)
     end
 
     private
@@ -106,9 +106,9 @@ module FiniteMachine
       event_type < HookEvent::Anystate
     end
 
-    def fail_invalid_callback_error(message)
+    def raise_invalid_callback_error(message)
       exception = InvalidCallbackNameError
-      machine.catch_error(exception) || fail(exception, message)
+      machine.catch_error(exception) || raise(exception, message)
     end
 
     # Check if method is already implemented inside StateMachine
