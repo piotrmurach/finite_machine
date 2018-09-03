@@ -1,6 +1,7 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'finite_machine/hooks'
+require_relative 'hooks'
+require_relative 'message_queue'
 
 module FiniteMachine
   # A class responsible for observing state changes
@@ -22,7 +23,7 @@ module FiniteMachine
     # @api public
     def initialize(machine)
       @machine        = machine
-      @hooks          = FiniteMachine::Hooks.new
+      @hooks          = Hooks.new
       @callback_queue = MessageQueue.new
 
       @machine.subscribe(self)
