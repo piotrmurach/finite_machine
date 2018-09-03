@@ -2,6 +2,7 @@
 
 require_relative 'hooks'
 require_relative 'message_queue'
+require_relative 'safety'
 
 module FiniteMachine
   # A class responsible for observing state changes

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'safety'
+
 module FiniteMachine
   # A generic DSL for describing the state machine
   class GenericDSL

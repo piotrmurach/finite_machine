@@ -7,7 +7,6 @@ require "forwardable"
 
 require "finite_machine/version"
 require "finite_machine/threadable"
-require "finite_machine/safety"
 require "finite_machine/callable"
 require "finite_machine/catchable"
 require "finite_machine/choice_merger"
