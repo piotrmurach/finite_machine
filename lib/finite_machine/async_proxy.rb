@@ -1,4 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
+require_relative 'message_queue'
 
 module FiniteMachine
   # An asynchronous messages proxy

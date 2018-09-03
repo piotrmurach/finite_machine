@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
   # A generic DSL for describing the state machine
