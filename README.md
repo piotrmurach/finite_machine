@@ -6,6 +6,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/finite_machine.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/finite_machine.svg?branch=master)][travis]
+[![Build status](https://ci.appveyor.com/api/projects/status/8ho4ijacpr7b4f4t?svg=true)][appveyor]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/finite_machine/badges/gpa.svg)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/finite_machine/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/finite_machine.svg)][inchpages]
@@ -13,6 +14,7 @@
 
 [gem]: http://badge.fury.io/rb/finite_machine
 [travis]: http://travis-ci.org/piotrmurach/finite_machine
+[appveyor]: https://ci.appveyor.com/project/piotrmurach/finite-machine
 [codeclimate]: https://codeclimate.com/github/piotrmurach/finite_machine
 [coverage]: https://coveralls.io/github/piotrmurach/finite_machine
 [inchpages]: http://inch-ci.org/github/piotrmurach/finite_machine
