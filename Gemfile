@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'ruby-prof', '~> 0.17.0'
+  gem 'ruby-prof', '~> 0.17.0', platforms: :mri
   gem 'pry',   '~> 0.10.1'
 end
 
