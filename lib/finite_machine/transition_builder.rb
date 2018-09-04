@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require 'finite_machine/state_parser'
 require 'finite_machine/event_definition'
@@ -47,7 +47,7 @@ module FiniteMachine
     #
     # @api public
     def call(states)
-      StateParser.new(states).parse do |from, to|
+      StateParser.parse(states) do |from, to|
         attributes.merge!(states: { from => to })
         transition = Transition.new(machine, attributes)
         name = attributes[:name]
