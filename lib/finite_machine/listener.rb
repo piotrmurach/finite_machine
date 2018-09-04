@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
   # A generic listener interface
@@ -24,6 +24,6 @@ module FiniteMachine
     def call(*args)
       @on_delivery.call(*args) if @on_delivery
     end
-    alias_method :handle_delivery, :call
+    alias handle_delivery call
   end # Listener
 end # FiniteMachine
