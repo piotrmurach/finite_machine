@@ -1,17 +1,16 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine::StateParser, '#parse' do
   let(:object) { described_class }
-
-  subject(:parser) { object.new(attrs) }
 
   context 'when no attributes' do
     let(:attrs) { { } }
 
     it "raises error for no transitions" do
       expect {
-        parser.parse
-      }.to raise_error(FiniteMachine::NotEnoughTransitionsError, /please provide state transitions/)
+        object.parse(attrs)
+      }.to raise_error(FiniteMachine::NotEnoughTransitionsError,
+                       /please provide state transitions/)
     end
   end
 
@@ -19,7 +18,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     let(:attrs) { { from: :green, to: :yellow }}
 
     it "removes :from and :to keys" do
-      expect(parser.parse).to eq({green: :yellow})
+      expect(object.parse(attrs)).to eq({green: :yellow})
     end
   end
 
@@ -27,7 +26,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     let(:attrs) { { from: :green }}
 
     it "adds to state as copy of from" do
-      expect(parser.parse).to eq({green: :green})
+      expect(object.parse(attrs)).to eq({green: :green})
     end
   end
 
@@ -35,7 +34,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     let(:attrs) { { to: :green }}
 
     it "inserts :any from state" do
-      expect(parser.parse).to eq({any: :green})
+      expect(object.parse(attrs)).to eq({any: :green})
     end
   end
 
@@ -43,7 +42,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     let(:attrs) { { green: :yellow } }
 
     it "copies attributes over" do
-      expect(parser.parse).to eq({green: :yellow})
+      expect(object.parse(attrs)).to eq({green: :yellow})
     end
   end
 
@@ -51,7 +50,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     let(:attrs) { { [:green, :red] => :yellow } }
 
     it "extracts states" do
-      expect(parser.parse).to include({red: :yellow, green: :yellow})
+      expect(object.parse(attrs)).to include({red: :yellow, green: :yellow})
     end
   end
 end
