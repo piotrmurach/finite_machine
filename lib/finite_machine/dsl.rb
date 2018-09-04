@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'choice_merger'
 require_relative 'safety'
 
 module FiniteMachine
