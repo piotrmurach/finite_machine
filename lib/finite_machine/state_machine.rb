@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'dsl'
+require_relative 'subscribers'
 
 module FiniteMachine
   # Base class for state machine
