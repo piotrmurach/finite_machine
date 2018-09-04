@@ -1,4 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
+require_relative 'listener'
 
 module FiniteMachine
   # Allows for storage of asynchronous messages such as events
