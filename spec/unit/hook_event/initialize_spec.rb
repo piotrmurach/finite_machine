@@ -20,6 +20,6 @@ RSpec.describe FiniteMachine::HookEvent, '#new' do
 
   it "freezes object" do
     hook_event = described_class.new(:green, :go, :green)
-    expect { hook_event.name = :red }.to raise_error(RuntimeError)
+    expect(hook_event.frozen?).to eq(true)
   end
 end
