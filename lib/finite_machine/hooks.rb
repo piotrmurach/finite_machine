@@ -1,13 +1,13 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
+require_relative 'hook_event'
 
 module FiniteMachine
   # A class reponsible for registering callbacks
   class Hooks
-    include Threadable
+    attr_reader :collection
 
-    attr_threadsafe :collection
-
-    # Initialize a collection of hoooks
+    # Initialize a collection of hooks
     #
     # @example
     #   Hoosk.new(machine)
@@ -37,7 +37,7 @@ module FiniteMachine
     #
     # @api public
     def register(event_type, name, callback)
-      collection[event_type][name] << callback
+      @collection[event_type][name] << callback
     end
 
     # Unregister callback
@@ -53,7 +53,7 @@ module FiniteMachine
     #
     # @api public
     def unregister(event_type, name, callback)
-      callbacks = collection[event_type][name]
+      callbacks = @collection[event_type][name]
       callbacks.delete(callback)
     end
 
@@ -70,7 +70,7 @@ module FiniteMachine
     #
     # @api public
     def call(event_type, event_state, &block)
-      collection[event_type][event_state].each(&block)
+      @collection[event_type][event_state].each(&block)
     end
 
     # Check if collection has any elements
@@ -79,14 +79,14 @@ module FiniteMachine
     #
     # @api public
     def empty?
-      collection.empty?
+      @collection.empty?
     end
 
     # Remove all callbacks
     #
     # @api public
     def clear
-      collection.clear
+      @collection.clear
     end
 
     # String representation
@@ -95,7 +95,7 @@ module FiniteMachine
     #
     # @api public
     def to_s
-      self.inspect
+      inspect
     end
 
     # String representation
@@ -104,7 +104,7 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      "<##{self.class}:0x#{object_id.to_s(16)} @collection=#{collection.inspect}>"
+      "<##{self.class}:0x#{object_id.to_s(16)} @collection=#{@collection.inspect}>"
     end
   end # Hooks
 end # FiniteMachine
