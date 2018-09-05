@@ -10,7 +10,6 @@ require "finite_machine/catchable"
 require "finite_machine/choice_merger"
 require "finite_machine/async_proxy"
 require "finite_machine/async_call"
-require "finite_machine/hook_event"
 require "finite_machine/env"
 require "finite_machine/events_chain"
 require "finite_machine/logger"
@@ -21,7 +20,6 @@ require "finite_machine/definition"
 require "finite_machine/state_machine"
 require "finite_machine/observer"
 require "finite_machine/listener"
-require "finite_machine/two_phase_lock"
 
 module FiniteMachine
   # Default state name

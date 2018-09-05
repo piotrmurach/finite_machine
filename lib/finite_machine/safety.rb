@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'hook_event'
+
 module FiniteMachine
   # Module responsible for safety checks against known methods
   module Safety

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'dsl'
+require_relative 'hook_event'
 require_relative 'subscribers'
 
 module FiniteMachine
