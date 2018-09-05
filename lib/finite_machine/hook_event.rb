@@ -1,9 +1,8 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
   # A class responsible for event notification
   class HookEvent
-    include Threadable
     include Comparable
 
     class Anystate < HookEvent; end
@@ -25,16 +24,16 @@ module FiniteMachine
     MESSAGE = :emit
 
     # HookEvent state or action
-    attr_threadsafe :name
+    attr_reader :name
 
     # HookEvent type
-    attr_threadsafe :type
+    attr_reader :type
 
     # The from state this hook has been fired
-    attr_threadsafe :from
+    attr_reader :from
 
     # The event name triggering this hook event
-    attr_threadsafe :event_name
+    attr_reader :event_name
 
     # Instantiate a new HookEvent object
     #
