@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
   # Stand in for lack of matching transition.
@@ -7,13 +7,12 @@ module FiniteMachine
   #
   # @api private
   class UndefinedTransition
-    include Threadable
-
     # Initialize an undefined transition
     #
     # @api private
     def initialize(name)
-      self.name = name
+      @name = name
+      freeze
     end
 
     def to_state(from)
@@ -26,7 +25,7 @@ module FiniteMachine
 
     protected
 
-    attr_threadsafe :name
+    attr_reader :name
 
   end # UndefinedTransition
 end # FiniteMachine
