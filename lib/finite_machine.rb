@@ -2,7 +2,6 @@
 
 require "logger"
 require "thread"
-require "sync"
 require "forwardable"
 
 require "finite_machine/version"
