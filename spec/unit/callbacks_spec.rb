@@ -939,4 +939,21 @@ RSpec.describe FiniteMachine, 'callbacks' do
       'after_advance_active_inactive'
     ])
   end
+
+  it "doesn't transition if error raised in callback" do
+    fsm = FiniteMachine.define do
+      initial :green
+
+      events { event :slow, :green => :yellow }
+
+      callbacks {
+        on_enter { raise RuntimeError }
+      }
+    end
+
+    expect {
+      fsm.slow
+    }.to raise_error(RuntimeError)
+    expect(fsm.current).to eq(:green)
+  end
 end

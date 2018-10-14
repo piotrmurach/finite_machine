@@ -138,7 +138,7 @@ module FiniteMachine
     #
     # @api public
     def current
-      state
+      sync_shared { state }
     end
 
     # Check if current state matches provided state
@@ -296,9 +296,9 @@ module FiniteMachine
     #
     # @api public
     def trigger!(event_name, *data, &block)
-      sync_exclusive do
-        from = current # Save away current state
+      from = current # Save away current state
 
+      sync_exclusive do
         notify HookEvent::Before, event_name, from, *data
 
         status = try_trigger(event_name) do
@@ -319,6 +319,9 @@ module FiniteMachine
 
         status
       end
+    rescue Exception => err
+      self.state = from # rollback transition
+      raise err
     end
 
     # Trigger transition event without raising any errors
