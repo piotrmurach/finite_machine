@@ -1,32 +1,27 @@
 # frozen_string_literal: true
 
+require 'concurrent/map'
 require 'forwardable'
 
 require_relative 'threadable'
 require_relative 'undefined_transition'
 
 module FiniteMachine
-  # A class responsible for storing chain of events.
+  # A class responsible for storing events and their transitions.
   #
   # Used internally by {StateMachine}.
   #
   # @api private
   class EventsChain
-    include Threadable
     extend Forwardable
 
-    # The chain of events
-    #
-    # @api private
-    attr_threadsafe :chain
-
-    def_delegators :@chain, :empty?, :size
+    def_delegators :@events, :empty?, :size
 
     # Initialize a EventsChain
     #
     # @api private
     def initialize
-      @chain = {}
+      @events = Concurrent::Map.new
     end
 
     # Check if event is present
@@ -42,7 +37,7 @@ module FiniteMachine
     #
     # @api public
     def exists?(name)
-      !chain[name].nil?
+      @events.key?(name)
     end
 
     # Add transition under name
@@ -57,9 +52,9 @@ module FiniteMachine
     # @api public
     def add(name, transition)
       if exists?(name)
-        chain[name] << transition
+        @events[name] << transition
       else
-        chain[name] = [transition]
+        @events[name] = [transition]
       end
       self
     end
@@ -76,7 +71,7 @@ module FiniteMachine
     #
     # @api public
     def find(name)
-      chain.fetch(name) { [] }
+      @events.fetch(name) { [] }
     end
     alias_method :[], :find
 
@@ -90,7 +85,7 @@ module FiniteMachine
     #
     # @api public
     def events
-      chain.keys
+      @events.keys
     end
 
     # Retreive all unique states
@@ -103,7 +98,7 @@ module FiniteMachine
     #
     # @api public
     def states
-      chain.values.flatten.map(&:states).map(&:to_a).flatten.uniq
+      @events.values.flatten.map(&:states).map(&:to_a).flatten.uniq
     end
 
     # Retrieves all state transitions
@@ -112,7 +107,7 @@ module FiniteMachine
     #
     # @api public
     def state_transitions
-      chain.values.flatten.map(&:states)
+      @events.values.flatten.map(&:states)
     end
 
     # Retrieve from states for the event name
@@ -244,8 +239,8 @@ module FiniteMachine
     # @return [nil]
     #
     # @api public
-    def cancel_transitions(name)
-      chain[name].each do |trans|
+    def cancel_transitions(event_name)
+      @events[event_name].each do |trans|
         trans.cancelled = true
       end
     end
@@ -256,7 +251,7 @@ module FiniteMachine
     #
     # @api public
     def clear
-      @chain.clear
+      @events.clear
       self
     end
 
@@ -266,7 +261,7 @@ module FiniteMachine
     #
     # @api public
     def to_s
-      chain.to_s
+      @events.each_pair.to_h.to_s
     end
 
     # Inspect chain content
@@ -278,7 +273,7 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      "<##{self.class} @chain=#{chain.inspect}>"
+      "<##{self.class} @events=#{@events.each_pair.to_h}>"
     end
   end # EventsChain
 end # FiniteMachine
