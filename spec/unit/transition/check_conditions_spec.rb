@@ -7,31 +7,32 @@ RSpec.describe FiniteMachine::Transition, '.check_conditions' do
     exec_conditions = 0
     ok_condition = -> { exec_conditions += 1; return true }
     fail_condition = -> { exec_conditions += 1; return false }
-    machine = double(:machine, target: Object.new)
+    context = double(:context)
 
-    transition = described_class.new(machine, if: [ok_condition, fail_condition])
+    transition = described_class.new(context, if: [ok_condition, fail_condition])
 
     expect(transition.check_conditions).to eql(false)
     expect(exec_conditions).to eq(2)
   end
 
   it "verifies 'if' and 'unless' conditions" do
-    machine = double(:machine, target: Object.new)
+    context = double(:context)
     exec_conditions = 0
     ok_condition = -> { exec_conditions += 1; return true }
     fail_condition = -> { exec_conditions += 1; return false }
 
-    transition = described_class.new(machine, if: [ok_condition], unless: [fail_condition])
+    transition = described_class.new(context, if: [ok_condition],
+                                              unless: [fail_condition])
 
     expect(transition.check_conditions).to eql(true)
     expect(exec_conditions).to eq(2)
   end
 
   it "verifies condition with arguments" do
-    machine = double(:machine, target: Object.new)
-    condition = lambda { |target, arg| arg == 1 }
+    context = double(:context)
+    condition = -> (_, arg) { arg == 1 }
 
-    transition = described_class.new(machine, if: [condition])
+    transition = described_class.new(context, if: [condition])
 
     expect(transition.check_conditions(2)).to eql(false)
     expect(transition.check_conditions(1)).to eql(true)
@@ -43,11 +44,10 @@ RSpec.describe FiniteMachine::Transition, '.check_conditions' do
         true
       end
     end)
-    target = Car.new
-    machine = double(:machine, target: target)
-    condition = lambda { |car| car.engine_on? }
+    context = Car.new
+    condition = -> (car) { car.engine_on? }
 
-    transition = described_class.new(machine, if: condition)
+    transition = described_class.new(context, if: condition)
 
     expect(transition.check_conditions).to eql(true)
   end

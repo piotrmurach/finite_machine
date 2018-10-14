@@ -51,7 +51,7 @@ module FiniteMachine
     def call(states)
       StateParser.parse(states) do |from, to|
         attributes.merge!(states: { from => to })
-        transition = Transition.new(machine, attributes)
+        transition = Transition.new(machine.env.target, attributes)
         name = attributes[:name]
         silent = attributes.fetch(:silent, false)
 

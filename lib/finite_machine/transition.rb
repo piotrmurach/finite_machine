@@ -14,8 +14,8 @@ module FiniteMachine
     # Predicates before transitioning
     attr_threadsafe :conditions
 
-    # The current state machine
-    attr_threadsafe :machine
+    # The current state machine context
+    attr_threadsafe :context
 
     # Check if transition should be cancelled
     attr_threadsafe :cancelled
@@ -27,17 +27,18 @@ module FiniteMachine
     #
     # @example
     #   attributes = {parsed_states: {green: :yellow}}
-    #   Transition.new(machine, attributes)
+    #   Transition.new(context, attributes)
     #
-    # @param [StateMachine] machine
+    # @param [Object] context
+    #   the context this transition evaluets conditions in
     #
     # @param [Hash] attrs
     #
     # @return [Transition]
     #
     # @api public
-    def initialize(machine, attrs = {})
-      @machine     = machine
+    def initialize(context, attrs = {})
+      @context     = context
       @name        = attrs[:name]
       @states      = attrs.fetch(:states, {})
       @if          = Array(attrs.fetch(:if, []))
@@ -75,7 +76,7 @@ module FiniteMachine
     # @api private
     def check_conditions(*args)
       conditions.all? do |condition|
-        condition.call(machine.target, *args)
+        condition.call(context, *args)
       end
     end
 
@@ -85,7 +86,7 @@ module FiniteMachine
     #   the from state to match against
     #
     # @example
-    #   transition = Transition.new(machine, states: {:green => :red})
+    #   transition = Transition.new(context, states: {:green => :red})
     #   transition.matches?(:green) # => true
     #
     # @return [Boolean]
@@ -102,7 +103,7 @@ module FiniteMachine
     #   the from state to check
     #
     # @example
-    #   transition = Transition.new(machine, states: {:green => :red})
+    #   transition = Transition.new(context, states: {:green => :red})
     #   transition.to_state(:green) # => :red
     #
     # @return [Symbol]
@@ -120,7 +121,7 @@ module FiniteMachine
     # Return transition name
     #
     # @example
-    #   transition = Transition.new(machine, name: :go)
+    #   transition = Transition.new(context, name: :go)
     #   transition.to_s # => 'go'
     #
     # @return [String]
