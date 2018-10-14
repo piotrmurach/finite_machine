@@ -4,13 +4,11 @@ require "logger"
 require "thread"
 require "forwardable"
 
-require "finite_machine/version"
-require "finite_machine/threadable"
-require "finite_machine/catchable"
-require "finite_machine/logger"
-require "finite_machine/definition"
-require "finite_machine/state_machine"
-require "finite_machine/listener"
+require_relative 'finite_machine/logger'
+require_relative 'finite_machine/definition'
+require_relative 'finite_machine/state_machine'
+require_relative 'finite_machine/threadable'
+require_relative 'finite_machine/version'
 
 module FiniteMachine
   # Default state name
