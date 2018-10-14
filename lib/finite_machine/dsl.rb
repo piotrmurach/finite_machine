@@ -2,6 +2,7 @@
 
 require_relative 'choice_merger'
 require_relative 'safety'
+require_relative 'transition_builder'
 
 module FiniteMachine
   # A generic DSL for describing the state machine

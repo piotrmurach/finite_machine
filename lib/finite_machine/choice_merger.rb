@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'transition_builder'
+
 module FiniteMachine
   # A class responsible for merging choice options
   class ChoiceMerger
