@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'async_proxy'
 require_relative 'dsl'
 require_relative 'env'
+require_relative 'events_chain'
 require_relative 'hook_event'
 require_relative 'subscribers'
 
