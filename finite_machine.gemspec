@@ -12,7 +12,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://piotrmurach.github.io/finite_machine/"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files`.split($/)
+  spec.files         = Dir['{lib,spec,examples,benchmarks}/**/*.rb']
+  spec.files        += Dir['tasks/*', 'finite_machine.gemspec']
+  spec.files        += Dir['README.md', 'CHANGELOG.md', 'LICENSE.txt', 'Rakefile']
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
