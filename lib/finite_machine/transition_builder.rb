@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'finite_machine/state_parser'
-require 'finite_machine/event_definition'
-require 'finite_machine/state_definition'
+require_relative 'state_parser'
+require_relative 'event_definition'
+require_relative 'state_definition'
 
 module FiniteMachine
   # A class reponsible for building transition out of parsed states
