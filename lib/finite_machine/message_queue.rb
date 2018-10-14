@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'listener'
+require 'thread'
 
 module FiniteMachine
   # Allows for storage of asynchronous messages such as events

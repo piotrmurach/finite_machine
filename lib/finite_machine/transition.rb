@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'callable'
+require_relative 'threadable'
 
 module FiniteMachine
   # Class describing a transition associated with a given event

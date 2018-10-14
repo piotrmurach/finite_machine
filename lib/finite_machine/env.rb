@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'threadable'
+
 module FiniteMachine
   # Holds references to targets and aliases
   #

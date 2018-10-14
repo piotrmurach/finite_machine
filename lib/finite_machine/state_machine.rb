@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 require_relative 'async_proxy'
 require_relative 'catchable'
 require_relative 'dsl'
@@ -7,6 +9,7 @@ require_relative 'env'
 require_relative 'events_chain'
 require_relative 'hook_event'
 require_relative 'observer'
+require_relative 'threadable'
 require_relative 'subscribers'
 
 module FiniteMachine

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'threadable'
+
 module FiniteMachine
   # A class responsible for defining state query methods on state machine
   #

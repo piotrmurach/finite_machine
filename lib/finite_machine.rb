@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "logger"
-require "thread"
-require "forwardable"
+require 'logger'
 
 require_relative 'finite_machine/logger'
 require_relative 'finite_machine/definition'
 require_relative 'finite_machine/state_machine'
-require_relative 'finite_machine/threadable'
 require_relative 'finite_machine/version'
 
 module FiniteMachine

@@ -4,6 +4,7 @@ require_relative 'event_definition'
 require_relative 'state_definition'
 require_relative 'state_parser'
 require_relative 'transition'
+require_relative 'threadable'
 
 module FiniteMachine
   # A class reponsible for building transition out of parsed states

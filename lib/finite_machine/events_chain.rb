@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require 'finite_machine/undefined_transition'
+require 'forwardable'
+
+require_relative 'threadable'
+require_relative 'undefined_transition'
 
 module FiniteMachine
   # A class responsible for storing chain of events.

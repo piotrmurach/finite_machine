@@ -5,8 +5,9 @@ require_relative 'callable'
 require_relative 'hook_event'
 require_relative 'hooks'
 require_relative 'message_queue'
-require_relative 'transition_event'
 require_relative 'safety'
+require_relative 'transition_event'
+require_relative 'threadable'
 
 module FiniteMachine
   # A class responsible for observing state changes
