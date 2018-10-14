@@ -5,6 +5,7 @@ require_relative 'dsl'
 require_relative 'env'
 require_relative 'events_chain'
 require_relative 'hook_event'
+require_relative 'observer'
 require_relative 'subscribers'
 
 module FiniteMachine

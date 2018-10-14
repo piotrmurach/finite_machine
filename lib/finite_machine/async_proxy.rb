@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'async_call'
 require_relative 'callable'
 require_relative 'message_queue'
 

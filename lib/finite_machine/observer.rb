@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'async_call'
 require_relative 'callable'
 require_relative 'hook_event'
 require_relative 'hooks'
 require_relative 'message_queue'
+require_relative 'transition_event'
 require_relative 'safety'
 
 module FiniteMachine

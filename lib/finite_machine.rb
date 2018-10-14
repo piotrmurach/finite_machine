@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require "logger"
 require "thread"
@@ -7,13 +7,9 @@ require "forwardable"
 require "finite_machine/version"
 require "finite_machine/threadable"
 require "finite_machine/catchable"
-require "finite_machine/async_call"
 require "finite_machine/logger"
-require "finite_machine/transition"
-require "finite_machine/transition_event"
 require "finite_machine/definition"
 require "finite_machine/state_machine"
-require "finite_machine/observer"
 require "finite_machine/listener"
 
 module FiniteMachine
