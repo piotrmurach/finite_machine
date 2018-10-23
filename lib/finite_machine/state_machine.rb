@@ -2,7 +2,6 @@
 
 require 'forwardable'
 
-require_relative 'async_proxy'
 require_relative 'catchable'
 require_relative 'dsl'
 require_relative 'env'
@@ -86,7 +85,6 @@ module FiniteMachine
       attributes     = args.last.is_a?(Hash) ? args.pop : {}
 
       @initial_state = DEFAULT_STATE
-      @async_proxy   = AsyncProxy.new(self)
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
       @events_chain  = EventsChain.new
@@ -107,29 +105,6 @@ module FiniteMachine
     # @api public
     def subscribe(*observers)
       sync_exclusive { subscribers.subscribe(*observers) }
-    end
-
-    # Help to mark the event as synchronous
-    #
-    # @example
-    #   fsm.sync.go
-    #
-    # @return [self]
-    #
-    # @api public
-    alias_method :sync, :method_missing
-
-    # Explicitly invoke event on proxy or delegate to proxy
-    #
-    # @return [AsyncProxy]
-    #
-    # @api public
-    def async(method_name = nil, *args, &block)
-      if method_name
-        @async_proxy.method_missing(method_name, *args, &block)
-      else
-        @async_proxy
-      end
     end
 
     # Get current state

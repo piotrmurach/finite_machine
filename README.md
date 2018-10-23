@@ -65,12 +65,11 @@ Or install it yourself as:
 * [2. Transitions](#2-transitions)
     * [2.1 Performing transitions](#21-performing-transitions)
     * [2.2 Dangerous transitions](#22-dangerous-transitions)
-    * [2.3 Asynchronous transitions](#23-asynchronous-transitions)
-    * [2.4 Multiple from states](#24-multiple-from-states)
-    * [2.5 From :any state](#25-from-any-state)
-    * [2.6 Grouping states under single event](#26-grouping-states-under-single-event)
-    * [2.7 Silent transitions](#27-silent-transitions)
-    * [2.8 Log transitions](#28-log-transitions)
+    * [2.3 Multiple from states](#23-multiple-from-states)
+    * [2.4 From :any state](#24-from-any-state)
+    * [2.5 Grouping states under single event](#25-grouping-states-under-single-event)
+    * [2.6 Silent transitions](#26-silent-transitions)
+    * [2.7 Log transitions](#27-log-transitions)
 * [3. Conditional transitions](#3-conditional-transitions)
     * [3.1 Using a Proc](#31-using-a-proc)
     * [3.2 Using a Symbol](#32-using-a-symbol)
@@ -506,29 +505,6 @@ If you prefer you can also use `trigger!` method to fire event:
 
 ```ruby
 fm.trigger!(:ready)
-```
-
-### 2.3 Asynchronous transitions
-
-By default the transitions will be fired synchronosuly.
-
-```ruby
-fm.ready
-or
-fm.sync.ready
-fm.current     # => :yellow
-```
-
-In order to fire the event transition asynchronously use the `async` scope like so
-
-```ruby
-fm.async.ready('Piotr')  # => executes in separate Thread
-```
-
-The `async` call allows for alternative syntax whereby the method name is passed as one of the parameters like so:
-
-```ruby
-fm.async(:ready, 'Piotr')
 ```
 
 ### 2.4 Multiple from states
