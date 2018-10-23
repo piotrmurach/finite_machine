@@ -30,10 +30,13 @@ module FiniteMachine
     def initialize(machine)
       @machine        = machine
       @hooks          = Hooks.new
-      @callback_queue = MessageQueue.new
 
       @machine.subscribe(self)
-      ObjectSpace.define_finalizer(self, self.class.cleanup(@callback_queue))
+      ObjectSpace.define_finalizer(self, self.class.cleanup)
+    end
+
+    def callback_queue
+      @callback_queue ||= MessageQueue.new
     end
 
     # Evaluate in current context
@@ -177,8 +180,8 @@ module FiniteMachine
     # @api private
     def defer(callable, trans_event, *data)
       async_call = AsyncCall.new(machine, callable, trans_event, *data)
-      @callback_queue.start unless @callback_queue.running?
-      @callback_queue << async_call
+      callback_queue.start unless callback_queue.running?
+      callback_queue << async_call
     end
 
     # Create callable instance
@@ -236,10 +239,12 @@ module FiniteMachine
     # Clean up callback queue
     #
     # @api private
-    def self.cleanup(queue)
+    def self.cleanup
       proc do
         begin
-          queue && queue.shutdown
+          if callback_queue.alive?
+            callback_queue.shutdown
+          end
         rescue MessageQueueDeadError
         end
       end
