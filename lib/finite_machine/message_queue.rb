@@ -48,15 +48,6 @@ module FiniteMachine
       !@thread.nil? && alive?
     end
 
-    # Retrieve the next event
-    #
-    # @return [AsyncCall]
-    #
-    # @api private
-    def next_event
-      @queue.pop
-    end
-
     # Add asynchronous event to the event queue to process
     #
     # @example
@@ -192,7 +183,7 @@ module FiniteMachine
             break if @dead
             @not_empty.wait(@mutex)
           end
-          event = next_event
+          event = @queue.pop
           break unless event
           notify_listeners(event)
           event.dispatch
