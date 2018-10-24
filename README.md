@@ -495,7 +495,7 @@ By default **FiniteMachine** will swallow all exceptions when and return `false`
 
 ### 2.2 Dangerous transitions
 
-When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internall error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Errors](#6-errors)
+When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internal error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Errors](#6-errors)
 
 ```ruby
 fm.ready!  #  => raises FiniteMachine::InvalidStateError
@@ -528,7 +528,7 @@ end
 
 ### 2.5 From :any state
 
-The **FiniteMachine** offers few ways to transition out of any state. This is parrticularly useful when the machine already defines many states.
+The **FiniteMachine** offers few ways to transition out of any state. This is particularly useful when the machine already defines many states.
 
 You can pass `:any` for the name of the state, for instance:
 
@@ -1080,7 +1080,7 @@ end
 
 ### 5.13 Asynchronous callbacks
 
-By default all callbacks are run synchronosuly. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
+By default all callbacks are run synchronously. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
 
 ```ruby
   on_enter :green, :async do |event| ... end
@@ -1092,7 +1092,7 @@ or
   on_enter_green(:async) { |event| }
 ```
 
-This will ensure that when the callback is fired it will run in seperate thread outside of the main execution thread.
+This will ensure that when the callback is fired it will run in separate thread outside of the main execution thread.
 
 ### 5.14 Cancelling inside callbacks
 
@@ -1180,7 +1180,7 @@ end
 
 ## 7 Stand-Alone FiniteMachine
 
-**FiniteMachine** allows you to seperate your state machine from the target class so that you can keep your concerns broken in small maintainable pieces.
+**FiniteMachine** allows you to separate your state machine from the target class so that you can keep your concerns broken in small maintainable pieces.
 
 ### 7.1 Creating a Definition
 
@@ -1274,7 +1274,7 @@ class GenericStateMachine < FiniteMachine::Definition
 end
 ```
 
-we can easily create a more specifc definition that adds new event and more specifc callback to the mix.
+we can easily create a more specific definition that adds new event and more specific callback to the mix.
 
 ```ruby
 class SpecificStateMachine < GenericStateMachine
@@ -1297,11 +1297,11 @@ specific_fsm.target ... # Target specific object
 
 ## 8 Integration
 
-Since **FiniteMachine** is an object in its own right, it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into exisiting classes.
+Since **FiniteMachine** is an object in its own right, it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into existing classes.
 
 ### 8.1 Plain Ruby Objects
 
-In order to use **FiniteMachine** with an object, you need to define a method that will construct the state machine. You can implement the state machine using the `define` DSL or create a seperate object that can be instantiated. To complete integration you will need to specify `target` context to allow state machine to communicate with the other methods inside the class like so:
+In order to use **FiniteMachine** with an object, you need to define a method that will construct the state machine. You can implement the state machine using the `define` DSL or create a separate object that can be instantiated. To complete integration you will need to specify `target` context to allow state machine to communicate with the other methods inside the class like so:
 
 ```ruby
 class Car
@@ -1415,7 +1415,7 @@ account.manage.authorize
 account.state   # => :access
 ```
 
-Please note that you do not need to call `target.save` inside callback, it is enought to just set the state. It is much more prefereable to let the `ActiveRecord` object to persist when it makes sense for the application and thus keep the state machine focused on managing the state transitions.
+Please note that you do not need to call `target.save` inside callback, it is enough to just set the state. It is much more preferable to let the `ActiveRecord` object to persist when it makes sense for the application and thus keep the state machine focused on managing the state transitions.
 
 ### 8.3 Transactions
 
