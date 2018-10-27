@@ -246,7 +246,10 @@ module FiniteMachine
     #
     # @api public
     def to_s
-      @events.each_pair.to_h.to_s
+      @events.each_pair.reduce({}) do |acc, (name, trans)|
+        acc[name] = trans
+        acc
+      end.to_s
     end
 
     # Inspect chain content
@@ -258,7 +261,7 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      "<##{self.class} @events=#{@events.each_pair.to_h}>"
+      "<##{self.class} @events=#{to_s}>"
     end
   end # EventsChain
 end # FiniteMachine
