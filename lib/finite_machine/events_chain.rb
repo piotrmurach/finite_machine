@@ -227,22 +227,7 @@ module FiniteMachine
     def move_to(name, from_state, *conditions)
       transition = select_transition(name, from_state, *conditions)
       transition ||= UndefinedTransition.new(name)
-
       transition.to_state(from_state)
-    end
-
-    # Set status to cancelled for all transitions matching event name
-    #
-    # @param [Symbol] name
-    #   the event name
-    #
-    # @return [nil]
-    #
-    # @api public
-    def cancel_transitions(event_name)
-      @events[event_name].each do |trans|
-        trans.cancelled = true
-      end
     end
 
     # Reset chain

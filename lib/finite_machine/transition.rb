@@ -17,9 +17,6 @@ module FiniteMachine
     # The current state machine context
     attr_threadsafe :context
 
-    # Check if transition should be cancelled
-    attr_threadsafe :cancelled
-
     # All states for this transition event
     attr_threadsafe :states
 
@@ -44,16 +41,6 @@ module FiniteMachine
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
-      @cancelled   = attrs.fetch(:cancelled, false)
-    end
-
-    # Check if this transition is cancelled or not
-    #
-    # @return [Boolean]
-    #
-    # @api public
-    def cancelled?
-      @cancelled
     end
 
     # Reduce conditions
@@ -111,11 +98,7 @@ module FiniteMachine
     #
     # @api public
     def to_state(from)
-      if cancelled?
-        from
-      else
-        states[from] || states[ANY_STATE]
-      end
+      states[from] || states[ANY_STATE]
     end
 
     # Return transition name

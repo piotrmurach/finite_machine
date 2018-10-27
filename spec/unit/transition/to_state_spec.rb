@@ -18,10 +18,4 @@ RSpec.describe FiniteMachine::Transition, '.to_state' do
 
     expect(transition.to_state(:green)).to eq(:red)
   end
-
-  it "returns from state for cancelled transition" do
-    transition = described_class.new(machine, cancelled: true)
-
-    expect(transition.to_state(:green)).to eq(:green)
-  end
 end
