@@ -26,13 +26,12 @@
 
 * plain object state machine
 * easy custom object integration
-* natural DSL for declaring events, callbacks and exceptions
+* natural DSL for declaring events, callbacks and exception handlers
 * observers (pub/sub) for state changes
-* ability to check reachable states
-* ability to check for terminal state
+* ability to check reachable state(s)
+* ability to check for terminal state(s)
 * transition guard conditions
 * dynamic conditional branching
-* sync and async transitions
 * sync and async callbacks
 
 ## Installation
@@ -1447,4 +1446,4 @@ Creating a standalone **FiniteMachine** brings a number of benefits, one of them
 
 ## Copyright
 
-Copyright (c) 2014-2017 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014-2018 Piotr Murach. See LICENSE for further details.
