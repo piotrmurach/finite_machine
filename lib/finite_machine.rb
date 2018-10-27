@@ -20,16 +20,13 @@ module FiniteMachine
   # Describe any event name
   ANY_EVENT = :any_event
 
-  # Returned when transition has successfully performed
-  SUCCEEDED = 1
-
-  # Returned when transition is cancelled in callback
-  CANCELLED = 2
-
   # When transition between states is invalid
   TransitionError = Class.new(::StandardError)
 
-  # Raised when transitining to invalid state
+  # When failed to process callback
+  CallbackError = Class.new(::StandardError)
+
+  # Raised when transitioning to invalid state
   InvalidStateError = Class.new(::ArgumentError)
 
   InvalidEventError = Class.new(::NoMethodError)

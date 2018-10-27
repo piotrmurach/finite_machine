@@ -144,6 +144,19 @@ module FiniteMachine
       end
     end
 
+    # Cancel the current event
+    #
+    # This should be called inside a on_before or on_exit callbacks
+    # to prevent event transition.
+    #
+    # @param [String] msg
+    #   the message used for failure
+    #
+    # @api public
+    def cancel_event(msg = nil)
+      raise CallbackError.new(msg)
+    end
+
     private
 
     # Handle callback and decide if run synchronously or asynchronously
@@ -164,14 +177,8 @@ module FiniteMachine
 
       if hook.is_a?(Async)
         defer(callable, trans_event, *data)
-        result = nil
       else
-        result = callable.call(trans_event, *data)
-      end
-
-      if result == CANCELLED
-        hooks.clear
-        machine.events_chain.cancel_transitions(event.event_name)
+        callable.(trans_event, *data)
       end
     end
 

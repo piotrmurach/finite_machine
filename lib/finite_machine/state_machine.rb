@@ -309,7 +309,7 @@ module FiniteMachine
     # @api public
     def trigger(event_name, *data, &block)
       trigger!(event_name, *data, &block)
-    rescue InvalidStateError, TransitionError
+    rescue InvalidStateError, TransitionError, CallbackError
       false
     end
 

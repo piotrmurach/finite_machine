@@ -1096,12 +1096,11 @@ This will ensure that when the callback is fired it will run in separate thread 
 
 ### 5.14 Cancelling inside callbacks
 
-Preferred way to handle cancelling transitions is to use [3 Conditional transitions](#3-conditional-transitions). However if the logic is more than one liner you can cancel the event, hence the transition by returning `FiniteMachine::CANCELLED` constant from the callback scope. The two ways you can affect the event are
+A simple way to prevent transitions is to use [3 Conditional transitions](#3-conditional-transitions).
 
-* `on_exit :state_name`
-* `on_before :event_name`
+There are times when you want to cancel transition in a callback. For example, you have logic which allows transition to happen only under certain complex conditions. Using `cancel_event` inside the `on_(enter|transition|exit)` or `on_(before|after)` callbacks will stop all the callbacks from firing and prevent current transition from happening.
 
-For example
+For example, firing any event will not move the current state:
 
 ```ruby
 fm = FiniteMachine.define do
@@ -1113,7 +1112,10 @@ fm = FiniteMachine.define do
     event :stop,  :green  => :red
   }
   callbacks {
-    on_exit :red do |event| FiniteMachine::CANCELLED end
+    on_exit :red do |event|
+      ...
+      cancel_event
+    end
   }
 end
 
