@@ -1,16 +1,22 @@
 # Change Log
 
-## [v0.12.0] - 2018-x-x
+## [v0.12.0] - 2018-11-x
 
 ### Added
+* Add concurrent-ruby as dependency
+* Add Observer#cancel_event for cancelling event transitions in callbacks, instead of using callback return value
 
 ### Changed
+* Change EventsChain to use Concurrent::Map for holding event transitions
 * Change MessageQueue to use mutex to synchronize access
-* Remove thread synchronization form AsyncCall since immutable
-* Remove thread synchronization from DSL
+* Change StateParser to remove state and use class methods instead
+* Change Observer to create callbacks queue on demand
+* Remove thread synchronization from AsyncCall, HookEvent, DSL and Hooks
+* Remove #async call from StateMachine
 
 ### Fixed
 * Fix StateParser to raise error without nil
+* Fix to rollback to current state when an error occurs
 
 ## [v0.11.3] - 2016-03-04
 
