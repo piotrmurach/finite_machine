@@ -25,14 +25,13 @@
 ## Features
 
 * plain object state machine
-* easy custom object integration
+* easy [custom object integration](#16-target)
 * natural DSL for declaring events, callbacks and exception handlers
-* observers (pub/sub) for state changes
-* ability to check reachable state(s)
-* ability to check for terminal state(s)
-* transition guard conditions
-* dynamic conditional branching
-* sync and async callbacks
+* [callbacks](#5-callbacks) for state and event changes
+* ability to check [reachable](#15-can-and-cannot) state(s)
+* ability to check for [terminal](#13-terminal) state(s)
+* transition [guard conditions](#3-conditional-transitions)
+* dynamic [choice](#4-choice-pseudostates) pseudostates
 
 ## Installation
 
@@ -506,7 +505,7 @@ If you prefer you can also use `trigger!` method to fire event:
 fm.trigger!(:ready)
 ```
 
-### 2.4 Multiple from states
+### 2.3 Multiple from states
 
 If an event transitions from multiple states to the same state then all the states can be grouped into an array.
 Alternatively, you can create separate events under the same name for each transition that needs combining.
@@ -547,7 +546,7 @@ event :run, to: :green
 
 All the above `run` event definitions will always transition the state machine into `:green` state.
 
-### 2.6 Grouping states under single event
+### 2.5 Grouping states under single event
 
 Another way to specify state transitions under single event name is to group all your state transitions into a single hash like so:
 
@@ -577,7 +576,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 2.7 Silent transitions
+### 2.6 Silent transitions
 
 The **FiniteMachine** allows to selectively silence events and thus prevent any callbacks from firing. Using the `silent` option passed to event definition like so:
 
@@ -595,7 +594,7 @@ fsm.go   # no callbacks
 fms.stop # callbacks are fired
 ```
 
-### 2.8 Log transitions
+### 2.7 Log transitions
 
 To help debug your state machine, **FiniteMachine** provides `:log_transitions` option.
 
@@ -605,7 +604,7 @@ FiniteMachine.define log_transitions: true do
 end
 ```
 
-## 3 Conditional transitions
+## 3. Conditional transitions
 
 Each event takes an optional `:if` and `:unless` options which act as a predicate for the transition. The `:if` and `:unless` can take a symbol, a string, a Proc or an array. Use `:if` option when you want to specify when the transition **should** happen. If you want to specify when the transition **should not** happen then use `:unless` option.
 
