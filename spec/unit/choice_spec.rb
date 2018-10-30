@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, '#choice' do
   before(:each) {
@@ -157,7 +155,7 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.define do
       initial :red
 
-      event :go, from: :any do
+      event :go, from: any_state do
         choice :pink, if: -> { false }
         choice :green
       end
@@ -283,7 +281,7 @@ RSpec.describe FiniteMachine, '#choice' do
           choice :yellow
         end
 
-        event :finish, from: :any do
+        event :finish, from: any_state do
           choice :green, if: -> { false }
           choice :red
         end

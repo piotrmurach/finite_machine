@@ -525,21 +525,21 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 2.5 From :any state
+### 2.4 From `any_state`
 
 The **FiniteMachine** offers few ways to transition out of any state. This is particularly useful when the machine already defines many states.
 
-You can pass `:any` for the name of the state, for instance:
+You can use `any_state` for the name of the state, for instance:
 
 ```ruby
-event :run, from: :any, to: :green
+event :run, from: any_state, to: :green
 
 or
 
-event :run, :any => :green
+event :run, any_state => :green
 ```
 
-Alternatively, you can skip the `:any` state definition and just specify `to` state:
+Alternatively, you can skip the `any_state` call and just specify `to` state:
 
 ```ruby
 event :run, to: :green

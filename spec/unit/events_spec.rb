@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'events' do
 
@@ -76,7 +74,7 @@ RSpec.describe FiniteMachine, 'events' do
     expect(fsm.cannot?(:slow)).to be true
   end
 
-  it "permits event from any state with :any 'from'" do
+  it "permits event from any state using :from" do
     fsm = FiniteMachine.define do
       initial :green
 
@@ -85,7 +83,7 @@ RSpec.describe FiniteMachine, 'events' do
         event :stop,  from: :yellow, to: :red
         event :ready, from: :red,    to: :yellow
         event :go,    from: :yellow, to: :green
-        event :run,   from: :any,    to: :green
+        event :run,   from: any_state, to: :green
       }
     end
 
@@ -119,7 +117,7 @@ RSpec.describe FiniteMachine, 'events' do
         event :start, :red    => :yellow
         event :run,   :yellow => :green
         event :stop,  :green  => :red
-        event :go,    :any    => :green
+        event :go,    any_state => :green
       }
     end
 
@@ -382,7 +380,7 @@ RSpec.describe FiniteMachine, 'events' do
       events {
         event :start,  :neutral   => :engine_on
         event :drive,  :engine_on => :running, if: -> { return false }
-        event :stop,   :any       => :neutral
+        event :stop,   any_state  => :neutral
       }
 
       callbacks {

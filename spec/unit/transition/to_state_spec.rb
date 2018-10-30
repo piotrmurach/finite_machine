@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine::Transition, '.to_state' do
   let(:machine) { double(:machine) }
@@ -13,7 +11,7 @@ RSpec.describe FiniteMachine::Transition, '.to_state' do
   end
 
   it "finds to state for transition from any state" do
-    states = {:any => :red}
+    states = {FiniteMachine::ANY_STATE => :red}
     transition = described_class.new(machine, states: states)
 
     expect(transition.to_state(:green)).to eq(:red)

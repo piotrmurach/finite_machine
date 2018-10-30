@@ -2,6 +2,7 @@
 
 require 'logger'
 
+require_relative 'finite_machine/const'
 require_relative 'finite_machine/logger'
 require_relative 'finite_machine/definition'
 require_relative 'finite_machine/state_machine'
@@ -14,11 +15,11 @@ module FiniteMachine
   # Initial default event name
   DEFAULT_EVENT_NAME = :init
 
-  # Describe any state transition
-  ANY_STATE = :any
+  # Describe any transition state
+  ANY_STATE = Const.new(:any)
 
   # Describe any event name
-  ANY_EVENT = :any_event
+  ANY_EVENT = Const.new(:any_event)
 
   # When transition between states is invalid
   TransitionError = Class.new(::StandardError)

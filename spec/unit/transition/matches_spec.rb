@@ -14,7 +14,7 @@ RSpec.describe FiniteMachine::Transition, '.matches?' do
   end
 
   it "matches any state" do
-    states = {:any => :red}
+    states = {FiniteMachine::ANY_STATE => :red}
     transition = described_class.new(machine, states: states)
 
     expect(transition.matches?(:green)).to eq(true)

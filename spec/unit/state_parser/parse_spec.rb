@@ -34,7 +34,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     let(:attrs) { { to: :green }}
 
     it "inserts :any from state" do
-      expect(object.parse(attrs)).to eq({any: :green})
+      expect(object.parse(attrs)).to eq({FiniteMachine::ANY_STATE => :green})
     end
   end
 

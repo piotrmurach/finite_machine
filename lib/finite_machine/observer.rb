@@ -11,7 +11,7 @@ require_relative 'threadable'
 
 module FiniteMachine
   # A class responsible for observing state changes
-  class Observer
+  class Observer < GenericDSL
     include Threadable
     include Safety
 

@@ -15,6 +15,18 @@ module FiniteMachine
       @machine = machine
     end
 
+    # Expose any state constant
+    # @api public
+    def any_state
+      ANY_STATE
+    end
+
+    # Expose any event constant
+    # @api public
+    def any_event
+      ANY_EVENT
+    end
+
     # Delegate attributes to machine instance
     #
     # @api private

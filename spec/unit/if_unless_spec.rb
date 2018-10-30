@@ -35,7 +35,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       events {
         event :go, :red => :green,
               if: proc { |context| called << "cond_red_green(#{context})"; true}
-        event :stop, from: :any do
+            event :stop, from: any_state do
           choice :red,
                  if: proc { |context| called << "cond_any_red(#{context})"; true }
         end
@@ -64,7 +64,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       events {
         event :go,  :red => :green,
               if: proc { |_, a| called << "cond_red_green(#{a})"; true }
-        event :stop, from: :any do
+        event :stop, from: any_state do
           choice :red,
                  if: proc { |_, b| called << "cond_any_red(#{b})"; true }
         end

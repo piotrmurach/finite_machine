@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'system' do
 
@@ -7,7 +7,7 @@ RSpec.describe FiniteMachine, 'system' do
     stub_const("FSM_A", Class.new(FiniteMachine::Definition) do
       events {
         event :init, :none => :green
-        event :green, :any => :green
+        event :green, any_state => :green
       }
       callbacks {
         on_before do |event|

@@ -13,7 +13,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
         on_exit       do |event| called << 'on_exit' end
 
         # generic event callbacks
-        on_before do |event| called << 'on_before' end
+        on_before any_event do |event| called << 'on_before' end
         on_after  do |event| called << 'on_after' end
 
         # state callbacks
@@ -334,7 +334,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       initial :green
 
       events {
-        event :slow, [:red, :blue, :green]  => :yellow
+        event :slow, [:red, :blue, :green] => :yellow
         event :fast, :red => :purple
       }
 
@@ -447,7 +447,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
       events {
         event :power_on,  :off => :red
-        event :power_off, :any => :off
+        event :power_off, any_state => :off
         event :go,   :red    => :green
         event :slow, :green  => :yellow
         event :stop, :yellow => :red
