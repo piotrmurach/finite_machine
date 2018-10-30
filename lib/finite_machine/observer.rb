@@ -15,6 +15,20 @@ module FiniteMachine
     include Threadable
     include Safety
 
+    # Clean up callback queue
+    #
+    # @api private
+    def self.cleanup_callback_queue
+      proc do
+        begin
+          if callback_queue.alive?
+            callback_queue.shutdown
+          end
+        rescue MessageQueueDeadError
+        end
+      end
+    end
+
     # The current state machine
     attr_threadsafe :machine
 
@@ -32,7 +46,7 @@ module FiniteMachine
       @hooks          = Hooks.new
 
       @machine.subscribe(self)
-      ObjectSpace.define_finalizer(self, self.class.cleanup)
+      ObjectSpace.define_finalizer(self, self.class.cleanup_callback_queue)
     end
 
     def callback_queue
@@ -241,20 +255,6 @@ module FiniteMachine
     def respond_to_missing?(method_name, include_private = false)
       *_, callback_name = *method_name.to_s.match(/^(\w*?on_\w+?)_(\w+)$/)
       callback_name && callback_names.include?(:"#{callback_name}")
-    end
-
-    # Clean up callback queue
-    #
-    # @api private
-    def self.cleanup
-      proc do
-        begin
-          if callback_queue.alive?
-            callback_queue.shutdown
-          end
-        rescue MessageQueueDeadError
-        end
-      end
     end
   end # Observer
 end # FiniteMachine
