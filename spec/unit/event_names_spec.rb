@@ -14,6 +14,6 @@ RSpec.describe FiniteMachine, '.event_names' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.event_names).to eql([:init, :start, :stop])
+    expect(fsm.event_names).to match_array([:init, :start, :stop])
   end
 end
