@@ -20,18 +20,18 @@
 [inchpages]: http://inch-ci.org/github/piotrmurach/finite_machine
 [gitter]: https://gitter.im/piotrmurach/finite_machine
 
-> A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and add callbacks that can be triggered synchronously or asynchronously. The machine is event driven with a focus on passing synchronous and asynchronous messages to trigger state transitions.
+> A minimal finite state machine with a straightforward and intuitive syntax. You can quickly model states and transitions and register callbacks to watch for triggered transitions.
 
 ## Features
 
 * plain object state machine
-* easy [custom object integration](#16-target)
+* easy [custom object integration](#26-target)
 * natural DSL for declaring events, callbacks and exception handlers
-* [callbacks](#5-callbacks) for state and event changes
-* ability to check [reachable](#15-can-and-cannot) state(s)
-* ability to check for [terminal](#13-terminal) state(s)
-* transition [guard conditions](#3-conditional-transitions)
-* dynamic [choice](#4-choice-pseudostates) pseudostates
+* [callbacks](#4-callbacks) for state and event changes
+* ability to check [reachable](#25-can-and-cannot) state(s)
+* ability to check for [terminal](#23-terminal) state(s)
+* transition [guard conditions](#38-conditional-transitions)
+* dynamic [choice pseudostates](#39-choice-pseudostates)
 
 ## Installation
 
@@ -74,7 +74,7 @@ Or install it yourself as:
       * [3.8.2 Using a Symbol](#382-using-a-symbol)
       * [3.8.3 Using a String](#383-using-a-string)
       * [3.8.4 Combining transition conditions](#384-combining-transition-conditions)
-    * [3.9 Choice pseudostates](#4-choice-pseudostates)
+    * [3.9 Choice pseudostates](#39-choice-pseudostates)
       * [3.9.1 Dynamic choice conditions](#391-dynamic-choice-conditions)
       * [3.9.2 Multiple from states](#392-multiple-from-states)
 * [4. Callbacks](#4-callbacks)
@@ -92,16 +92,16 @@ Or install it yourself as:
     * [4.12 Defining callbacks](#412-defining-callbacks)
     * [4.13 Asynchronous callbacks](#413-asynchronous-callbacks)
     * [4.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
-* [5. Errors](#5-errors)
+* [5. Error Handling](#5-error-handling)
     * [5.1 Using target](#51-using-target)
-* [6. Stand-Alone FiniteMachine](#7-stand-alone-finitemachine)
-    * [7.1 Creating a Definition](#71-creating-a-definition)
-    * [7.2 Targeting definition](#72-targeting-definition)
-    * [7.3 Definition inheritance](#73-definition-inheritance)
-* [7. Integration](#8-integration)
-    * [7.1 Plain Ruby Objects](#81-plain-ruby-objects)
-    * [7.2 ActiveRecord](#82-activerecord)
-    * [7.3 Transactions](#83-transactions)
+* [6. Stand-Alone FiniteMachine](#6-stand-alone-finitemachine)
+    * [6.1 Creating a Definition](#61-creating-a-definition)
+    * [6.2 Targeting definition](#62-targeting-definition)
+    * [6.3 Definition inheritance](#63-definition-inheritance)
+* [7. Integration](#7-integration)
+    * [7.1 Plain Ruby Objects](#71-plain-ruby-objects)
+    * [7.2 ActiveRecord](#72-activerecord)
+    * [7.3 Transactions](#73-transactions)
 * [8. Tips](#8-tips)
 
 ## 1 Usage
@@ -496,7 +496,7 @@ By default **FiniteMachine** will swallow all exceptions when and return `false`
 
 ### 3.2 Dangerous transitions
 
-When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internal error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Errors](#6-errors)
+When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internal error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Error Handling](#6-errors)
 
 ```ruby
 fm.ready!  #  => raises FiniteMachine::InvalidStateError
@@ -1124,7 +1124,7 @@ fm.ready
 fm.current  # => :red
 ```
 
-## 5 Errors
+## 5. Error Handling
 
 By default, the **FiniteMachine** will throw an exception whenever the machine is in invalid state or fails to transition.
 
