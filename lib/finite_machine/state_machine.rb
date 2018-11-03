@@ -104,8 +104,8 @@ module FiniteMachine
       @errors_dsl    = ErrorsDSL.new(self)
       @dsl           = DSL.new(self, options)
 
+      env.target = options[:target] if options[:target]
       env.aliases << options[:alias_target] if options[:alias_target]
-
       @dsl.call(&block) if block_given?
       trigger_init
     end

@@ -55,11 +55,10 @@ module FiniteMachine
       super(machine, attrs)
 
       @machine.state = FiniteMachine::DEFAULT_STATE
-      @defer         = true
+      @defer_initial = true
 
-      initial(@attrs[:initial])    if @attrs[:initial]
-      env.target = @attrs[:target] if @attrs[:target]
-      terminal(@attrs[:terminal])  if @attrs[:terminal]
+      initial(@attrs[:initial])   if @attrs[:initial]
+      terminal(@attrs[:terminal]) if @attrs[:terminal]
       log_transitions(@attrs.fetch(:log_transitions, false))
     end
 
@@ -96,7 +95,7 @@ module FiniteMachine
     # @api public
     def initial(value, **options)
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
-      name, @defer, silent = *parse_initial(options)
+      name, @defer_initial, silent = *parse_initial(options)
       @initial_event = name
       event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
     end
@@ -107,7 +106,7 @@ module FiniteMachine
     #
     # @api private
     def trigger_init
-      public_send(:"#{@initial_event}") unless @defer
+      public_send(:"#{@initial_event}") unless @defer_initial
     end
 
     # Define terminal state
