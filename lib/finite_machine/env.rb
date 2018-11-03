@@ -13,7 +13,7 @@ module FiniteMachine
 
     attr_threadsafe :aliases
 
-    def initialize(target, aliases)
+    def initialize(target, aliases = [])
       @target = target
       @aliases = aliases
     end

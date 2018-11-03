@@ -71,14 +71,27 @@ module FiniteMachine
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
-    def_delegators :@dsl, :initial, :terminal, :trigger_init,
-                   :alias_target
+    def_delegators :@dsl, :initial, :terminal, :trigger_init
 
     def_delegator :events_dsl, :event
 
     def_delegator :@async_proxy, :event_queue
 
     # Initialize state machine
+    #
+    # @example
+    #   fsm = FiniteMachine::StateMachine.new(target_alias: :car) do
+    #     callbacks {
+    #       on_transition do |event|
+    #         car.state = event.to
+    #       end
+    #     }
+    #   end
+    #
+    # @param [Hash] options
+    #   the options to create state machine with
+    # @option options [String] :alias_target
+    #   the alias for target object
     #
     # @api private
     def initialize(*args, **options, &block)
@@ -90,6 +103,8 @@ module FiniteMachine
       @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
       @dsl           = DSL.new(self, options)
+
+      env.aliases << options[:alias_target] if options[:alias_target]
 
       @dsl.call(&block) if block_given?
       trigger_init

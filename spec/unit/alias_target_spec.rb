@@ -20,23 +20,18 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
   it "aliases target" do
     car = Car.new
-    fsm = FiniteMachine.new(target: car)
+    fsm = FiniteMachine.new(target: car, alias_target: :delorean)
 
     expect(fsm.target).to eq(car)
     expect { fsm.car }.to raise_error(NoMethodError)
-
-    fsm.alias_target(:delorean)
     expect(fsm.delorean).to eq(car)
   end
 
   it "scopes the target alias to a state machine instance" do
     delorean = Car.new
     batmobile = Car.new
-    fsm_a = FiniteMachine.new(target: delorean)
-    fsm_b = FiniteMachine.new(target: batmobile)
-
-    fsm_a.alias_target(:delorean)
-    fsm_b.alias_target(:batmobile)
+    fsm_a = FiniteMachine.new(target: delorean, alias_target: :delorean)
+    fsm_b = FiniteMachine.new(target: batmobile, alias_target: :batmobile)
 
     expect(fsm_a.delorean).to eq(delorean)
     expect { fsm_a.batmobile }.to raise_error(NoMethodError)
@@ -47,10 +42,8 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
   context 'when inside definition' do
     before do
-      class Engine < FiniteMachine::Definition
+      stub_const("Engine", Class.new(FiniteMachine::Definition) do
         initial :neutral
-
-        alias_target :car
 
         events {
           event :forward, [:reverse, :neutral] => :one
@@ -72,12 +65,12 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
         handlers {
           handle FiniteMachine::InvalidStateError do |exception| end
         }
-      end
+      end)
     end
 
     it "creates unique instances" do
-      engine_a = Engine.new
-      engine_b = Engine.new
+      engine_a = Engine.new(alias_target: :car)
+      engine_b = Engine.new(alias_target: :car)
       expect(engine_a).not_to be(engine_b)
 
       engine_a.forward
@@ -87,7 +80,7 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
     it "allows to create standalone machine" do
       car = Car.new
-      engine = Engine.new(target: car)
+      engine = Engine.new(target: car, alias_target: :car)
       expect(engine.current).to eq(:neutral)
 
       engine.forward

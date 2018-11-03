@@ -18,8 +18,7 @@ RSpec.describe FiniteMachine, '#target' do
       end
 
       def engine
-        context = self
-        @engine ||= FiniteMachine.define(target: context) do
+        @engine ||= FiniteMachine.define(target: self) do
           initial :neutral
 
           events {

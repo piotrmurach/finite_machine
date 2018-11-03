@@ -110,27 +110,6 @@ module FiniteMachine
       public_send(:"#{@initial_event}") unless @defer
     end
 
-    # Use alternative name for target
-    #
-    # @example
-    #   target_alias: :car
-    #
-    #   callbacks {
-    #     on_transition do |event|
-    #       car.state = event.to
-    #     end
-    #   }
-    #
-    # @param [Symbol] alias_name
-    #   the name to alias target to
-    #
-    # @return [FiniteMachine::StateMachine]
-    #
-    # @api public
-    def alias_target(alias_name)
-      env.aliases << alias_name.to_sym
-    end
-
     # Define terminal state
     #
     # @example
