@@ -71,7 +71,7 @@ module FiniteMachine
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
-    def_delegators :@dsl, :initial, :terminal, :target, :trigger_init,
+    def_delegators :@dsl, :initial, :terminal, :trigger_init,
                    :alias_target
 
     def_delegator :events_dsl, :event
@@ -81,9 +81,7 @@ module FiniteMachine
     # Initialize state machine
     #
     # @api private
-    def initialize(*args, &block)
-      attributes     = args.last.is_a?(Hash) ? args.pop : {}
-
+    def initialize(*args, **options, &block)
       @initial_state = DEFAULT_STATE
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
@@ -91,10 +89,27 @@ module FiniteMachine
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
-      @dsl           = DSL.new(self, attributes)
+      @dsl           = DSL.new(self, options)
 
       @dsl.call(&block) if block_given?
       trigger_init
+    end
+
+    # Attach state machine to an object
+    #
+    # This allows state machine to initiate events in the context
+    # of a particular object
+    #
+    # @example
+    #   FiniteMachine.define(target: object) do
+    #     ...
+    #   end
+    #
+    # @return [Object|FiniteMachine::StateMachine]
+    #
+    # @api public
+    def target
+      env.target
     end
 
     # Subscribe observer for event notifications

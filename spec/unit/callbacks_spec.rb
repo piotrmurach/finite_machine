@@ -363,12 +363,9 @@ RSpec.describe FiniteMachine, 'callbacks' do
       target.expect(b).to target.eql(expected[:b])
       target.expect(c).to target.eql(expected[:c])
     }
-    context = self
 
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: self) do
       initial :green
-
-      target context
 
       events {
         event :slow,  :green  => :yellow
@@ -438,12 +435,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    context = self
-
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: self) do
       initial :red
-
-      target context
 
       events {
         event :power_on,  :off => :red
@@ -903,5 +896,29 @@ RSpec.describe FiniteMachine, 'callbacks' do
       fsm.slow
     }.to raise_error(RuntimeError)
     expect(fsm.current).to eq(:green)
+  end
+
+  xit "" do
+    called = []
+    fsm = FiniteMachine.define do
+      initial :red
+
+      events {
+        event :ready, :red => :yellow
+        event :go, :yellow => :green
+        event :stop, :green => :red
+      }
+
+      callbacks {
+        on_transition :yellow => :green do
+          called << 'on_transition_yellow_green'
+        end
+      }
+    end
+
+    fsm.ready
+    fsm.go
+
+    expect(called).to eq(['on_transition_yellow_green'])
   end
 end

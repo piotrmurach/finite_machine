@@ -51,13 +51,16 @@ module FiniteMachine
     # Initialize top level DSL
     #
     # @api public
-    def initialize(machine, attrs = {})
+    def initialize(machine, **attrs)
       super(machine, attrs)
 
       @machine.state = FiniteMachine::DEFAULT_STATE
       @defer         = true
 
-      initialize_attrs
+      initial(@attrs[:initial])    if @attrs[:initial]
+      env.target = @attrs[:target] if @attrs[:target]
+      terminal(@attrs[:terminal])  if @attrs[:terminal]
+      log_transitions(@attrs.fetch(:log_transitions, false))
     end
 
     # Define initial state
@@ -91,7 +94,7 @@ module FiniteMachine
     # @return [StateMachine]
     #
     # @api public
-    def initial(value, options = {})
+    def initial(value, **options)
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
       name, @defer, silent = *parse_initial(options)
       @initial_event = name
@@ -105,29 +108,6 @@ module FiniteMachine
     # @api private
     def trigger_init
       public_send(:"#{@initial_event}") unless @defer
-    end
-
-    # Attach state machine to an object
-    #
-    # This allows state machine to initiate events in the context
-    # of a particular object
-    #
-    # @example
-    #   FiniteMachine.define do
-    #     target :red
-    #   end
-    #
-    # @param [Object] object
-    #
-    # @return [FiniteMachine::StateMachine]
-    #
-    # @api public
-    def target(object = nil)
-      if object.nil?
-        env.target
-      else
-        env.target = object
-      end
     end
 
     # Use alternative name for target
@@ -206,16 +186,6 @@ module FiniteMachine
     end
 
     private
-
-    # Initialize state machine properties based off attributes
-    #
-    # @api private
-    def initialize_attrs
-      @attrs[:initial]  && initial(@attrs[:initial])
-      @attrs[:target]   && target(@attrs[:target])
-      @attrs[:terminal] && terminal(@attrs[:terminal])
-      log_transitions(@attrs.fetch(:log_transitions, false))
-    end
 
     # Parse initial options
     #

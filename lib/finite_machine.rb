@@ -61,8 +61,8 @@ module FiniteMachine
     # @return [FiniteMachine::StateMachine]
     #
     # @api public
-    def define(*args, &block)
-      StateMachine.new(*args, &block)
+    def define(*args, **options, &block)
+      StateMachine.new(*args, **options, &block)
     end
     alias_method :new, :define
   end

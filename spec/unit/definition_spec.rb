@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine::Definition, 'definition' do
 
@@ -57,8 +55,7 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
     end)
 
     car = Car.new
-    engine = Engine.new
-    engine.target car
+    engine = Engine.new(target: car)
     expect(engine.current).to eq(:neutral)
 
     engine.forward
@@ -93,11 +90,9 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
       }
     end
 
-    generic_fsm = GenericStateMachine.new
-    specific_fsm = SpecificStateMachine.new
     called = []
-    generic_fsm.target called
-    specific_fsm.target called
+    generic_fsm  = GenericStateMachine.new(target: called)
+    specific_fsm = SpecificStateMachine.new(target: called)
 
     expect(generic_fsm.states).to match_array([:none, :red, :green])
     expect(specific_fsm.states).to match_array([:none, :red, :green, :yellow])

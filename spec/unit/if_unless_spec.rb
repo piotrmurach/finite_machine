@@ -186,10 +186,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.define(target: car) do
         initial :neutral
-
-        target car
 
         events {
           event :start, :neutral => :one, if: proc {|_car| _car.engine_on? }
@@ -212,10 +210,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "passes arguments to the scope" do
       car = Car.new
 
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.define(target: car) do
         initial :neutral
-
-        target car
 
         events {
           event :start, :neutral => :one, if: proc { |_car, state|
@@ -236,10 +232,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.define(target: car) do
         initial :neutral
-
-        target car
 
         events {
           event :start, :neutral => :one, if: :engine_on?
@@ -264,10 +258,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.define(target: car) do
         initial :neutral
-
-        target car
 
         events {
           event :start, :neutral => :one, if: "engine_on?"
@@ -291,10 +283,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
   context 'when same event name' do
     it "preservers conditions for the same named event" do
       bug = Bug.new
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.define(target: bug) do
         initial :initial
-
-        target bug
 
         events {
           event :bump, :initial => :low

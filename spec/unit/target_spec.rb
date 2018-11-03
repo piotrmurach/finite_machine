@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, '#target' do
   it "allows to target external object" do
@@ -21,10 +19,8 @@ RSpec.describe FiniteMachine, '#target' do
 
       def engine
         context = self
-        @engine ||= FiniteMachine.define do
+        @engine ||= FiniteMachine.define(target: context) do
           initial :neutral
-
-          target context
 
           events {
             event :forward, [:reverse, :neutral] => :one
@@ -121,11 +117,9 @@ RSpec.describe FiniteMachine, '#target' do
 
       def engine
         self.called ||= []
-        context ||= self
-        @engine ||= FiniteMachine.define do
-          initial :neutral
 
-          target context
+        @engine ||= FiniteMachine.define(target: self) do
+          initial :neutral
 
           events {
             event :forward, [:reverse, :neutral] => :one
@@ -162,10 +156,8 @@ RSpec.describe FiniteMachine, '#target' do
   it "allows to access target inside the callback" do
     context = double(:context)
     called = nil
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: context) do
       initial :green
-
-      target context
 
       events {
         event :slow, :green  => :yellow
@@ -194,10 +186,8 @@ RSpec.describe FiniteMachine, '#target' do
     end)
 
     car = Car.new(called)
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: car) do
       initial :unsaved
-
-      target car
 
       events {
         event :validate, :unsaved => :valid

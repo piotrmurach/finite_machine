@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'handlers' do
 
@@ -45,10 +43,8 @@ RSpec.describe FiniteMachine, 'handlers' do
 
   it 'allows for :with to be symbol' do
     logger = DummyLogger.new
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: logger) do
       initial :green
-
-      target logger
 
       events {
         event :slow, :green  => :yellow
@@ -69,10 +65,8 @@ RSpec.describe FiniteMachine, 'handlers' do
   it 'allows for error type as string' do
     logger = DummyLogger.new
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: logger) do
       initial :green
-
-      target logger
 
       events {
         event :slow, :green  => :yellow

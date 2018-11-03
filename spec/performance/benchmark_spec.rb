@@ -23,10 +23,8 @@ RSpec.describe FiniteMachine, perf: true do
   it "correctly loops through events" do
     measurement = Measurement.new
 
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.define(target: measurement) do
       initial :green
-
-      target(measurement)
 
       events {
         event :next, :green => :yellow,

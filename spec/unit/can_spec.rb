@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'can?' do
   before(:each) {
@@ -77,10 +75,8 @@ RSpec.describe FiniteMachine, 'can?' do
 
     it "checks against target and grouped events" do
       bug = Bug.new
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.define(target: bug) do
         initial :initial
-
-        target bug
 
         events {
           event :bump, :initial => :low
