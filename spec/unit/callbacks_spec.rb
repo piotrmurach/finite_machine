@@ -364,7 +364,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    fsm = FiniteMachine.define(target: self) do
+    fsm = FiniteMachine.define(self) do
       initial :green
 
       events {
@@ -435,7 +435,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    fsm = FiniteMachine.define(target: self) do
+    fsm = FiniteMachine.define(self) do
       initial :red
 
       events {

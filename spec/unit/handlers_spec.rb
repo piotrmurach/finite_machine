@@ -43,7 +43,7 @@ RSpec.describe FiniteMachine, 'handlers' do
 
   it 'allows for :with to be symbol' do
     logger = DummyLogger.new
-    fsm = FiniteMachine.define(target: logger) do
+    fsm = FiniteMachine.define(logger) do
       initial :green
 
       events {

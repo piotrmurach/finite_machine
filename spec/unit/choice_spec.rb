@@ -63,7 +63,7 @@ RSpec.describe FiniteMachine, '#choice' do
 
   it "allows for dynamic choice based on conditional branching and target" do
     user = User.new
-    fsm = FiniteMachine.define(target: user) do
+    fsm = FiniteMachine.define(user) do
       initial :company_form
 
       events {
@@ -183,7 +183,7 @@ RSpec.describe FiniteMachine, '#choice' do
 
   it "performs matching transitions for multiple event definitions with the same name" do
     ticket = double(:ticket, :pending? => true, :finished? => true)
-    fsm = FiniteMachine.define(target: ticket) do
+    fsm = FiniteMachine.define(ticket) do
       initial :inactive
 
       events {
@@ -210,7 +210,7 @@ RSpec.describe FiniteMachine, '#choice' do
   it "does not transition when no matching choice for multiple event definitions" do
     ticket = double(:ticket, :pending? => true, :finished? => false)
     called = []
-    fsm = FiniteMachine.define(target: ticket) do
+    fsm = FiniteMachine.define(ticket) do
       initial :inactive
 
       events {
@@ -257,7 +257,7 @@ RSpec.describe FiniteMachine, '#choice' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    fsm = FiniteMachine.define(target: self) do
+    fsm = FiniteMachine.define(self) do
       initial :red
 
       events {

@@ -64,7 +64,7 @@ RSpec.describe FiniteMachine, 'system' do
 
     class Fire
       def initialize
-        @fsmA = FSM_A.new(target: self)
+        @fsmA = FSM_A.new(self)
 
         @backend = Backend.new
         @backend.operate

@@ -18,7 +18,7 @@ RSpec.describe FiniteMachine, '#target' do
       end
 
       def engine
-        @engine ||= FiniteMachine.define(target: self) do
+        @engine ||= FiniteMachine.define(self) do
           initial :neutral
 
           events {
@@ -117,7 +117,7 @@ RSpec.describe FiniteMachine, '#target' do
       def engine
         self.called ||= []
 
-        @engine ||= FiniteMachine.define(target: self) do
+        @engine ||= FiniteMachine.define(self) do
           initial :neutral
 
           events {
@@ -155,7 +155,7 @@ RSpec.describe FiniteMachine, '#target' do
   it "allows to access target inside the callback" do
     context = double(:context)
     called = nil
-    fsm = FiniteMachine.define(target: context) do
+    fsm = FiniteMachine.define(context) do
       initial :green
 
       events {
@@ -185,7 +185,7 @@ RSpec.describe FiniteMachine, '#target' do
     end)
 
     car = Car.new(called)
-    fsm = FiniteMachine.define(target: car) do
+    fsm = FiniteMachine.define(car) do
       initial :unsaved
 
       events {

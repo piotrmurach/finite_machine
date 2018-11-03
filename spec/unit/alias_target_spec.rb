@@ -20,7 +20,7 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
   it "aliases target" do
     car = Car.new
-    fsm = FiniteMachine.new(target: car, alias_target: :delorean)
+    fsm = FiniteMachine.new(car, alias_target: :delorean)
 
     expect(fsm.target).to eq(car)
     expect { fsm.car }.to raise_error(NoMethodError)
@@ -30,8 +30,8 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
   it "scopes the target alias to a state machine instance" do
     delorean = Car.new
     batmobile = Car.new
-    fsm_a = FiniteMachine.new(target: delorean, alias_target: :delorean)
-    fsm_b = FiniteMachine.new(target: batmobile, alias_target: :batmobile)
+    fsm_a = FiniteMachine.new(delorean, alias_target: :delorean)
+    fsm_b = FiniteMachine.new(batmobile, alias_target: :batmobile)
 
     expect(fsm_a.delorean).to eq(delorean)
     expect { fsm_a.batmobile }.to raise_error(NoMethodError)
@@ -80,7 +80,7 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
 
     it "allows to create standalone machine" do
       car = Car.new
-      engine = Engine.new(target: car, alias_target: :car)
+      engine = Engine.new(car, alias_target: :car)
       expect(engine.current).to eq(:neutral)
 
       engine.forward

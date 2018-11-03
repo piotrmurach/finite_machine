@@ -75,7 +75,7 @@ RSpec.describe FiniteMachine, 'can?' do
 
     it "checks against target and grouped events" do
       bug = Bug.new
-      fsm = FiniteMachine.define(target: bug) do
+      fsm = FiniteMachine.define(bug) do
         initial :initial
 
         events {

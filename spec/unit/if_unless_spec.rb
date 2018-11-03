@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine, ':if, :unless' do
   before(:each) {
@@ -186,7 +184,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define(target: car) do
+      fsm = FiniteMachine.define(car) do
         initial :neutral
 
         events {
@@ -210,7 +208,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "passes arguments to the scope" do
       car = Car.new
 
-      fsm = FiniteMachine.define(target: car) do
+      fsm = FiniteMachine.define(car) do
         initial :neutral
 
         events {
@@ -232,7 +230,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define(target: car) do
+      fsm = FiniteMachine.define(car) do
         initial :neutral
 
         events {
@@ -258,7 +256,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define(target: car) do
+      fsm = FiniteMachine.define(car) do
         initial :neutral
 
         events {
@@ -283,7 +281,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
   context 'when same event name' do
     it "preservers conditions for the same named event" do
       bug = Bug.new
-      fsm = FiniteMachine.define(target: bug) do
+      fsm = FiniteMachine.define(bug) do
         initial :initial
 
         events {
