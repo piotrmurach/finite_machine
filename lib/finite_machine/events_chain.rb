@@ -246,10 +246,11 @@ module FiniteMachine
     #
     # @api public
     def to_s
-      @events.each_pair.reduce({}) do |acc, (name, trans)|
-        acc[name] = trans
-        acc
-      end.to_s
+      hash = {}
+      @events.each_pair do |name, trans|
+        hash[name] = trans
+      end
+      hash.to_s
     end
 
     # Inspect chain content
