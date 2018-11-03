@@ -41,6 +41,7 @@ module FiniteMachine
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))
       @conditions  = make_conditions
+      freeze
     end
 
     # Reduce conditions
