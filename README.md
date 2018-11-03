@@ -50,58 +50,59 @@ Or install it yourself as:
 ## Contents
 
 * [1. Usage](#1-usage)
-    * [1.1 current](#11-current)
-    * [1.2 initial](#12-initial)
-    * [1.3 terminal](#13-terminal)
-    * [1.4 is?](#14-is)
-    * [1.5 can? and cannot?](#15-can-and-cannot)
-    * [1.6 target](#16-target)
-    * [1.7 Alias target](#17-alias-target)
-    * [1.8 restore!](#18-restore)
-    * [1.9 states](#19-states)
-    * [1.10 event names](#110-event-names)
-* [2. Transitions](#2-transitions)
-    * [2.1 Performing transitions](#21-performing-transitions)
-    * [2.2 Dangerous transitions](#22-dangerous-transitions)
-    * [2.3 Multiple from states](#23-multiple-from-states)
-    * [2.4 From :any state](#24-from-any-state)
-    * [2.5 Grouping states under single event](#25-grouping-states-under-single-event)
-    * [2.6 Silent transitions](#26-silent-transitions)
-    * [2.7 Log transitions](#27-log-transitions)
-* [3. Conditional transitions](#3-conditional-transitions)
-    * [3.1 Using a Proc](#31-using-a-proc)
-    * [3.2 Using a Symbol](#32-using-a-symbol)
-    * [3.3 Using a String](#33-using-a-string)
-    * [3.4 Combining transition conditions](#34-combining-transition-conditions)
-* [4. Choice pseudostates](#4-choice-pseudostates)
-  * [4.1 Dynamic choice conditions](#41-dynamic-choice-conditions)
-  * [4.2 Multiple from states](#42-multiple-from-states)
-* [5. Callbacks](#5-callbacks)
-    * [5.1 on_enter](#51-on_enter)
-    * [5.2 on_transition](#52-on_transition)
-    * [5.3 on_exit](#53-on_exit)
-    * [5.4 on_before](#54-on_before)
-    * [5.5 on_after](#55-on_after)
-    * [5.6 once_on](#56-once_on)
-    * [5.7 Execution sequence](#57-execution-sequence)
-    * [5.8 Parameters](#58-parameters)
-    * [5.9 Same kind of callbacks](#59-same-kind-of-callbacks)
-    * [5.10 Fluid callbacks](#510-fluid-callbacks)
-    * [5.11 Executing methods inside callbacks](#511-executing-methods-inside-callbacks)
-    * [5.12 Defining callbacks](#512-defining-callbacks)
-    * [5.13 Asynchronous callbacks](#513-asynchronous-callbacks)
-    * [5.14 Cancelling inside callbacks](#514-cancelling-inside-callbacks)
-* [6. Errors](#6-errors)
-    * [6.1 Using target](#61-using-target)
-* [7. Stand-Alone FiniteMachine](#7-stand-alone-finitemachine)
+* [2. API](#2-api)
+    * [2.1 current](#21-current)
+    * [2.2 initial](#22-initial)
+    * [2.3 terminal](#23-terminal)
+    * [2.4 is?](#24-is)
+    * [2.5 can? and cannot?](#25-can-and-cannot)
+    * [2.6 target](#26-target)
+    * [2.7 Alias target](#27-alias-target)
+    * [2.8 restore!](#28-restore)
+    * [2.9 states](#29-states)
+    * [2.10 event names](#210-event-names)
+* [3. States and Transitions](#3-states-and-transitions)
+    * [3.1 Triggering transitions](#31-triggering-transitions)
+    * [3.2 Dangerous transitions](#32-dangerous-transitions)
+    * [3.3 Multiple from states](#33-multiple-from-states)
+    * [3.4 any_state transitions](#34-any_state-transitions)
+    * [3.5 Collapsing transitions](#35-collapsing-transitions)
+    * [3.6 Silent transitions](#36-silent-transitions)
+    * [3.7 Logging transitions](#37-logging-transitions)
+    * [3.8 Conditional transitions](#38-conditional-transitions)
+      * [3.8.1 Using a Proc](#381-using-a-proc)
+      * [3.8.2 Using a Symbol](#382-using-a-symbol)
+      * [3.8.3 Using a String](#383-using-a-string)
+      * [3.8.4 Combining transition conditions](#384-combining-transition-conditions)
+    * [3.9 Choice pseudostates](#4-choice-pseudostates)
+      * [3.9.1 Dynamic choice conditions](#391-dynamic-choice-conditions)
+      * [3.9.2 Multiple from states](#392-multiple-from-states)
+* [4. Callbacks](#4-callbacks)
+    * [4.1 on_enter](#41-on_enter)
+    * [4.2 on_transition](#42-on_transition)
+    * [4.3 on_exit](#43-on_exit)
+    * [4.4 on_before](#44-on_before)
+    * [4.5 on_after](#45-on_after)
+    * [4.6 once_on](#46-once_on)
+    * [4.7 Execution sequence](#47-execution-sequence)
+    * [4.8 Parameters](#48-parameters)
+    * [4.9 Same kind of callbacks](#49-same-kind-of-callbacks)
+    * [4.10 Fluid callbacks](#410-fluid-callbacks)
+    * [4.11 Executing methods inside callbacks](#411-executing-methods-inside-callbacks)
+    * [4.12 Defining callbacks](#412-defining-callbacks)
+    * [4.13 Asynchronous callbacks](#413-asynchronous-callbacks)
+    * [4.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
+* [5. Errors](#5-errors)
+    * [5.1 Using target](#51-using-target)
+* [6. Stand-Alone FiniteMachine](#7-stand-alone-finitemachine)
     * [7.1 Creating a Definition](#71-creating-a-definition)
     * [7.2 Targeting definition](#72-targeting-definition)
     * [7.3 Definition inheritance](#73-definition-inheritance)
-* [8. Integration](#8-integration)
-    * [8.1 Plain Ruby Objects](#81-plain-ruby-objects)
-    * [8.2 ActiveRecord](#82-activerecord)
-    * [8.3 Transactions](#83-transactions)
-* [9. Tips](#9-tips)
+* [7. Integration](#8-integration)
+    * [7.1 Plain Ruby Objects](#81-plain-ruby-objects)
+    * [7.2 ActiveRecord](#82-activerecord)
+    * [7.3 Transactions](#83-transactions)
+* [8. Tips](#8-tips)
 
 ## 1 Usage
 
@@ -125,7 +126,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [Transitions](#2-transitions) and [Callbacks](#5-callbacks) sections for more details.
+As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#5-callbacks) sections for more details.
 
 Alternatively, you can construct the machine like a regular object without using the DSL. The same machine could be reimplemented as follows:
 
@@ -139,7 +140,9 @@ fm.on_after(:go)     { |event| ... }
 fm.on_before(:stop)  { |event| ...}
 ```
 
-### 1.1 current
+## 2. API
+
+### 2.1 current
 
 The **FiniteMachine** allows you to query the current state by calling the `current` method.
 
@@ -147,7 +150,7 @@ The **FiniteMachine** allows you to query the current state by calling the `curr
   fm.current  # => :red
 ```
 
-### 1.2 initial
+### 2.2 initial
 
 There are number of ways to provide the initial state in  **FiniteMachine** depending on your requirements.
 
@@ -236,7 +239,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 1.3 terminal
+### 2.3 terminal
 
 To specify a final state **FiniteMachine** uses the `terminal` method.
 
@@ -286,7 +289,7 @@ fm.decline
 fm.terminated?
 ```
 
-### 1.4 is?
+### 2.4 is?
 
 To verify whether or not a state machine is in a given state, **FiniteMachine** uses `is?` method. It returns `true` if the machine is found to be in the given state, or `false` otherwise.
 
@@ -302,7 +305,7 @@ fm.red?     # => true
 fm.yellow?  # => false
 ```
 
-### 1.5 can? and cannot?
+### 2.5 can? and cannot?
 
 To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if **FiniteMachine** can fire a given event, returning true, otherwise, it will return false. `cannot?` is simply the inverse of `can?`.
 
@@ -332,7 +335,7 @@ fm.can?(:stop, :breaks)    # => true
 fm.can?(:stop, :no_breaks) # => false
 ```
 
-### 1.6 target
+### 2.6 target
 
 If you need to execute some external code in the context of the current state machine use `target` helper.
 
@@ -395,7 +398,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 1.7 Alias target
+### 2.7 Alias target
 
 If you need to better express the intention behind the target name, in particular when calling actions in callbacks, you can use the `alias_target` helper:
 
@@ -420,7 +423,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 1.8 restore!
+### 2.8 restore!
 
 In order to set the machine to a given state and thus skip triggering callbacks use the `restore!` method:
 
@@ -430,7 +433,7 @@ fm.restore!(:neutral)
 
 This method may be suitable when used testing your state machine or in restoring the state from datastore.
 
-### 1.9 states
+### 2.9 states
 
 You can use the `states` method to return an array of all the states for a given state machine.
 
@@ -438,7 +441,7 @@ You can use the `states` method to return an array of all the states for a given
 fm.states # => [:none, :green, :yellow, :red]
 ```
 
-### 1.10 event names
+### 2.10 event names
 
 To find out all the event names supported by the state machine issue `event_names` method:
 
@@ -446,7 +449,7 @@ To find out all the event names supported by the state machine issue `event_name
 fm.event_names # => [:init, :ready, :go, :stop]
 ```
 
-## 2 Transitions
+## 3. States and Transitions
 
 The `events` scope exposes the `event` helper to define possible state transitions.
 
@@ -467,7 +470,7 @@ The following methods trigger transitions for the example state machine.
 * go
 * stop
 
-### 2.1 Performing transitions
+### 3.1 Triggering transitions
 
 In order to transition to the next reachable state, simply call the event's name on the **FiniteMachine** instance. If the transition succeeds the `true` value is returned, otherwise `false`.
 
@@ -491,7 +494,7 @@ fm.current       # => :green
 
 By default **FiniteMachine** will swallow all exceptions when and return `false` on failure. If you prefer to be notified when illegal transition occurs see [Dangerous transitions](#22-dangerous-transitions).
 
-### 2.2 Dangerous transitions
+### 3.2 Dangerous transitions
 
 When you declare event, for instance `ready`, the **FiniteMachine** will provide a dangerous version with a bang `ready!`. In the case when you attempt to perform illegal transition or **FiniteMachine** throws internal error, the state machine will propagate the errors. You can use handlers to decide how to handle errors on case by case basis see [6. Errors](#6-errors)
 
@@ -505,7 +508,7 @@ If you prefer you can also use `trigger!` method to fire event:
 fm.trigger!(:ready)
 ```
 
-### 2.3 Multiple from states
+### 3.3 Multiple from states
 
 If an event transitions from multiple states to the same state then all the states can be grouped into an array.
 Alternatively, you can create separate events under the same name for each transition that needs combining.
@@ -524,7 +527,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 2.4 From `any_state`
+### 3.4 `any_state` transitions
 
 The **FiniteMachine** offers few ways to transition out of any state. This is particularly useful when the machine already defines many states.
 
@@ -546,7 +549,7 @@ event :run, to: :green
 
 All the above `run` event definitions will always transition the state machine into `:green` state.
 
-### 2.5 Grouping states under single event
+### 3.5 Collapsing transitions
 
 Another way to specify state transitions under single event name is to group all your state transitions into a single hash like so:
 
@@ -576,7 +579,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 2.6 Silent transitions
+### 3.6 Silent transitions
 
 The **FiniteMachine** allows to selectively silence events and thus prevent any callbacks from firing. Using the `silent` option passed to event definition like so:
 
@@ -594,7 +597,7 @@ fsm.go   # no callbacks
 fms.stop # callbacks are fired
 ```
 
-### 2.7 Log transitions
+### 3.7 Logging transitions
 
 To help debug your state machine, **FiniteMachine** provides `:log_transitions` option.
 
@@ -604,11 +607,11 @@ FiniteMachine.define log_transitions: true do
 end
 ```
 
-## 3. Conditional transitions
+### 3.8 Conditional transitions
 
 Each event takes an optional `:if` and `:unless` options which act as a predicate for the transition. The `:if` and `:unless` can take a symbol, a string, a Proc or an array. Use `:if` option when you want to specify when the transition **should** happen. If you want to specify when the transition **should not** happen then use `:unless` option.
 
-### 3.1 Using a Proc
+#### 3.8.1 Using a Proc
 
 You can associate the `:if` and `:unless` options with a Proc object that will get called right before transition happens. Proc object gives you ability to write inline condition instead of separate method.
 
@@ -688,7 +691,7 @@ fm.current       # => :one
 
 When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [5.10 Cancelling inside callbacks](#510-cancelling-inside-callbacks)
 
-### 3.2 Using a Symbol
+#### 3.8.2 Using a Symbol
 
 You can also use a symbol corresponding to the name of a method that will get called right before transition happens.
 
@@ -704,7 +707,7 @@ fsm = FiniteMachine.define do
 end
 ```
 
-### 3.3 Using a String
+#### 3.8.3 Using a String
 
 Finally, it's possible to use string that will be evaluated using `eval` and needs to contain valid Ruby code. It should only be used when the string represents a short condition.
 
@@ -720,7 +723,7 @@ fsm = FiniteMachine.define do
 end
 ```
 
-### 3.4 Combining transition conditions
+#### 3.8.4 Combining transition conditions
 
 When multiple conditions define whether or not a transition should happen, an Array can be used. Furthermore, you can apply both `:if` and `:unless` to the same transition.
 
@@ -739,7 +742,7 @@ end
 
 The transition only runs when all the `:if` conditions and none of the `unless` conditions are evaluated to `true`.
 
-## 4 Choice pseudostates
+### 3.9 Choice pseudostates
 
 Choice pseudostate allows you to implement conditional branch. The conditions of an event's transitions are evaluated in order to to select only one outgoing transition.
 
@@ -779,7 +782,7 @@ fsm.next
 fsm.current # => :red
 ```
 
-### 4.1 Dynamic choice conditions
+#### 3.9.1 Dynamic choice conditions
 
 Just as with event conditions you can make conditional logic dynamic and dependent on parameters passed in:
 
@@ -803,7 +806,7 @@ fsm.current # => :yellow
 
 If more than one of the conditions evaluates to true, a first matching one is chosen. If none of the conditions evaluate to true, then the `default` state is matched. However if default state is not present and non of the conditions match, no transition is performed. To avoid such situation always specify `default` choice.
 
-### 4.2 Multiple from states
+#### 3.9.2 Multiple from states
 
 Similarly to event definitions, you can specify the event to transition from a group of states:
 
@@ -835,17 +838,17 @@ FiniteMachine.define do
 end
 ```
 
-## 5 Callbacks
+## 4. Callbacks
 
-You can watch state machine events and the information they provide by registering one or more predefined callback types. The following 5 types of callbacks are available in **FiniteMachine**:
+You can register a callback to listen for state transitions and events triggered, and based on these perform custom actions. There are five callbacks available in **FiniteMachine**:
 
-* `on_enter`
-* `on_transition`
-* `on_exit`
-* `on_before`
-* `on_after`
+* `on_before` - triggered before any transition
+* `on_exit` - triggered when leaving any state
+* `on_transition` - triggered during any transition
+* `on_enter` - triggered when entering any state
+* `on_after` - triggered after any transition
 
-Use the `callbacks` scope to introduce the listeners. You can register a callback to listen for state changes or events being triggered.
+Use the `callbacks` scope to introduce the listeners.
 
 Use the state or event name as a first parameter to the callback helper followed by block with event argument and a list arguments that you expect to receive like so:
 
@@ -878,27 +881,27 @@ fm.go('Piotr!')
 
 **Note** Regardless of how the state is entered or exited, all the associated callbacks will be executed. This provides means for guaranteed initialization and cleanup.
 
-### 5.1 on_enter
+### 4.1 on_enter
 
 The `on_enter` callback is executed before given state change is fired. By passing state name you can narrow down the listener to only watch out for enter state changes. Otherwise, all enter state changes will be watched.
 
-### 5.2 on_transition
+### 4.2 on_transition
 
 The `on_transition` callback is executed when given state change happens. By passing state name you can narrow down the listener to only watch out for transition state changes. Otherwise, all transition state changes will be watched.
 
-### 5.3 on_exit
+### 4.3 on_exit
 
 The `on_exit` callback is executed after a given state change happens. By passing state name you can narrow down the listener to only watch out for exit state changes. Otherwise, all exit state changes will be watched.
 
-### 5.4 on_before
+### 4.4 on_before
 
 The `on_before` callback is executed before a given event happens. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
-### 5.5 on_after
+### 4.5 on_after
 
 This callback is executed after a given event happened. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
-### 5.6 once_on
+### 4.6 once_on
 
 **FiniteMachine** allows you to listen on initial state change or when the event is fired first time by using the following 5 types of callbacks:
 
@@ -908,7 +911,7 @@ This callback is executed after a given event happened. By default it will liste
 * `once_before`
 * `once_after`
 
-### 5.7 Execution sequence
+### 4.7 Execution sequence
 
 Assuming we have the following event specified:
 
@@ -929,7 +932,7 @@ then by calling `go` event the following callbacks in the following sequence wil
 * `on_after :go` - callback after the `go` event
 * `on_after` - generic callback after `any` event
 
-### 5.8 Parameters
+### 4.8 Parameters
 
 All callbacks get the `TransitionEvent` object with the following attributes.
 
@@ -957,7 +960,7 @@ end
 fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
 ```
 
-### 5.9 Same kind of callbacks
+### 4.9 Same kind of callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
 
@@ -977,7 +980,7 @@ end
 fm.slow # => will invoke both callbacks
 ```
 
-### 5.10 Fluid callbacks
+### 4.10 Fluid callbacks
 
 Callbacks can also be specified as full method calls.
 
@@ -999,7 +1002,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 5.11 Executing methods inside callbacks
+### 4.11 Executing methods inside callbacks
 
 In order to execute method from another object use `target` helper.
 
@@ -1056,7 +1059,7 @@ fm.back   # => Go Piotr!
 
 For more complex example see [Integration](#8-integration) section.
 
-### 5.12 Defining callbacks
+### 4.12 Defining callbacks
 
 When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
 
@@ -1076,7 +1079,7 @@ fm.on_enter_yellow do |event|
 end
 ```
 
-### 5.13 Asynchronous callbacks
+### 4.13 Asynchronous callbacks
 
 By default all callbacks are run synchronously. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
 
@@ -1092,7 +1095,7 @@ or
 
 This will ensure that when the callback is fired it will run in separate thread outside of the main execution thread.
 
-### 5.14 Cancelling inside callbacks
+### 4.14 Cancelling inside callbacks
 
 A simple way to prevent transitions is to use [3 Conditional transitions](#3-conditional-transitions).
 
@@ -1121,7 +1124,7 @@ fm.ready
 fm.current  # => :red
 ```
 
-## 6 Errors
+## 5 Errors
 
 By default, the **FiniteMachine** will throw an exception whenever the machine is in invalid state or fails to transition.
 
@@ -1151,7 +1154,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 6.1 Using target
+### 5.1 Using target
 
 You can pass an external context via `target` helper that will be the receiver for the handler. The handler method needs to take one argument that will be called with the exception.
 
@@ -1178,11 +1181,11 @@ fm = FiniteMachine.define do
 end
 ```
 
-## 7 Stand-Alone FiniteMachine
+## 6. Stand-Alone FiniteMachine
 
 **FiniteMachine** allows you to separate your state machine from the target class so that you can keep your concerns broken in small maintainable pieces.
 
-### 7.1 Creating a Definition
+### 6.1 Creating a Definition
 
 You can turn a class into a **FiniteMachine** by simply subclassing `FiniteMachine::Definition`. As a rule of thumb, every single public method of the **FiniteMachine** is available inside your class:
 
@@ -1212,7 +1215,7 @@ class Engine < FiniteMachine::Definition
 end
 ```
 
-### 7.2 Targeting definition
+### 6.2 Targeting definition
 
 The next step is to instantiate your state machine and use `target` to load specific context.
 
@@ -1256,7 +1259,7 @@ class Car
 end
 ```
 
-### 7.3 Definition inheritance
+### 6.3 Definition inheritance
 
 You can create more specialised versions of a generic definition by using inheritance. Assuming a generic state machine definition:
 
@@ -1295,11 +1298,11 @@ specific_fsm = SpecificStateMachine.new
 specific_fsm.target ... # Target specific object
 ```
 
-## 8 Integration
+## 7. Integration
 
 Since **FiniteMachine** is an object in its own right, it leaves integration with other systems up to you. In contrast to other Ruby libraries, it does not extend from models (i.e. ActiveRecord) to transform them into a state machine or require mixing into existing classes.
 
-### 8.1 Plain Ruby Objects
+### 7.1 Plain Ruby Objects
 
 In order to use **FiniteMachine** with an object, you need to define a method that will construct the state machine. You can implement the state machine using the `define` DSL or create a separate object that can be instantiated. To complete integration you will need to specify `target` context to allow state machine to communicate with the other methods inside the class like so:
 
@@ -1363,7 +1366,7 @@ car.gears.current      # => :reverse
 car.reverse_lights_on? # => true
 ```
 
-### 8.2 ActiveRecord
+### 7.2 ActiveRecord
 
 In order to integrate **FiniteMachine** with ActiveRecord simply add a method with state machine definition. You can also define the state machine in separate module to aid reusability. Once the state machine is defined use the `target` helper to reference the current class. Having defined `target` you call ActiveRecord methods inside the callbacks to persist the state.
 
@@ -1417,7 +1420,7 @@ account.state   # => :access
 
 Please note that you do not need to call `target.save` inside callback, it is enough to just set the state. It is much more preferable to let the `ActiveRecord` object to persist when it makes sense for the application and thus keep the state machine focused on managing the state transitions.
 
-### 8.3 Transactions
+### 7.3 Transactions
 
 When using **FiniteMachine** with ActiveRecord it advisable to trigger state changes inside transactions to ensure integrity of the database. Given Account example from section 8.2 one can run event in transaction in the following way:
 
@@ -1431,7 +1434,7 @@ If the transition fails it will raise `TransitionError` which will cause the tra
 
 Please check the ORM of your choice if it supports database transactions.
 
-## 9 Tips
+## 8 Tips
 
 Creating a standalone **FiniteMachine** brings a number of benefits, one of them being easier testing. This is especially true if the state machine is extremely complex itself. Ideally, you would test the machine in isolation and then integrate it with other objects or ORMs.
 
