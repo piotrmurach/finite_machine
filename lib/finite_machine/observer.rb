@@ -149,7 +149,7 @@ module FiniteMachine
       sync_exclusive do
         [event.type].each do |hook_type|
           any_state_or_event = HookEvent.any_state_or_event(hook_type)
-          [event.name, any_state_or_event].each do |event_name|
+          [any_state_or_event, event.name].each do |event_name|
             hooks.call(hook_type, event_name) do |hook|
               handle_callback(hook, event, *data)
               off(hook_type, event_name, &hook) if hook.is_a?(Once)

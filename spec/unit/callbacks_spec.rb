@@ -35,16 +35,16 @@ RSpec.describe FiniteMachine, 'callbacks' do
     expect(fsm.current).to eql(:none)
     fsm.init
     expect(called).to eql([
-      'on_before_init',
       'on_before',
-      'on_exit_none',
+      'on_before_init',
       'on_exit',
-      'on_transition_green',
+      'on_exit_none',
       'on_transition',
-      'on_enter_green',
+      'on_transition_green',
       'on_enter',
-      'on_after_init',
-      'on_after'
+      'on_enter_green',
+      'on_after',
+      'on_after_init'
     ])
   end
 
@@ -99,71 +99,71 @@ RSpec.describe FiniteMachine, 'callbacks' do
     expect(called).to eq([
       'on_before',
       'on_exit',
-      'on_transition_green',
       'on_transition',
-      'on_enter_green',
+      'on_transition_green',
       'on_enter',
+      'on_enter_green',
       'on_after'
     ])
 
     called = []
     fsm.slow
     expect(called).to eql([
-      'on_before_slow',
       'on_before',
-      'on_exit_green',
+      'on_before_slow',
       'on_exit',
-      'on_transition_yellow',
+      'on_exit_green',
       'on_transition',
-      'on_enter_yellow',
+      'on_transition_yellow',
       'on_enter',
-      'on_after_slow',
-      'on_after'
+      'on_enter_yellow',
+      'on_after',
+      'on_after_slow'
     ])
 
     called = []
     fsm.stop
     expect(called).to eql([
-      'on_before_stop',
       'on_before',
-      'on_exit_yellow',
+      'on_before_stop',
       'on_exit',
-      'on_transition_red',
+      'on_exit_yellow',
       'on_transition',
-      'on_enter_red',
+      'on_transition_red',
       'on_enter',
-      'on_after_stop',
-      'on_after'
+      'on_enter_red',
+      'on_after',
+      'on_after_stop'
     ])
 
     called = []
     fsm.ready
     expect(called).to eql([
-      'on_before_ready',
       'on_before',
-      'on_exit_red',
+      'on_before_ready',
       'on_exit',
-      'on_transition_yellow',
+      'on_exit_red',
       'on_transition',
-      'on_enter_yellow',
+      'on_transition_yellow',
       'on_enter',
-      'on_after_ready',
-      'on_after'
+      'on_enter_yellow',
+      'on_after',
+      'on_after_ready'
     ])
 
     called = []
     fsm.go
     expect(called).to eql([
-      'on_before_go',
       'on_before',
-      'on_exit_yellow',
+      'on_before_go',
       'on_exit',
-      'on_transition_green',
+      'on_exit_yellow',
       'on_transition',
-      'on_enter_green',
+      'on_transition_green',
       'on_enter',
-      'on_after_go',
-      'on_after'
+      'on_enter_green',
+      'on_after',
+      'on_after_go'
     ])
   end
 
@@ -251,21 +251,21 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm.slow
     expect(fsm.current).to eql(:yellow)
     expect(called).to eql([
+      'on_before',
       'on_before_slow_1',
       'on_before_slow_2',
-      'on_before',
+      'on_exit',
       'on_exit_green_1',
       'on_exit_green_2',
-      'on_exit',
+      'on_transition',
       'on_transition_yellow_1',
       'on_transition_yellow_2',
-      'on_transition',
+      'on_enter',
       'on_enter_yellow_1',
       'on_enter_yellow_2',
-      'on_enter',
+      'on_after',
       'on_after_slow_1',
-      'on_after_slow_2',
-      'on_after'
+      'on_after_slow_2'
     ])
   end
 
