@@ -5,7 +5,7 @@ require 'forwardable'
 require_relative 'catchable'
 require_relative 'dsl'
 require_relative 'env'
-require_relative 'events_chain'
+require_relative 'events_map'
 require_relative 'hook_event'
 require_relative 'observer'
 require_relative 'threadable'
@@ -31,7 +31,7 @@ module FiniteMachine
     attr_threadsafe :env
 
     # The state machine event definitions
-    attr_threadsafe :events_chain
+    attr_threadsafe :events_map
 
     # Errors DSL
     #
@@ -98,7 +98,7 @@ module FiniteMachine
       @initial_state = DEFAULT_STATE
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
-      @events_chain  = EventsChain.new
+      @events_map    = EventsMap.new
       @env           = Env.new(self, [])
       @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
@@ -173,7 +173,7 @@ module FiniteMachine
     #
     # @api public
     def states
-      sync_shared { events_chain.states }
+      sync_shared { events_map.states }
     end
 
     # Retireve all event names
@@ -185,7 +185,7 @@ module FiniteMachine
     #
     # @api public
     def event_names
-      sync_shared { events_chain.events }
+      sync_shared { events_map.events }
     end
 
     # Checks if event can be triggered
@@ -203,7 +203,7 @@ module FiniteMachine
     # @api public
     def can?(*args)
       event_name  = args.shift
-      events_chain.can_perform?(event_name, current, *args)
+      events_map.can_perform?(event_name, current, *args)
     end
 
     # Checks if event cannot be triggered
@@ -249,7 +249,7 @@ module FiniteMachine
     #
     # @api private
     def valid_state?(event_name)
-      current_states = events_chain.states_for(event_name)
+      current_states = events_map.states_for(event_name)
       current_states.any? { |state| state == current || state == ANY_STATE }
     end
 
@@ -350,7 +350,7 @@ module FiniteMachine
     # @api private
     def transition!(event_name, *data, &block)
       from_state = current
-      to_state   = events_chain.move_to(event_name, from_state, *data)
+      to_state   = events_map.move_to(event_name, from_state, *data)
 
       block.call(from_state, to_state) if block
 
@@ -392,7 +392,7 @@ module FiniteMachine
       sync_shared do
         "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
         "@events=#{event_names}, " \
-        "@transitions=#{events_chain.state_transitions}>"
+        "@transitions=#{events_map.state_transitions}>"
       end
     end
 

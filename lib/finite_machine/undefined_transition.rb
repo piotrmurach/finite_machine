@@ -3,7 +3,7 @@
 module FiniteMachine
   # Stand in for lack of matching transition.
   #
-  # Used internally by {EventsChain}
+  # Used internally by {EventsMap}
   #
   # @api private
   class UndefinedTransition

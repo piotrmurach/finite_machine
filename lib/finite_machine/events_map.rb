@@ -7,27 +7,28 @@ require_relative 'threadable'
 require_relative 'undefined_transition'
 
 module FiniteMachine
-  # A class responsible for storing events and their transitions.
+  # A class responsible for storing mappings between event namess and
+  # their transition objects.
   #
   # Used internally by {StateMachine}.
   #
   # @api private
-  class EventsChain
+  class EventsMap
     extend Forwardable
 
-    def_delegators :@events, :empty?, :size
+    def_delegators :@events_map, :empty?, :size
 
-    # Initialize a EventsChain
+    # Initialize a EventsMap
     #
     # @api private
     def initialize
-      @events = Concurrent::Map.new
+      @events_map = Concurrent::Map.new
     end
 
     # Check if event is present
     #
     # @example
-    #   events_chain.exists?(:go) # => true
+    #   events_map.exists?(:go) # => true
     #
     # @param [Symbol] name
     #   the event name
@@ -37,7 +38,7 @@ module FiniteMachine
     #
     # @api public
     def exists?(name)
-      @events.key?(name)
+      @events_map.key?(name)
     end
 
     # Add transition under name
@@ -52,9 +53,9 @@ module FiniteMachine
     # @api public
     def add(name, transition)
       if exists?(name)
-        @events[name] << transition
+        @events_map[name] << transition
       else
-        @events[name] = [transition]
+        @events_map[name] = [transition]
       end
       self
     end
@@ -64,41 +65,41 @@ module FiniteMachine
     # @param [Symbol] name
     #
     # @example
-    #   events_chain[:start] # => []
+    #   events_map[:start] # => []
     #
     # @return [Array[Transition]]
     #   the transitions matching event name
     #
     # @api public
     def find(name)
-      @events.fetch(name) { [] }
+      @events_map.fetch(name) { [] }
     end
-    alias_method :[], :find
+    alias [] find
 
     # Retrieve all event names
     #
     # @example
-    #   events_chain.events # => [:init, :start, :stop]
+    #   events_map.events # => [:init, :start, :stop]
     #
     # @return [Array[Symbol]]
     #   All event names
     #
     # @api public
     def events
-      @events.keys
+      @events_map.keys
     end
 
     # Retreive all unique states
     #
     # @example
-    #   events_chain.states # => [:yellow, :green, :red]
+    #   events_map.states # => [:yellow, :green, :red]
     #
     # @return [Array[Symbol]]
     #   the array of all unique states
     #
     # @api public
     def states
-      @events.values.flatten.map(&:states).map(&:to_a).flatten.uniq
+      @events_map.values.flatten.map(&:states).map(&:to_a).flatten.uniq
     end
 
     # Retrieves all state transitions
@@ -107,7 +108,7 @@ module FiniteMachine
     #
     # @api public
     def state_transitions
-      @events.values.flatten.map(&:states)
+      @events_map.values.flatten.map(&:states)
     end
 
     # Retrieve from states for the event name
@@ -115,7 +116,7 @@ module FiniteMachine
     # @param [Symbol] event_name
     #
     # @example
-    #   events_chain.states_for(:start) # => [:yellow, :green]
+    #   events_map.states_for(:start) # => [:yellow, :green]
     #
     # @api public
     def states_for(name)
@@ -134,7 +135,7 @@ module FiniteMachine
     # Check if event has branching choice transitions or not
     #
     # @example
-    #   events_chain.choice_transition?(:go, :green) # => true
+    #   events_map.choice_transition?(:go, :green) # => true
     #
     # @param [Symbol] name
     #   the event name
@@ -209,7 +210,7 @@ module FiniteMachine
     # Find state that this machine can move to
     #
     # @example
-    #   evenst_chain.move_to(:go, :green) # => :red
+    #   evenst_map.move_to(:go, :green) # => :red
     #
     # @param [Symbol] name
     #   the event name
@@ -230,39 +231,39 @@ module FiniteMachine
       transition.to_state(from_state)
     end
 
-    # Reset chain
+    # Reset map
     #
     # @return [self]
     #
     # @api public
     def clear
-      @events.clear
+      @events_map.clear
       self
     end
 
-    # Return string representation of this chain
+    # Return string representation of this map
     #
     # @return [String]
     #
     # @api public
     def to_s
       hash = {}
-      @events.each_pair do |name, trans|
+      @events_map.each_pair do |name, trans|
         hash[name] = trans
       end
       hash.to_s
     end
 
-    # Inspect chain content
+    # Inspect map content
     #
     # @example
-    #   events_chain.inspect
+    #   events_map.inspect
     #
     # @return [String]
     #
     # @api public
     def inspect
-      "<##{self.class} @events=#{to_s}>"
+      "<##{self.class} @events_map=#{self}>"
     end
-  end # EventsChain
+  end # EventsMap
 end # FiniteMachine

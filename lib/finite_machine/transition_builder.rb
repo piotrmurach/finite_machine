@@ -55,7 +55,7 @@ module FiniteMachine
         name = attributes[:name]
         silent = attributes.fetch(:silent, false)
 
-        machine.events_chain.add(name, transition)
+        machine.events_map.add(name, transition)
 
         unless machine.respond_to?(name)
           event_definition.apply(name, silent)
