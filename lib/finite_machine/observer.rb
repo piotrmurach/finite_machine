@@ -73,7 +73,7 @@ module FiniteMachine
     def on(hook_type, state_or_event_name = nil, async = nil, &callback)
       sync_exclusive do
         if state_or_event_name.nil?
-          state_or_event_name = HookEvent.infer_default_name(hook_type)
+          state_or_event_name = HookEvent.any_state_or_event(hook_type)
         end
         async = false if async.nil?
         ensure_valid_callback_name!(hook_type, state_or_event_name)
@@ -148,7 +148,8 @@ module FiniteMachine
     def emit(event, *data)
       sync_exclusive do
         [event.type].each do |hook_type|
-          [event.name, ANY_STATE, ANY_EVENT].each do |event_name|
+          any_state_or_event = HookEvent.any_state_or_event(hook_type)
+          [event.name, any_state_or_event].each do |event_name|
             hooks.call(hook_type, event_name) do |hook|
               handle_callback(hook, event, *data)
               off(hook_type, event_name, &hook) if hook.is_a?(Once)
