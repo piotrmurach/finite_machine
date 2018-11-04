@@ -606,20 +606,22 @@ RSpec.describe FiniteMachine, 'callbacks' do
   end
 
   it "raises error for unknown callback" do
-    expect { FiniteMachine.define do
-      initial :green
+    expect { 
+      FiniteMachine.define do
+        initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+        events {
+          event :slow,  :green  => :yellow
+          event :stop,  :yellow => :red
+          event :ready, :red    => :yellow
+          event :go,    :yellow => :green
+        }
 
-      callbacks {
-        on_enter_unknown do |event| end
-      }
-    end }.to raise_error(NoMethodError)
+        callbacks {
+          on_enter_unknown do |event| end
+        } 
+      end
+    }.to raise_error(NameError, /undefined method `on_enter_unknown'/)
   end
 
   it "triggers callbacks only once" do

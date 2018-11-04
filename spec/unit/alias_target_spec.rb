@@ -34,10 +34,10 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
     fsm_b = FiniteMachine.new(batmobile, alias_target: :batmobile)
 
     expect(fsm_a.delorean).to eq(delorean)
-    expect { fsm_a.batmobile }.to raise_error(NoMethodError)
+    expect { fsm_a.batmobile }.to raise_error(NameError)
 
     expect(fsm_b.batmobile).to eq(batmobile)
-    expect { fsm_b.delorean }.to raise_error(NoMethodError)
+    expect { fsm_b.delorean }.to raise_error(NameError)
   end
 
   context 'when inside definition' do
