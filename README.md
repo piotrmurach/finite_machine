@@ -8,7 +8,7 @@
 [![Build Status](https://secure.travis-ci.org/piotrmurach/finite_machine.svg?branch=master)][travis]
 [![Build status](https://ci.appveyor.com/api/projects/status/8ho4ijacpr7b4f4t?svg=true)][appveyor]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/finite_machine/badges/gpa.svg)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/github/piotrmurach/finite_machine/badge.svg)][coverage]
+[![Coverage Status](https://coveralls.io/repos/github/piotrmurach/finite_machine/badge.svg?branch=master)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/finite_machine.svg)][inchpages]
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
 
@@ -16,7 +16,7 @@
 [travis]: http://travis-ci.org/piotrmurach/finite_machine
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/finite-machine
 [codeclimate]: https://codeclimate.com/github/piotrmurach/finite_machine
-[coverage]: https://coveralls.io/github/piotrmurach/finite_machine
+[coverage]: https://coveralls.io/github/piotrmurach/finite_machine?branch=master
 [inchpages]: http://inch-ci.org/github/piotrmurach/finite_machine
 [gitter]: https://gitter.im/piotrmurach/finite_machine
 
@@ -78,20 +78,17 @@ Or install it yourself as:
       * [3.9.1 Dynamic choice conditions](#391-dynamic-choice-conditions)
       * [3.9.2 Multiple from states](#392-multiple-from-states)
 * [4. Callbacks](#4-callbacks)
-    * [4.1 on_enter](#41-on_enter)
-    * [4.2 on_transition](#42-on_transition)
-    * [4.3 on_exit](#43-on_exit)
-    * [4.4 on_before](#44-on_before)
-    * [4.5 on_after](#45-on_after)
-    * [4.6 once_on](#46-once_on)
-    * [4.7 Execution sequence](#47-execution-sequence)
-    * [4.8 Parameters](#48-parameters)
-    * [4.9 Same kind of callbacks](#49-same-kind-of-callbacks)
-    * [4.10 Fluid callbacks](#410-fluid-callbacks)
-    * [4.11 Executing methods inside callbacks](#411-executing-methods-inside-callbacks)
-    * [4.12 Defining callbacks](#412-defining-callbacks)
-    * [4.13 Asynchronous callbacks](#413-asynchronous-callbacks)
-    * [4.14 Cancelling inside callbacks](#414-cancelling-inside-callbacks)
+    * [4.1 on_(enter|transition|exit)](#41-on_enter_transition_exit)
+    * [4.2 on_(before|after)](#42-on_before_after)
+    * [4.3 once_on](#43-once_on)
+    * [4.4 Execution sequence](#44-execution-sequence)
+    * [4.5 Callback parameters](#45-parameters)
+    * [4.6 Duplicate callbacks](#46-duplicate-callbacks)
+    * [4.7 Fluid callbacks](#47-fluid-callbacks)
+    * [4.8 Methods inside callbacks](#48-methods-inside-callbacks)
+    * [4.9 Cancelling callbacks](#49-cancelling-callbacks)
+    * [4.10 Asynchronous callbacks](#410-asynchronous-callbacks)
+    * [4.11 Instance callbacks](#411-instance-callbacks)
 * [5. Error Handling](#5-error-handling)
     * [5.1 Using target](#51-using-target)
 * [6. Stand-Alone FiniteMachine](#6-stand-alone-finitemachine)
@@ -382,14 +379,13 @@ Finally, you can always reference an external context inside the **FiniteMachine
 ```ruby
 car = Car.new
 
-fm = FiniteMachine.define do
+fm = FiniteMachine.define(car) do
   initial :neutral
-
-  target car
 
   events {
     event :start, :neutral => :one, if: "engine_on?"
   }
+
   callbacks {
     on_enter_start do |event|
       target.turn_engine_on
@@ -398,19 +394,15 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 2.7 Alias target
+### 2.7 `:alias_target`
 
 If you need to better express the intention behind the target name, in particular when calling actions in callbacks, you can use the `alias_target` helper:
 
 ```ruby
 car = Car.new
 
-fm = FiniteMachine.define do
+fm = FiniteMachine.define(car, alias_target: :car) do
   initial :neutral
-
-  target car
-
-  alias_target :car
 
   events {
     event :start, :neutral => :one, if: "engine_on?"
@@ -689,7 +681,7 @@ fm.start(true)
 fm.current       # => :one
 ```
 
-When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [5.10 Cancelling inside callbacks](#510-cancelling-inside-callbacks)
+When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [4.9 Cancelling callbacks](#49-cancelling-inside-callbacks)
 
 #### 3.8.2 Using a Symbol
 
@@ -881,27 +873,21 @@ fm.go('Piotr!')
 
 **Note** Regardless of how the state is entered or exited, all the associated callbacks will be executed. This provides means for guaranteed initialization and cleanup.
 
-### 4.1 on_enter
+### 4.1 on_(enter|transition|exit)
 
 The `on_enter` callback is executed before given state change is fired. By passing state name you can narrow down the listener to only watch out for enter state changes. Otherwise, all enter state changes will be watched.
 
-### 4.2 on_transition
-
 The `on_transition` callback is executed when given state change happens. By passing state name you can narrow down the listener to only watch out for transition state changes. Otherwise, all transition state changes will be watched.
-
-### 4.3 on_exit
 
 The `on_exit` callback is executed after a given state change happens. By passing state name you can narrow down the listener to only watch out for exit state changes. Otherwise, all exit state changes will be watched.
 
-### 4.4 on_before
+### 4.2 on_(before|after)
 
 The `on_before` callback is executed before a given event happens. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
-### 4.5 on_after
-
 This callback is executed after a given event happened. By default it will listen out for all events, you can also listen out for specific events by passing event's name.
 
-### 4.6 once_on
+### 4.3 once_on
 
 **FiniteMachine** allows you to listen on initial state change or when the event is fired first time by using the following 5 types of callbacks:
 
@@ -911,7 +897,7 @@ This callback is executed after a given event happened. By default it will liste
 * `once_before`
 * `once_after`
 
-### 4.7 Execution sequence
+### 4.4 Execution sequence
 
 Assuming we have the following event specified:
 
@@ -919,22 +905,22 @@ Assuming we have the following event specified:
 event :go, :red => :yellow
 ```
 
-then by calling `go` event the following callbacks in the following sequence will be executed:
+Then by calling `go` event the following callbacks sequence will be executed:
 
 * `on_before` - generic callback before `any` event
 * `on_before :go` - callback before the `go` event
-* `on_exit :red` - callback for the `:red` state exit
 * `on_exit` - generic callback for exit from `any` state
-* `on_transition :yellow` - callback for the `:red` to `:yellow` transition
+* `on_exit :red` - callback for the `:red` state exit
 * `on_transition` - callback for transition from `any` state to `any` state
-* `on_enter :yellow` - callback for the `:yellow` state entry
+* `on_transition :yellow` - callback for the `:red` to `:yellow` transition
 * `on_enter` - generic callback for entry to `any` state
-* `on_after :go` - callback after the `go` event
+* `on_enter :yellow` - callback for the `:yellow` state entry
 * `on_after` - generic callback after `any` event
+* `on_after :go` - callback after the `go` event
 
-### 4.8 Parameters
+### 4.5 Callback parameters
 
-All callbacks get the `TransitionEvent` object with the following attributes.
+All callbacks as a first argument yielded to a block receive the `TransitionEvent` object with the following attributes:
 
 * `name    # the event name`
 * `from    # the state transitioning from`
@@ -960,7 +946,7 @@ end
 fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
 ```
 
-### 4.9 Same kind of callbacks
+### 4.6 Duplicate callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
 
@@ -980,7 +966,7 @@ end
 fm.slow # => will invoke both callbacks
 ```
 
-### 4.10 Fluid callbacks
+### 4.7 Fluid callbacks
 
 Callbacks can also be specified as full method calls.
 
@@ -1002,9 +988,9 @@ fm = FiniteMachine.define do
 end
 ```
 
-### 4.11 Executing methods inside callbacks
+### 4.8 Methods inside callbacks
 
-In order to execute method from another object use `target` helper.
+Given a class `Car`:
 
 ```ruby
 class Car
@@ -1018,13 +1004,19 @@ class Car
     @reverse_lights = true
   end
 end
+```
 
+We can easily manipulate state for an instance of a `Car` class:
+
+```ruby
 car = Car.new
+```
 
-fm = FiniteMachine.define do
+By defining finite machine using the instance:
+
+```ruby
+fm = FiniteMachine.define(car) do
   initial :neutral
-
-  target car
 
   events {
     event :forward, [:reverse, :neutral] => :one
@@ -1057,45 +1049,9 @@ end
 fm.back   # => Go Piotr!
 ```
 
-For more complex example see [Integration](#8-integration) section.
+For more complex example see [Integration](#7-integration) section.
 
-### 4.12 Defining callbacks
-
-When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
-
-```ruby
-fm = FiniteMachine.define do
-  initial :red
-
-  events {
-    event :ready, :red    => :yellow
-    event :go,    :yellow => :green
-    event :stop,  :green  => :red
-  }
-end
-
-fm.on_enter_yellow do |event|
-  ...
-end
-```
-
-### 4.13 Asynchronous callbacks
-
-By default all callbacks are run synchronously. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
-
-```ruby
-  on_enter :green, :async do |event| ... end
-```
-
-or
-
-```ruby
-  on_enter_green(:async) { |event| }
-```
-
-This will ensure that when the callback is fired it will run in separate thread outside of the main execution thread.
-
-### 4.14 Cancelling inside callbacks
+### 4.9 Cancelling callbacks
 
 A simple way to prevent transitions is to use [3 Conditional transitions](#3-conditional-transitions).
 
@@ -1122,6 +1078,43 @@ end
 
 fm.ready
 fm.current  # => :red
+```
+
+### 4.10 Asynchronous callbacks
+
+By default all callbacks are run synchronously. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
+
+```ruby
+  on_enter :green, :async do |event| ... end
+```
+
+Or
+
+```ruby
+  on_enter_green(:async) { |event| }
+```
+
+This will ensure that when the callback is fired it will run in separate thread outside of the main execution thread.
+
+
+### 4.11 Instance callbacks
+
+When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
+
+```ruby
+fm = FiniteMachine.define do
+  initial :red
+
+  events {
+    event :ready, :red    => :yellow
+    event :go,    :yellow => :green
+    event :stop,  :green  => :red
+  }
+end
+
+fm.on_enter_yellow do |event|
+  ...
+end
 ```
 
 ## 5. Error Handling
