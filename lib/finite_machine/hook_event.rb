@@ -23,7 +23,59 @@ module FiniteMachine
 
     MESSAGE = :emit
 
-    # HookEvent state or action
+    # Extract event name
+    #
+    # @return [String] the event name
+    #
+    # @api public
+    def self.event_name
+      name.split('::').last.downcase.to_sym
+    end
+
+    # String representation
+    #
+    # @return [String] the event name
+    #
+    # @api public
+    def self.to_s
+      event_name.to_s
+    end
+
+    # Choose any state or event name based on even type
+    #
+    # @param [HookEvent] event_type
+    #
+    # @return [Symbol]
+    #   out of :any or :any_event
+    #
+    # @api public
+    def self.any_state_or_event(event_type)
+      event_type < Anyaction ? ANY_EVENT : ANY_STATE
+    end
+
+    # Build event hook
+    #
+    # @param [Symbol] :state
+    #   The state or action name.
+    #
+    # @param [Symbol] :event_name
+    #   The event name associted with this hook.
+    #
+    # @return [self]
+    #
+    # @api public
+    def self.build(state, event_name, from)
+      state_or_action = self < Anystate ? state : event_name
+      new(state_or_action, event_name, from)
+    end
+
+    EVENTS.each do |event|
+      (class << self; self; end).class_eval do
+        define_method(event.event_name) { event }
+      end
+    end
+
+    # HookEvent state or action name
     attr_reader :name
 
     # HookEvent type
@@ -57,34 +109,6 @@ module FiniteMachine
       freeze
     end
 
-    # Build event hook
-    #
-    # @param [Symbol] :state
-    #   The state or action name.
-    #
-    # @param [Symbol] :event_name
-    #   The event name associted with this hook.
-    #
-    # @return [self]
-    #
-    # @api public
-    def self.build(state, event_name, from)
-      state_or_action = self < Anystate ? state : event_name
-      new(state_or_action, event_name, from)
-    end
-
-    # Choose any state or event name based on even type
-    #
-    # @param [HookEvent] event_type
-    #
-    # @return [Symbol]
-    #   out of :any or :any_event
-    #
-    # @api public
-    def self.any_state_or_event(event_type)
-      event_type < Anyaction ? ANY_EVENT : ANY_STATE
-    end
-
     # Notify subscriber about this event
     #
     # @param [Observer] subscriber
@@ -97,27 +121,9 @@ module FiniteMachine
     #
     # @api public
     def notify(subscriber, *data)
-      if subscriber.respond_to?(MESSAGE)
-        subscriber.public_send(MESSAGE, self, *data)
-      end
-    end
+      return unless subscriber.respond_to?(MESSAGE)
 
-    # Extract event name
-    #
-    # @return [String] the event name
-    #
-    # @api public
-    def self.event_name
-      name.split('::').last.downcase.to_sym
-    end
-
-    # String representation
-    #
-    # @return [String] the event name
-    #
-    # @api public
-    def self.to_s
-      event_name.to_s
+      subscriber.public_send(MESSAGE, self, *data)
     end
 
     # Compare whether the instance is greater, less then or equal to other
@@ -127,14 +133,8 @@ module FiniteMachine
     # @api public
     def <=>(other)
       other.is_a?(type) &&
-      [name, from, event_name] <=> [other.name, other.from, other.event_name]
+        [name, from, event_name] <=> [other.name, other.from, other.event_name]
     end
-    alias_method :eql?, :==
-
-    EVENTS.each do |event|
-      (class << self; self; end).class_eval do
-        define_method(event.event_name) { event }
-      end
-    end
+    alias eql? ==
   end # HookEvent
 end # FiniteMachine
