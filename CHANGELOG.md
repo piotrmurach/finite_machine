@@ -8,7 +8,7 @@
 * Add Const for declaring unique machine constants
 
 ### Changed
-* Change EventsChain to use Concurrent::Map for holding event transitions
+* Change EventsChain to EventsMap and use Concurrent::Map for holding event transitions
 * Change MessageQueue to use mutex to synchronize access
 * Change StateParser to remove state and use class methods instead
 * Change Observer to create callbacks queue on demand
@@ -16,7 +16,7 @@
 * Remove thread synchronization from AsyncCall, TransitinEvent, HookEvent,
   DSL and Hooks objects
 * Remove #async call from StateMachine
-* Remove #target from DSL
+* Remove #target & #alias_target from DSL
 
 ### Fixed
 * Fix StateParser to raise error without nil
