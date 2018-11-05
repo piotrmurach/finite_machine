@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine::Hooks, '#call' do
   let(:object) { described_class }

@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal
 
 RSpec.describe FiniteMachine, '#inspect' do
   it "print useful information about state machine" do

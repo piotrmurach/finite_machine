@@ -1,9 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe FiniteMachine, 'define' do
-
+RSpec.describe FiniteMachine, '.define' do
   context 'with block' do
     it "creates system state machine" do
       fsm = FiniteMachine.define do

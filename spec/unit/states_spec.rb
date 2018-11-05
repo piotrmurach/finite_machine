@@ -1,8 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe FiniteMachine, 'states' do
+RSpec.describe FiniteMachine, '#states' do
   it "retrieves all available states" do
     fsm = FiniteMachine.define do
       initial :green

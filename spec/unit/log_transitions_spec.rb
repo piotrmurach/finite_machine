@@ -1,8 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
-
-RSpec.describe FiniteMachine, 'log_transitions' do
+RSpec.describe FiniteMachine, ':log_transitions' do
   let(:output) { StringIO.new('', 'w+')}
 
   before { FiniteMachine.logger = ::Logger.new(output) }

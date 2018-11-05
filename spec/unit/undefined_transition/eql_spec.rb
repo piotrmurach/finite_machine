@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-require 'spec_helper'
+# frozen_string_literal: true
 
 RSpec.describe FiniteMachine::UndefinedTransition, '#==' do
   it "is true with the same name" do

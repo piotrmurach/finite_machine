@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'handlers' do
-
   before(:each) {
     stub_const("DummyLogger", Class.new do
       attr_reader :result

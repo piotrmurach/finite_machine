@@ -1,8 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe FiniteMachine::Transition, '.states' do
+RSpec.describe FiniteMachine::Transition, '#states' do
   let(:machine) { double(:machine) }
 
   it "groups states with :to key only" do

@@ -621,7 +621,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
           on_enter_unknown do |event| end
         } 
       end
-    }.to raise_error(NameError, /undefined method `on_enter_unknown'/)
+    }.to raise_error(NameError, /`on_enter_unknown'/)
   end
 
   it "triggers callbacks only once" do

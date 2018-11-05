@@ -1,8 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe FiniteMachine::Transition, '.check_conditions' do
+RSpec.describe FiniteMachine::Transition, '#check_conditions' do
   it "verifies all conditions pass" do
     exec_conditions = 0
     ok_condition = -> { exec_conditions += 1; return true }

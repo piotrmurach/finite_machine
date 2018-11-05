@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'events' do
-
   it "allows for hash rocket syntax to describe transition" do
     fsm = FiniteMachine.define do
       initial :green

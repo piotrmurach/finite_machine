@@ -1,8 +1,6 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe FiniteMachine, '.event_names' do
+RSpec.describe FiniteMachine, '#event_names' do
   it "retrieves all event names" do
     fsm = FiniteMachine.define do
       initial :green
