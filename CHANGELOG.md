@@ -8,6 +8,7 @@
 * Add Const for declaring unique machine constants
 
 ### Changed
+* Change gemspec to require Ruby >= 2.0
 * Change EventsChain to EventsMap and use Concurrent::Map for holding event transitions
 * Change MessageQueue to use mutex to synchronize access
 * Change StateParser to remove state and use class methods instead
@@ -272,6 +273,13 @@
 ### Fixed
 * Fix bug - callback event object returns correct from state
 
+## [v0.1.0] - 2014-02-09
+
+## [v0.0.1] - 2014-01-10
+
+* Initial release
+
+[v0.12.0]: https://github.com/peter-murach/finite_machine/compare/v0.11.3...v0.12.0
 [v0.11.3]: https://github.com/peter-murach/finite_machine/compare/v0.11.2...v0.11.3
 [v0.11.2]: https://github.com/peter-murach/finite_machine/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/peter-murach/finite_machine/compare/v0.11.0...v0.11.1
