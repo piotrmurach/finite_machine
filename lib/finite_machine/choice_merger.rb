@@ -17,9 +17,9 @@ module FiniteMachine
     # Initialize a ChoiceMerger
     #
     # @api private
-    def initialize(machine, options)
-      self.machine = machine
-      self.options = options
+    def initialize(machine, **options)
+      @machine = machine
+      @options = options
     end
 
     # Create choice transition
@@ -36,7 +36,7 @@ module FiniteMachine
     # @return [FiniteMachine::Transition]
     #
     # @api public
-    def choice(to, attrs = {})
+    def choice(to, **attrs)
       opts = options.dup
       opts.merge!(attrs)
       transition_builder = TransitionBuilder.new(machine, opts)
