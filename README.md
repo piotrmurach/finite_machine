@@ -57,7 +57,7 @@ Or install it yourself as:
     * [2.4 is?](#24-is)
     * [2.5 can? and cannot?](#25-can-and-cannot)
     * [2.6 target](#26-target)
-    * [2.7 Alias target](#27-alias-target)
+    * [2.7 :alias_target](#27-alias_target)
     * [2.8 restore!](#28-restore)
     * [2.9 states](#29-states)
     * [2.10 event names](#210-event-names)
@@ -101,7 +101,7 @@ Or install it yourself as:
     * [7.3 Transactions](#73-transactions)
 * [8. Tips](#8-tips)
 
-## 1 Usage
+## 1. Usage
 
 Here is a very simple example of a state machine:
 
@@ -123,12 +123,32 @@ fm = FiniteMachine.define do
 end
 ```
 
-As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine. The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#5-callbacks) sections for more details.
+As the example demonstrates, by calling the `define` method on **FiniteMachine** you create an instance of finite state machine.
 
-Alternatively, you can construct the machine like a regular object without using the DSL. The same machine could be reimplemented as follows:
+Having declared the states and transitions using `event` method, you can check current state:
 
 ```ruby
-fm = FiniteMachine.new initial: :red
+fm.current # => :red
+````
+
+And trigger transitions using the `trigger`:
+
+```ruby
+fm.trigger(:ready)
+```
+
+or direct method calls:
+
+* `fm.ready`
+* `fm.go`
+* `fm.stop`
+
+ The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#5-callbacks) sections for more details.
+
+Alternatively, you can construct the state machine like a regular object without using the DSL methods. The same machine could be reimplemented as follows:
+
+```ruby
+fm = FiniteMachine.new(initial: :red)
 fm.event(:ready, :red    => :yellow)
 fm.event(:go,    :yellow => :green)
 fm.event(:stop,  :green  => :red)
@@ -144,34 +164,34 @@ fm.on_before(:stop)  { |event| ...}
 The **FiniteMachine** allows you to query the current state by calling the `current` method.
 
 ```ruby
-  fm.current  # => :red
+fm.current  # => :red
 ```
 
 ### 2.2 initial
 
 There are number of ways to provide the initial state in  **FiniteMachine** depending on your requirements.
 
-By default the **FiniteMachine** will be in the `:none` state and you will need to provide an event to transition out of this state.
+By default the **FiniteMachine** will be in the `:none` state and you will need to provide an explicit event to transition out of this state.
 
 ```ruby
 fm = FiniteMachine.define do
   events {
-    event :start, :none   => :green
+    event :init,  :none   => :green
     event :slow,  :green  => :yellow
     event :stop,  :yellow => :red
   }
 end
 
 fm.current # => :none
-fm.start   # => true
+fm.init    # => true
 fm.current # => :green
 ```
 
-If you specify initial state using the `initial` helper, the state machine will be created already in that state.
+If you specify initial state using the `initial` helper, then the state machine will be created already in that state and an implicit `init` event will be created for you and automatically triggered upon the state machine initialization.
 
 ```ruby
 fm = FiniteMachine.define do
-  initial :green
+  initial :green   # fires init event that transitions from :none to :green state
 
   events {
     event :slow,  :green  => :yellow
@@ -182,7 +202,7 @@ end
 fm.current # => :green
 ```
 
-or by passing named argument `:initial` like so
+Or by passing named argument `:initial` like so:
 
 ```ruby
 fm = FiniteMachine.define initial: :green do
@@ -304,7 +324,7 @@ fm.yellow?  # => false
 
 ### 2.5 can? and cannot?
 
-To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if **FiniteMachine** can fire a given event, returning true, otherwise, it will return false. `cannot?` is simply the inverse of `can?`.
+To verify whether or not an event can be fired, **FiniteMachine** provides `can?` or `cannot?` methods. `can?` checks if **FiniteMachine** can fire a given event, returning `true`, otherwise, it will return `false`. The `cannot?` is simply the inverse of `can?`.
 
 ```ruby
 fm.can?(:ready)    # => true
@@ -334,35 +354,45 @@ fm.can?(:stop, :no_breaks) # => false
 
 ### 2.6 target
 
-If you need to execute some external code in the context of the current state machine use `target` helper.
+If you need to execute some external code in the context of the current state machine, pass that object as a first argument to `define` method.
+
+Assuming we have a simple `Car` class that holds an internal state whether the car's engine is on or off:
 
 ```ruby
-car = Car.new
+class Car
+  def initialize
+    @engine_on = false
+  end
 
-fm = FiniteMachine.define do
-  initial :neutral
+  def turn_engine_on
+    @engine_on = true
+  end
 
-  target car
+  def turn_engine_off
+    @engine_on = false
+  end
 
-  events {
-    event :start, :neutral => :one, if: "engine_on?"
-    event :shift, :one => :two
-  }
+  def engine_on?
+    @engine_on
+  end
 end
 ```
 
-Furthermore, the context created through `target` helper will allow you to reference and call methods from another object inside your callbacks. You can reference external context by calling `target`.
+And given an instance of `Car` class:
 
 ```ruby
 car = Car.new
+```
 
-fm = FiniteMachine.define do
+You can provide a context to a state machine by passing it as a first argument to a `define` call. You can then reference this context inside the callbacks by calling the `target` helper:
+
+```ruby
+fm = FiniteMachine.define(car) do
   initial :neutral
-
-  target car
 
   events {
     event :start, :neutral => :one, if: "engine_on?"
+    event :stop,  :one => :neutral
   }
 
   callbacks {
@@ -372,31 +402,11 @@ fm = FiniteMachine.define do
 end
 ```
 
-For more complex example see [Integration](#8-integration) section.
-
-Finally, you can always reference an external context inside the **FiniteMachine** by simply calling `target`, for instance, to reference it inside a callback:
-
-```ruby
-car = Car.new
-
-fm = FiniteMachine.define(car) do
-  initial :neutral
-
-  events {
-    event :start, :neutral => :one, if: "engine_on?"
-  }
-
-  callbacks {
-    on_enter_start do |event|
-      target.turn_engine_on
-    end
-  }
-end
-```
+For more complex example see [Integration](#7-integration) section.
 
 ### 2.7 `:alias_target`
 
-If you need to better express the intention behind the target name, in particular when calling actions in callbacks, you can use the `alias_target` helper:
+If you wish to better express the intention behind the context object, in particular when calling actions in callbacks, you can use the `:alias_target` option:
 
 ```ruby
 car = Car.new
