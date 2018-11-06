@@ -91,7 +91,7 @@ Or install it yourself as:
     * [4.11 Instance callbacks](#411-instance-callbacks)
 * [5. Error Handling](#5-error-handling)
     * [5.1 Using target](#51-using-target)
-* [6. Stand-Alone FiniteMachine](#6-stand-alone-finitemachine)
+* [6. Stand-alone](#6-stand-alone)
     * [6.1 Creating a Definition](#61-creating-a-definition)
     * [6.2 Targeting definition](#62-targeting-definition)
     * [6.3 Definition inheritance](#63-definition-inheritance)
@@ -143,7 +143,7 @@ or direct method calls:
 * `fm.go`
 * `fm.stop`
 
- The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#5-callbacks) sections for more details.
+ The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#4-callbacks) sections for more details.
 
 Alternatively, you can construct the state machine like a regular object without using the DSL methods. The same machine could be reimplemented as follows:
 
@@ -1159,7 +1159,7 @@ end
 
 ### 5.1 Using target
 
-You can pass an external context via `target` helper that will be the receiver for the handler. The handler method needs to take one argument that will be called with the exception.
+You can pass an external context as a first argument to the **FiniteMachine** initialization that will be available as context in the handler block or `:with` value. For example, the `log_error` method is made available when `:with` option key is used:
 
 ```ruby
 class Logger
@@ -1168,9 +1168,7 @@ class Logger
   end
 end
 
-fm = FiniteMachine.define do
-  target logger
-
+fm = FiniteMachine.define(logger) do
   initial :green
 
   events {
@@ -1184,7 +1182,7 @@ fm = FiniteMachine.define do
 end
 ```
 
-## 6. Stand-Alone FiniteMachine
+## 6. Stand-alone
 
 **FiniteMachine** allows you to separate your state machine from the target class so that you can keep your concerns broken in small maintainable pieces.
 
@@ -1220,7 +1218,9 @@ end
 
 ### 6.2 Targeting definition
 
-The next step is to instantiate your state machine and use `target` to load specific context.
+The next step is to instantiate your state machine and use a custom class instance to load specific context.
+
+For example, having the following `Car` class:
 
 ```ruby
 class Car
@@ -1237,12 +1237,12 @@ class Car
   end
 end
 ```
+
 Thus, to associate `Engine` to `Car` do:
 
 ```ruby
 car = Car.new
-engine = Engine.new
-engine.target car
+engine = Engine.new(car)
 
 car.reverse_lignts?  # => false
 engine.back
@@ -1254,10 +1254,9 @@ Alternatively, create method inside the `Car` that will do the integration like 
 ```ruby
 class Car
   ... #  as above
+
   def engine
-    @engine ||= Engine.new
-    @engine.target(self)
-    @engine
+    @engine ||= Engine.new(self)
   end
 end
 ```
@@ -1280,7 +1279,7 @@ class GenericStateMachine < FiniteMachine::Definition
 end
 ```
 
-we can easily create a more specific definition that adds new event and more specific callback to the mix.
+You can easily create a more specific definition that adds new events and more specific callbacks to the mix.
 
 ```ruby
 class SpecificStateMachine < GenericStateMachine
@@ -1298,7 +1297,6 @@ Finally to use the specific state machine definition do:
 
 ```ruby
 specific_fsm = SpecificStateMachine.new
-specific_fsm.target ... # Target specific object
 ```
 
 ## 7. Integration
@@ -1324,11 +1322,8 @@ class Car
   end
 
   def gears
-    context = self
-    @gears ||= FiniteMachine.define do
+    @gears ||= FiniteMachine.define(self) do
       initial :neutral
-
-      target context
 
       events {
         event :start, :neutral => :one
@@ -1393,10 +1388,7 @@ class Account < ActiveRecord::Base
   end
 
   def manage
-    context = self
-    @manage ||= FiniteMachine.define do
-      target context
-
+    @manage ||= FiniteMachine.define(self) do
       initial :unapproved
 
       events {
