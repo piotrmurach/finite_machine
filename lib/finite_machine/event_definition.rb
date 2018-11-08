@@ -52,11 +52,8 @@ module FiniteMachine
     # @api private
     def define_event_transition(event_name, silent)
       machine.send(:define_singleton_method, event_name) do |*data, &block|
-        if silent
-          machine.transition(event_name, *data, &block)
-        else
-          machine.trigger(event_name, *data, &block)
-        end
+        method = silent ? :transition : :trigger
+        machine.public_send(method, event_name, *data, &block)
       end
     end
 
@@ -73,11 +70,8 @@ module FiniteMachine
     # @api private
     def define_event_bang(event_name, silent)
       machine.send(:define_singleton_method, "#{event_name}!") do |*data, &block|
-        if silent
-          machine.transition!(event_name, *data, &block)
-        else
-          machine.trigger!(event_name, *data, &block)
-        end
+        method = silent ? :transition! : :trigger!
+        machine.public_send(method, event_name, *data, &block)
       end
     end
   end # EventBuilder
