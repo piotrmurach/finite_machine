@@ -426,16 +426,6 @@ RSpec.describe FiniteMachine, 'events' do
     expect(callbacks).to match_array(["dialing 911"])
   end
 
-  it "detects dangerous event names" do
-    expect {
-      FiniteMachine.define do
-        events {
-          event :trigger, :a => :b
-        }
-      end
-    }.to raise_error(FiniteMachine::AlreadyDefinedError)
-  end
-
   it "executes event block" do
     fsm = FiniteMachine.define do
       initial :red

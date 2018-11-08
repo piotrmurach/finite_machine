@@ -96,6 +96,7 @@ module FiniteMachine
     # @api private
     def initialize(*args, **options, &block)
       @initial_state = DEFAULT_STATE
+      @auto_methods  = options.fetch(:auto_methods, true)
       @subscribers   = Subscribers.new
       @observer      = Observer.new(self)
       @events_map    = EventsMap.new
@@ -108,6 +109,15 @@ module FiniteMachine
       env.aliases << options[:alias_target] if options[:alias_target]
       @dsl.call(&block) if block_given?
       trigger_init
+    end
+
+    # Check if event methods should be auto generated
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def auto_methods?
+      @auto_methods
     end
 
     # Attach state machine to an object

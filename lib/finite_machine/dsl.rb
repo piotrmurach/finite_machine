@@ -56,6 +56,7 @@ module FiniteMachine
 
       @machine.state = FiniteMachine::DEFAULT_STATE
       @defer_initial = true
+      @silent_initial = true
 
       initial(@attrs[:initial])   if @attrs[:initial]
       terminal(@attrs[:terminal]) if @attrs[:terminal]
@@ -95,9 +96,9 @@ module FiniteMachine
     # @api public
     def initial(value, **options)
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
-      name, @defer_initial, silent = *parse_initial(options)
+      name, @defer_initial, @silent_initial = *parse_initial(options)
       @initial_event = name
-      event(name, FiniteMachine::DEFAULT_STATE => state, silent: silent)
+      event(name, FiniteMachine::DEFAULT_STATE => state, silent: @silent_initial)
     end
 
     # Trigger initial event
@@ -106,7 +107,8 @@ module FiniteMachine
     #
     # @api private
     def trigger_init
-      public_send(:"#{@initial_event}") unless @defer_initial
+      method = @silent_initial ? :transition : :trigger
+      @machine.public_send(method, :"#{@initial_event}") unless @defer_initial
     end
 
     # Define terminal state
@@ -211,7 +213,7 @@ module FiniteMachine
     #
     # @api public
     def event(name, attrs = {}, &block)
-      detect_event_conflict!(name)
+      detect_event_conflict!(name) if machine.auto_methods?
       attributes = attrs.merge!(name: name)
       if block_given?
         merger = ChoiceMerger.new(@machine, attributes)

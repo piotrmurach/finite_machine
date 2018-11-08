@@ -61,6 +61,7 @@ Or install it yourself as:
     * [2.8 restore!](#28-restore)
     * [2.9 states](#29-states)
     * [2.10 event names](#210-event-names)
+    * [2.11 :auto_methods](#211-auto_methods)
 * [3. States and Transitions](#3-states-and-transitions)
     * [3.1 Triggering transitions](#31-triggering-transitions)
     * [3.2 Dangerous transitions](#32-dangerous-transitions)
@@ -449,6 +450,26 @@ To find out all the event names supported by the state machine issue `event_name
 
 ```ruby
 fm.event_names # => [:init, :ready, :go, :stop]
+```
+
+### 2.11 `:auto_methods`
+
+By default all event names will be converted by **FiniteMachine** into method names. This also means that you won't be able to use event names such as `:fail` or `:trigger` as these are already defined on the machine instance. In situations when you wish to use any event name for your event names use `:auto_methods` keyword to disable automatic methods generation. For example, to define `:fail` event:
+
+
+```ruby
+fm = FiniteMachine.define(auto_methods: false) do
+  initial :green
+
+  event :fail, :green => :red
+end
+```
+
+And then you can use `trigger` to fire the event:
+
+```ruby
+fm.trigger(:fail)
+fm.current # => :red
 ```
 
 ## 3. States and Transitions

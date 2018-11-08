@@ -57,6 +57,8 @@ module FiniteMachine
 
         machine.events_map.add(name, transition)
 
+        next unless machine.auto_methods?
+
         unless machine.respond_to?(name)
           event_definition.apply(name, silent)
         end
