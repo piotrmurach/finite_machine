@@ -4,7 +4,6 @@ require_relative 'event_definition'
 require_relative 'state_definition'
 require_relative 'state_parser'
 require_relative 'transition'
-require_relative 'threadable'
 
 module FiniteMachine
   # A class reponsible for building transition out of parsed states
@@ -13,17 +12,6 @@ module FiniteMachine
   #
   # @api private
   class TransitionBuilder
-    include Threadable
-
-    # The current state machine
-    attr_threadsafe :machine
-
-    attr_threadsafe :attributes
-
-    attr_threadsafe :event_definition
-
-    attr_threadsafe :state_definition
-
     # Initialize a TransitionBuilder
     #
     # @example
@@ -50,19 +38,19 @@ module FiniteMachine
     # @api public
     def call(states)
       StateParser.parse(states) do |from, to|
-        attributes.merge!(states: { from => to })
-        transition = Transition.new(machine.env.target, attributes)
-        name = attributes[:name]
-        silent = attributes.fetch(:silent, false)
+        @attributes.merge!(states: { from => to })
+        transition = Transition.new(@machine.env.target, @attributes)
+        name = @attributes[:name]
+        silent = @attributes.fetch(:silent, false)
 
-        machine.events_map.add(name, transition)
+        @machine.events_map.add(name, transition)
 
-        next unless machine.auto_methods?
+        next unless @machine.auto_methods?
 
-        unless machine.respond_to?(name)
-          event_definition.apply(name, silent)
+        unless @machine.respond_to?(name)
+          @event_definition.apply(name, silent)
         end
-        state_definition.apply({ from => to })
+        @state_definition.apply({ from => to })
       end
       self
     end
