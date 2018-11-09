@@ -206,21 +206,21 @@ module FiniteMachine
     #
     # @param [Symbol] name
     #   the event name
-    # @param [Hash] attrs
+    # @param [Hash] transitions
     #   the event transitions and conditions
     #
     # @return [Transition]
     #
     # @api public
-    def event(name, attrs = {}, &block)
+    def event(name, transitions = {}, &block)
       detect_event_conflict!(name) if machine.auto_methods?
-      attributes = attrs.merge!(name: name)
+      attributes = transitions.merge!(name: name)
       if block_given?
         merger = ChoiceMerger.new(@machine, attributes)
         merger.instance_eval(&block)
       else
         transition_builder = TransitionBuilder.new(@machine, attributes)
-        transition_builder.call(attrs)
+        transition_builder.call(transitions)
       end
     end
   end # EventsDSL
