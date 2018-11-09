@@ -19,25 +19,26 @@ module FiniteMachine
     #
     # @api public
     def initialize(machine, attributes = {})
-      @machine = machine
+      @machine    = machine
       @attributes = attributes
+
       @event_definition = EventDefinition.new(machine)
       @state_definition = StateDefinition.new(machine)
     end
 
-    # Creates transitions for the states
+    # Converts user transitions into internal {Transition} representation
     #
     # @example
     #   transition_builder.call([:green, :yellow] => :red)
     #
-    # @param [Hash[Symbol]] states
-    #   The states to extract
+    # @param [Hash[Symbol]] transitions
+    #   The transitions to extract states from
     #
     # @return [self]
     #
     # @api public
-    def call(states)
-      StateParser.parse(states) do |from, to|
+    def call(transitions)
+      StateParser.parse(transitions) do |from, to|
         @attributes.merge!(states: { from => to })
         transition = Transition.new(@machine.env.target, @attributes)
         name = @attributes[:name]
