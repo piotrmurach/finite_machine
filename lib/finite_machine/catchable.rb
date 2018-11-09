@@ -1,9 +1,11 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
   # A mixin to allow for specifying error handlers
   module Catchable
-
+    # Extends object with error handling methods
+    #
+    # @api private
     def self.included(base)
       base.module_eval do
         attr_threadsafe :error_handlers, default: []
