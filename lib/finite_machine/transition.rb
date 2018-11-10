@@ -5,6 +5,17 @@ require_relative 'threadable'
 
 module FiniteMachine
   # Class describing a transition associated with a given event
+  #
+  # The {Transition} is created with the `event` helper.
+  #
+  # @example Converting event into {Transition}
+  #   event :go, :red => :green
+  #
+  #   will be translated to
+  #
+  #   Transition.new(context, {name: :go, states: {:red => :green}})
+  #
+  # @api private
   class Transition
     include Threadable
 
@@ -34,9 +45,9 @@ module FiniteMachine
     # @return [Transition]
     #
     # @api public
-    def initialize(context, attrs = {})
+    def initialize(context, name, attrs = {})
       @context     = context
-      @name        = attrs[:name]
+      @name        = name
       @states      = attrs.fetch(:states, {})
       @if          = Array(attrs.fetch(:if, []))
       @unless      = Array(attrs.fetch(:unless, []))

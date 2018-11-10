@@ -2,12 +2,13 @@
 
 RSpec.describe FiniteMachine::Transition, '#check_conditions' do
   it "verifies all conditions pass" do
+    context = double(:context)
     exec_conditions = 0
     ok_condition = -> { exec_conditions += 1; return true }
     fail_condition = -> { exec_conditions += 1; return false }
-    context = double(:context)
 
-    transition = described_class.new(context, if: [ok_condition, fail_condition])
+    transition = described_class.new(context, :event_name,
+                                     if: [ok_condition, fail_condition])
 
     expect(transition.check_conditions).to eql(false)
     expect(exec_conditions).to eq(2)
@@ -19,8 +20,9 @@ RSpec.describe FiniteMachine::Transition, '#check_conditions' do
     ok_condition = -> { exec_conditions += 1; return true }
     fail_condition = -> { exec_conditions += 1; return false }
 
-    transition = described_class.new(context, if: [ok_condition],
-                                              unless: [fail_condition])
+    transition = described_class.new(context, :event_name,
+                                     if: [ok_condition],
+                                     unless: [fail_condition])
 
     expect(transition.check_conditions).to eql(true)
     expect(exec_conditions).to eq(2)
@@ -30,7 +32,8 @@ RSpec.describe FiniteMachine::Transition, '#check_conditions' do
     context = double(:context)
     condition = -> (_, arg) { arg == 1 }
 
-    transition = described_class.new(context, if: [condition])
+    transition = described_class.new(context, :event_name,
+                                     if: [condition])
 
     expect(transition.check_conditions(2)).to eql(false)
     expect(transition.check_conditions(1)).to eql(true)
@@ -45,7 +48,7 @@ RSpec.describe FiniteMachine::Transition, '#check_conditions' do
     context = Car.new
     condition = -> (car) { car.engine_on? }
 
-    transition = described_class.new(context, if: condition)
+    transition = described_class.new(context, :event_name, if: condition)
 
     expect(transition.check_conditions).to eql(true)
   end

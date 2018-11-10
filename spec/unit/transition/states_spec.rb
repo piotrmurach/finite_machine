@@ -5,13 +5,13 @@ RSpec.describe FiniteMachine::Transition, '#states' do
 
   it "groups states with :to key only" do
     attrs = {states: {:any => :red}}
-    transition = FiniteMachine::Transition.new(machine, attrs)
+    transition = FiniteMachine::Transition.new(machine, :event_name, attrs)
     expect(transition.states).to eql({any: :red})
   end
 
   it "groups states when from array" do
     attrs = {states: { :green => :red, :yellow => :red}}
-    transition = FiniteMachine::Transition.new(machine, attrs)
+    transition = FiniteMachine::Transition.new(machine, :event_name, attrs)
     expect(transition.states.keys).to match_array([:green, :yellow])
     expect(transition.states.values).to eql([:red, :red])
   end
@@ -22,7 +22,7 @@ RSpec.describe FiniteMachine::Transition, '#states' do
               :initial => :low,
               :low     => :medium,
               :medium  => :high }}
-    transition = FiniteMachine::Transition.new(machine, attrs)
+    transition = FiniteMachine::Transition.new(machine, :event_name, attrs)
     expect(transition.states.keys).to match_array([:initial, :low, :medium])
     expect(transition.states.values).to eql([:low, :medium, :high])
   end
