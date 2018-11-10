@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe FiniteMachine::Hooks, '#register' do
-  let(:object) { described_class }
-
-  subject(:hooks) { object.new }
-
   it "adds and removes a single hook" do
+    hooks = FiniteMachine::Hooks.new
     expect(hooks).to be_empty
 
     event_type = FiniteMachine::HookEvent::Before
     hook = -> { }
 
     hooks.register(event_type, :foo, hook)
-    expect(hooks.collection).to eq({event_type => {foo: [hook]}})
+    expect(hooks[event_type][:foo]).to eq([hook])
 
     hooks.unregister(event_type, :foo, hook)
-    expect(hooks.collection).to eq({event_type => {foo: []}})
+    expect(hooks[event_type][:foo]).to eq([])
   end
 end
