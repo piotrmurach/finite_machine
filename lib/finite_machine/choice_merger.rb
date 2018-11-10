@@ -1,25 +1,20 @@
 # frozen_string_literal: true
 
 require_relative 'transition_builder'
-require_relative 'threadable'
 
 module FiniteMachine
   # A class responsible for merging choice options
   class ChoiceMerger
-    include Threadable
-
-    # The context where choice is executed
-    attr_threadsafe :machine
-
-    # The options passed in to the machine
-    attr_threadsafe :options
-
     # Initialize a ChoiceMerger
     #
+    # @param [StateMachine] machine
+    # @param [Hash] transitions
+    #   the transitions and attributes
+    #
     # @api private
-    def initialize(machine, **options)
-      @machine = machine
-      @options = options
+    def initialize(machine, **transitions)
+      @machine     = machine
+      @transitions = transitions
     end
 
     # Create choice transition
@@ -31,16 +26,16 @@ module FiniteMachine
     #
     # @param [Symbol] to
     #   the to state
-    # @param [Hash] attrs
+    # @param [Hash] conditions
+    #   the conditions associated with this choice
     #
     # @return [FiniteMachine::Transition]
     #
     # @api public
-    def choice(to, **attrs)
-      opts = options.dup
-      opts.merge!(attrs)
-      transition_builder = TransitionBuilder.new(machine, opts)
-      transition_builder.call(options[:from] => to)
+    def choice(to, **conditions)
+      transition_builder = TransitionBuilder.new(@machine,
+                                                 @transitions.merge(conditions))
+      transition_builder.call(@transitions[:from] => to)
     end
     alias_method :default, :choice
   end # ChoiceMerger
