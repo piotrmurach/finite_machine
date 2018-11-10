@@ -16,8 +16,8 @@ module FiniteMachine
     #
     # @api public
     def initialize
-      @hooks_map = Concurrent::Map.new do |events_hash, event_type|
-        events_hash[event_type] = Concurrent::Map.new do |state_hash, name|
+      @hooks_map = Concurrent::Map.new do |events_hash, hook_event|
+        events_hash[hook_event] = Concurrent::Map.new do |state_hash, name|
           state_hash[name] = []
         end
       end
@@ -35,13 +35,13 @@ module FiniteMachine
     #
     # @api public
     def find(name)
-      @hooks_map.fetch(name) { [] }
+      @hooks_map[name]
     end
     alias [] find
 
     # Register callback
     #
-    # @param [String] event_type
+    # @param [String] hook_event
     # @param [String] name
     # @param [Proc]   callback
     #
@@ -54,13 +54,13 @@ module FiniteMachine
     # @return [Hash]
     #
     # @api public
-    def register(event_type, name, callback)
-      @hooks_map[event_type][name] << callback
+    def register(hook_event, name, callback)
+      @hooks_map[hook_event][name] << callback
     end
 
     # Unregister callback
     #
-    # @param [String] event_type
+    # @param [String] hook_event
     # @param [String] name
     # @param [Proc]   callback
     #
@@ -70,24 +70,8 @@ module FiniteMachine
     # @return [Hash]
     #
     # @api public
-    def unregister(event_type, name, callback)
-      callbacks = @hooks_map[event_type][name]
-      callbacks.delete(callback)
-    end
-
-    # Return all hooks matching event and state
-    #
-    # @param [String] event_type
-    # @param [String] event_state
-    #
-    # @example
-    #   hooks.call(HookEvent::Enter, :green)
-    #
-    # @return [Hash]
-    #
-    # @api public
-    def call(event_type, event_state, &block)
-      @hooks_map[event_type][event_state].each(&block)
+    def unregister(hook_event, name, callback)
+      @hooks_map[hook_event][name].delete(callback)
     end
 
     # Check if hooks_map has any elements
@@ -113,10 +97,10 @@ module FiniteMachine
     # @api public
     def to_s
       hash = {}
-      @hooks_map.each_pair do |event_type, nested_hash|
-        hash[event_type] = {}
+      @hooks_map.each_pair do |hook_event, nested_hash|
+        hash[hook_event] = {}
         nested_hash.each_pair do |name, callbacks|
-          hash[event_type][name] = callbacks
+          hash[hook_event][name] = callbacks
         end
       end
       hash.to_s

@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe FiniteMachine::Hooks, '#call' do
-  let(:object) { described_class }
-
-  subject(:hooks) { object.new }
-
   it "adds and removes a single hook" do
+    hooks = FiniteMachine::Hooks.new
     expect(hooks).to be_empty
 
     yielded = []
@@ -13,7 +10,7 @@ RSpec.describe FiniteMachine::Hooks, '#call' do
     hook = -> { }
     hooks.register(event_type, :foo, hook)
 
-    hooks.call(event_type, :foo) do |callback|
+    hooks[event_type][:foo].each do |callback|
       yielded << callback
     end
 
