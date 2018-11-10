@@ -10,9 +10,9 @@ module FiniteMachine
     # Initialize a generic DSL
     #
     # @api public
-    def initialize(machine, attrs = {})
-      @attrs = attrs
+    def initialize(machine, **attrs)
       @machine = machine
+      @attrs   = attrs
     end
 
     # Expose any state constant
