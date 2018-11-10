@@ -2,7 +2,7 @@
 
 RSpec.describe FiniteMachine, '#states' do
   it "retrieves all available states" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -17,7 +17,7 @@ RSpec.describe FiniteMachine, '#states' do
   end
 
   it "retrieves all unique states for choice transition" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {

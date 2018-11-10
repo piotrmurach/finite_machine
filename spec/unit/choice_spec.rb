@@ -11,7 +11,7 @@ RSpec.describe FiniteMachine, '#choice' do
 
   it "allows for static choice based on conditional branching" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :company_form
 
       events {
@@ -37,7 +37,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "allows for dynamic choice based on conditional branching" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :company_form
 
       events {
@@ -63,7 +63,7 @@ RSpec.describe FiniteMachine, '#choice' do
 
   it "allows for dynamic choice based on conditional branching and target" do
     user = User.new
-    fsm = FiniteMachine.define(user) do
+    fsm = FiniteMachine.new(user) do
       initial :company_form
 
       events {
@@ -82,7 +82,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "chooses state when skipped if/unless" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :company_form
 
       events {
@@ -99,7 +99,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "chooses default state when branching conditions don't match" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :company_form
 
       events {
@@ -116,7 +116,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "fails to transition when no condition matches without default state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :company_form
 
       events {
@@ -132,7 +132,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "allows to transition from multiple states to choice pseudostate" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       event :go, from: [:yellow, :red] do
@@ -150,7 +150,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "allows to transition from any state to choice pseudo state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       event :go, from: any_state do
@@ -164,7 +164,7 @@ RSpec.describe FiniteMachine, '#choice' do
   end
 
   it "groups correctly events under the same name" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       event :next, from: :yellow, to: :green
@@ -183,7 +183,7 @@ RSpec.describe FiniteMachine, '#choice' do
 
   it "performs matching transitions for multiple event definitions with the same name" do
     ticket = double(:ticket, :pending? => true, :finished? => true)
-    fsm = FiniteMachine.define(ticket) do
+    fsm = FiniteMachine.new(ticket) do
       initial :inactive
 
       events {
@@ -210,7 +210,7 @@ RSpec.describe FiniteMachine, '#choice' do
   it "does not transition when no matching choice for multiple event definitions" do
     ticket = double(:ticket, :pending? => true, :finished? => false)
     called = []
-    fsm = FiniteMachine.define(ticket) do
+    fsm = FiniteMachine.new(ticket) do
       initial :inactive
 
       events {
@@ -257,7 +257,7 @@ RSpec.describe FiniteMachine, '#choice' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    fsm = FiniteMachine.define(self) do
+    fsm = FiniteMachine.new(self) do
       initial :red
 
       events {

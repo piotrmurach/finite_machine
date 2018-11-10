@@ -10,7 +10,7 @@ RSpec.describe FiniteMachine, 'can?' do
   }
 
   it "allows to check if event can be fired" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -55,7 +55,7 @@ RSpec.describe FiniteMachine, 'can?' do
 
   context 'with conditionl transition' do
     it "evalutes condition with parameters" do
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -75,7 +75,7 @@ RSpec.describe FiniteMachine, 'can?' do
 
     it "checks against target and grouped events" do
       bug = Bug.new
-      fsm = FiniteMachine.define(bug) do
+      fsm = FiniteMachine.new(bug) do
         initial :initial
 
         events {

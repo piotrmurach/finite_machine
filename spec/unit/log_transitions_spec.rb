@@ -6,7 +6,7 @@ RSpec.describe FiniteMachine, ':log_transitions' do
   after  { FiniteMachine.logger = ::Logger.new($stderr) }
 
   it "logs transitions" do
-    fsm = FiniteMachine.define log_transitions: true do
+    fsm = FiniteMachine.new log_transitions: true do
       initial :green
 
       events {

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '.define' do
+RSpec.describe FiniteMachine, '.new' do
   context 'with block' do
     it "creates system state machine" do
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -30,7 +30,7 @@ RSpec.describe FiniteMachine, '.define' do
   context 'without block' do
     it "creates state machine" do
       called = []
-      fsm = FiniteMachine.define
+      fsm = FiniteMachine.new
       fsm.initial(:green)
       fsm.event(:slow, :green => :yellow)
       fsm.event(:stop, :yellow => :red)

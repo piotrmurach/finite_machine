@@ -2,7 +2,7 @@
 
 RSpec.describe FiniteMachine, 'events' do
   it "allows for hash rocket syntax to describe transition" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -19,7 +19,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "allows to add event without events scope" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       event :slow, :green  => :yellow
@@ -30,7 +30,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "allows for (:from | :to) key pairs to describe transition" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -47,7 +47,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "permits no-op event without 'to' transition" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -74,7 +74,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "permits event from any state using :from" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -109,7 +109,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "permits event from any state for hash syntax" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       events {
@@ -132,7 +132,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "permits event from any state without 'from'" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -168,7 +168,7 @@ RSpec.describe FiniteMachine, 'events' do
 
   it "doesn't raise error on invalid transition for non-dangerous version" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -189,7 +189,7 @@ RSpec.describe FiniteMachine, 'events' do
   context 'for non-dangerous version' do
     it "doesn't raise error on invalid transition and fires callbacks" do
       called = []
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -209,7 +209,7 @@ RSpec.describe FiniteMachine, 'events' do
 
     it "raises error on invalid transition for dangerous version" do
       called = []
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -231,7 +231,7 @@ RSpec.describe FiniteMachine, 'events' do
   context 'for dangerous version' do
     it "raises error on invalid transition without callbacks" do
       called = []
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -251,7 +251,7 @@ RSpec.describe FiniteMachine, 'events' do
 
     it "raises error on invalid transition with callbacks fired" do
       called = []
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -273,7 +273,7 @@ RSpec.describe FiniteMachine, 'events' do
 
   context 'when multiple from states' do
     it "allows for array from key" do
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -301,7 +301,7 @@ RSpec.describe FiniteMachine, 'events' do
     end
 
     it "allows for hash of states" do
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :green
 
         events {
@@ -330,7 +330,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "groups events with the same name" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -356,7 +356,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "groups transitions under one event name" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :initial
 
       events {
@@ -373,7 +373,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "returns values for events" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :neutral
 
       events {
@@ -398,7 +398,7 @@ RSpec.describe FiniteMachine, 'events' do
   it "allows for self transition events" do
     digits = []
     callbacks = []
-    phone = FiniteMachine.define do
+    phone = FiniteMachine.new do
       initial :on_hook
 
       events {
@@ -427,7 +427,7 @@ RSpec.describe FiniteMachine, 'events' do
   end
 
   it "executes event block" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       events {

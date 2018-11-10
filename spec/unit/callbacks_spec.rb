@@ -3,7 +3,7 @@
 RSpec.describe FiniteMachine, 'callbacks' do
   it "triggers default init event" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, defer: true, silent: false
 
       callbacks {
@@ -50,7 +50,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "executes callbacks in order" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, silent: false
 
       events {
@@ -169,7 +169,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "maintains transition execution sequence from UML statechart" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :previous, silent: false
 
       events {
@@ -203,7 +203,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "allows multiple callbacks for the same state" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, silent: false
 
       events {
@@ -271,7 +271,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "allows for fluid callback definition" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -307,7 +307,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "passes event object to callback" do
     evt = nil
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -330,7 +330,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "identifies the from state for callback event parameter" do
     evt = nil
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -364,7 +364,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    fsm = FiniteMachine.define(self) do
+    fsm = FiniteMachine.new(self) do
       initial :green
 
       events {
@@ -435,7 +435,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       target.expect(c).to target.eql(expected[:c])
     }
 
-    fsm = FiniteMachine.define(self) do
+    fsm = FiniteMachine.new(self) do
       initial :red
 
       events {
@@ -507,7 +507,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "raises an error with invalid callback name" do
     expect {
-      FiniteMachine.define do
+      FiniteMachine.new do
         initial :green
 
         events {
@@ -523,7 +523,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "doesn't allow to mix state callback with event name" do
     expect {
-      FiniteMachine.define do
+      FiniteMachine.new do
         events { event :slow,  :green  => :yellow }
 
         callbacks { on_enter_slow do |event| end }
@@ -533,7 +533,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "doesn't allow to mix event callback with state name" do
     expect {
-      FiniteMachine.define do
+      FiniteMachine.new do
         events { event :slow, :green => :yellow }
 
         callbacks { on_before_green do |event| end }
@@ -542,7 +542,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
   end
 
   it "propagates exceptions raised inside callback" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events { event :slow, :green => :yellow }
@@ -556,7 +556,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "executes callbacks with multiple 'from' transitions" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -583,7 +583,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "allows to define callbacks on machine instance" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -607,7 +607,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "raises error for unknown callback" do
     expect { 
-      FiniteMachine.define do
+      FiniteMachine.new do
         initial :green
 
         events {
@@ -626,7 +626,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "triggers callbacks only once" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, silent: false
 
       events {
@@ -683,7 +683,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "groups states from separate events with the same name" do
     callbacks = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :initial, silent: false
 
       events {
@@ -757,7 +757,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "groups states under event name" do
     callbacks = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :initial, silent: false
 
       events {
@@ -807,7 +807,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "permits state and event with the same name" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :on_hook, silent: false
 
       events {
@@ -836,7 +836,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "allows to selectively silence events" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :yellow
 
       events {
@@ -857,7 +857,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   it "executes event-based callbacks even when state does not change" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :active
 
       events {
@@ -884,7 +884,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
   end
 
   it "doesn't transition if error raised in callback" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events { event :slow, :green => :yellow }
@@ -902,7 +902,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
   xit "" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       events {

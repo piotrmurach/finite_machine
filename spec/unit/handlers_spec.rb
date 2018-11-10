@@ -17,7 +17,7 @@ RSpec.describe FiniteMachine, 'handlers' do
 
   it "allows to customise error handling" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -42,7 +42,7 @@ RSpec.describe FiniteMachine, 'handlers' do
 
   it 'allows for :with to be symbol' do
     logger = DummyLogger.new
-    fsm = FiniteMachine.define(logger) do
+    fsm = FiniteMachine.new(logger) do
       initial :green
 
       events {
@@ -64,7 +64,7 @@ RSpec.describe FiniteMachine, 'handlers' do
   it 'allows for error type as string' do
     logger = DummyLogger.new
     called = []
-    fsm = FiniteMachine.define(target: logger) do
+    fsm = FiniteMachine.new(target: logger) do
       initial :green
 
       events {
@@ -92,7 +92,7 @@ RSpec.describe FiniteMachine, 'handlers' do
 
   it 'allows for empty block handler' do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -116,7 +116,7 @@ RSpec.describe FiniteMachine, 'handlers' do
   end
 
   it 'requires error handler' do
-    expect { FiniteMachine.define do
+    expect { FiniteMachine.new do
       initial :green
 
       events {
@@ -130,7 +130,7 @@ RSpec.describe FiniteMachine, 'handlers' do
   end
 
   it 'checks handler class to be Exception' do
-    expect { FiniteMachine.define do
+    expect { FiniteMachine.new do
       initial :green
 
       events {

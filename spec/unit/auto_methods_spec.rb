@@ -2,7 +2,7 @@
 
 RSpec.describe FiniteMachine, ':auto_methods' do
   it "allows turning off automatic methods generation" do
-    fsm = FiniteMachine.define(auto_methods: false) do
+    fsm = FiniteMachine.new(auto_methods: false) do
       initial :green
 
       events {
@@ -27,7 +27,7 @@ RSpec.describe FiniteMachine, ':auto_methods' do
   end
 
   it "allows to use any method name without auto method generation" do
-    fsm = FiniteMachine.define(auto_methods: false) do
+    fsm = FiniteMachine.new(auto_methods: false) do
       initial :green
 
       event :fail, :green => :red
@@ -39,7 +39,7 @@ RSpec.describe FiniteMachine, ':auto_methods' do
 
   it "detects dangerous event names" do
     expect {
-      FiniteMachine.define do
+      FiniteMachine.new do
         event :trigger, :a => :b
       end
     }.to raise_error(FiniteMachine::AlreadyDefinedError)

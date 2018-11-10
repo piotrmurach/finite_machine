@@ -2,7 +2,7 @@
 
 RSpec.describe FiniteMachine, '#inspect' do
   it "print useful information about state machine" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {

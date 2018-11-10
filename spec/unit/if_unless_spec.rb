@@ -27,7 +27,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
 
   it "passes context to conditionals" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       events {
@@ -56,7 +56,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
 
   it "passes context & arguments to conditionals" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       events {
@@ -86,7 +86,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
   it "allows to cancel event with :if option" do
     called = []
 
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -122,7 +122,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
   it "allows to cancel event with :unless option" do
     called = []
 
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -158,7 +158,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
   it "allows to combine conditionals" do
     conditions = []
 
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -184,7 +184,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define(car) do
+      fsm = FiniteMachine.new(car) do
         initial :neutral
 
         events {
@@ -208,7 +208,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "passes arguments to the scope" do
       car = Car.new
 
-      fsm = FiniteMachine.define(car) do
+      fsm = FiniteMachine.new(car) do
         initial :neutral
 
         events {
@@ -230,7 +230,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define(car) do
+      fsm = FiniteMachine.new(car) do
         initial :neutral
 
         events {
@@ -256,7 +256,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     it "specifies :if and :unless" do
       car = Car.new
 
-      fsm = FiniteMachine.define(car) do
+      fsm = FiniteMachine.new(car) do
         initial :neutral
 
         events {
@@ -281,7 +281,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
   context 'when same event name' do
     it "preservers conditions for the same named event" do
       bug = Bug.new
-      fsm = FiniteMachine.define(bug) do
+      fsm = FiniteMachine.new(bug) do
         initial :initial
 
         events {
@@ -298,7 +298,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     end
 
     it "allows for static choice based on branching condition" do
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :company_form
 
         events {
@@ -313,7 +313,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     end
 
     it "allows for dynamic choice based on branching condition" do
-      fsm = FiniteMachine.define do
+      fsm = FiniteMachine.new do
         initial :company_form
 
         events {

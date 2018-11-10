@@ -2,7 +2,7 @@
 
 RSpec.describe FiniteMachine, 'cancell callbacks' do
   it "cancels transition on event callback" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -25,7 +25,7 @@ RSpec.describe FiniteMachine, 'cancell callbacks' do
   it "stops executing callbacks when cancelled" do
     called = []
 
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :initial
 
       events { event :bump, initial: :low }

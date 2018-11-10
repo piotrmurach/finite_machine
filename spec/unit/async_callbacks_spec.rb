@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe FiniteMachine, 'async callbacks' do
-
   it "permits async callback" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, silent: false
 
       events {

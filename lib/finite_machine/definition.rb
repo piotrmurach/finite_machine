@@ -38,7 +38,7 @@ module FiniteMachine
     # @api public
     def self.new(*args)
       context = self
-      FiniteMachine.define(*args) do
+      FiniteMachine.new(*args) do
         context.deferreds.each { |d| d.call(self) }
       end
     end

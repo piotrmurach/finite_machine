@@ -18,7 +18,7 @@ RSpec.describe FiniteMachine, '#target' do
       end
 
       def engine
-        @engine ||= FiniteMachine.define(self) do
+        @engine ||= FiniteMachine.new(self) do
           initial :neutral
 
           events {
@@ -52,7 +52,7 @@ RSpec.describe FiniteMachine, '#target' do
   end
 
   it "propagates method call" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
       events {
         event :slow, :green => :yellow
@@ -70,7 +70,7 @@ RSpec.describe FiniteMachine, '#target' do
 
   it "references machine methods inside callback" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -117,7 +117,7 @@ RSpec.describe FiniteMachine, '#target' do
       def engine
         self.called ||= []
 
-        @engine ||= FiniteMachine.define(self) do
+        @engine ||= FiniteMachine.new(self) do
           initial :neutral
 
           events {
@@ -155,7 +155,7 @@ RSpec.describe FiniteMachine, '#target' do
   it "allows to access target inside the callback" do
     context = double(:context)
     called = nil
-    fsm = FiniteMachine.define(context) do
+    fsm = FiniteMachine.new(context) do
       initial :green
 
       events {
@@ -185,7 +185,7 @@ RSpec.describe FiniteMachine, '#target' do
     end)
 
     car = Car.new(called)
-    fsm = FiniteMachine.define(car) do
+    fsm = FiniteMachine.new(car) do
       initial :unsaved
 
       events {

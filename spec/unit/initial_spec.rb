@@ -13,7 +13,7 @@ RSpec.describe FiniteMachine, 'initial' do
   }
 
   it "defaults initial state to :none" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       events {
         event :slow, :green  => :yellow
         event :stop, :yellow => :red
@@ -24,7 +24,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "requires initial state transition from :none" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       events {
         event :init, :none   => :green
         event :slow, :green  => :yellow
@@ -39,7 +39,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "allows to specify inital state" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -56,7 +56,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "allows to specify initial state through parameter" do
-    fsm = FiniteMachine.define initial: :green do
+    fsm = FiniteMachine.new initial: :green do
       events {
         event :slow, :green  => :yellow
         event :stop, :yellow => :red
@@ -66,7 +66,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "allows to specify deferred inital state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, defer: true
 
       events {
@@ -82,7 +82,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "raises error when specyfying initial without state name" do
     expect {
-      FiniteMachine.define do
+      FiniteMachine.new do
         initial defer: true
 
         events {
@@ -94,7 +94,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "allows to specify inital start event" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, event: :start
 
       events {
@@ -111,7 +111,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "allows to specify deferred inital start event" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, event: :start, defer: true
 
       events {
@@ -127,7 +127,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "evaluates initial state" do
     logger = DummyLogger.new
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial logger.level
 
       events {
@@ -139,7 +139,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "doesn't care about state type" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial 1
       events {
         event :a, 1 => 2
@@ -154,7 +154,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "allows to retrieve initial state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -170,7 +170,7 @@ RSpec.describe FiniteMachine, 'initial' do
   end
 
   it "allows to retrieve initial state for deferred" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, defer: true
 
       events {
@@ -187,7 +187,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "allows to trigger callbacks on initial with :silent option" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, silent: false
 
       events {
@@ -203,7 +203,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "allows to trigger callbacks on deferred initial state" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green, silent: false, defer: true
 
       events {

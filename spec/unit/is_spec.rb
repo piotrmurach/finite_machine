@@ -3,7 +3,7 @@
 RSpec.describe FiniteMachine, '#is?' do
 
   it "allows to check if state is reachable" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -30,7 +30,7 @@ RSpec.describe FiniteMachine, '#is?' do
   end
 
   it "defines helper methods to check current state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {

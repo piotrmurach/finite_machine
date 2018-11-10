@@ -3,7 +3,7 @@
 RSpec.describe FiniteMachine, '#terminated?' do
 
   it "allows to specify terminal state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
       terminal :red
 
@@ -26,7 +26,7 @@ RSpec.describe FiniteMachine, '#terminated?' do
   end
 
   it "allows to specify terminal state as parameter" do
-    fsm = FiniteMachine.define terminal: :red do
+    fsm = FiniteMachine.new terminal: :red do
       initial :green
 
       events {
@@ -40,7 +40,7 @@ RSpec.describe FiniteMachine, '#terminated?' do
   end
 
   it "checks without terminal state" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -62,7 +62,7 @@ RSpec.describe FiniteMachine, '#terminated?' do
   end
 
   it "allows for multiple terminal states" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :open
 
       terminal :close, :canceled, :faulty

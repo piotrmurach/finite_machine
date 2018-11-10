@@ -2,7 +2,7 @@
 
 RSpec.describe FiniteMachine, '#event_names' do
   it "retrieves all event names" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {

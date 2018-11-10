@@ -50,21 +50,19 @@ module FiniteMachine
   class << self
     attr_accessor :logger
 
-    # TODO: this should instantiate system not the state machine
-    # and then delegate calls to StateMachine instance etc...
+    # Initialize an instance of finite machine
     #
     # @example
-    #   FiniteMachine.define do
+    #   FiniteMachine.new do
     #     ...
     #   end
     #
     # @return [FiniteMachine::StateMachine]
     #
     # @api public
-    def define(*args, **options, &block)
+    def new(*args, **options, &block)
       StateMachine.new(*args, **options, &block)
     end
-    alias_method :new, :define
   end
 end # FiniteMachine
 

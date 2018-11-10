@@ -3,7 +3,7 @@
 RSpec.describe FiniteMachine::StateMachine, '#trigger' do
   it "triggers event manually" do
     called = []
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :red
 
       events {
