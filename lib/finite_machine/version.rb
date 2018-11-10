@@ -1,5 +1,5 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 module FiniteMachine
-  VERSION = "0.11.3"
+  VERSION = "0.12.0"
 end
