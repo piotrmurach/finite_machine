@@ -7,12 +7,10 @@ require_relative 'hooks'
 require_relative 'message_queue'
 require_relative 'safety'
 require_relative 'transition_event'
-require_relative 'threadable'
 
 module FiniteMachine
   # A class responsible for observing state changes
   class Observer < GenericDSL
-    include Threadable
     include Safety
 
     # Clean up callback queue
@@ -30,10 +28,10 @@ module FiniteMachine
     end
 
     # The current state machine
-    attr_threadsafe :machine
+    attr_reader :machine
 
     # The hooks to trigger around the transition lifecycle.
-    attr_threadsafe :hooks
+    attr_reader :hooks
 
     # Initialize an Observer
     #
@@ -42,8 +40,8 @@ module FiniteMachine
     #
     # @api public
     def initialize(machine)
-      @machine        = machine
-      @hooks          = Hooks.new
+      @machine = machine
+      @hooks   = Hooks.new
 
       @machine.subscribe(self)
       ObjectSpace.define_finalizer(self, self.class.cleanup_callback_queue)
