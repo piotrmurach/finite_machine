@@ -18,8 +18,9 @@ module FiniteMachine
     #   TransitionBuilder.new(machine, {})
     #
     # @api public
-    def initialize(machine, attributes = {})
+    def initialize(machine, name, attributes = {})
       @machine    = machine
+      @name       = name
       @attributes = attributes
 
       @event_definition = EventDefinition.new(machine)
@@ -39,19 +40,16 @@ module FiniteMachine
     # @api public
     def call(transitions)
       StateParser.parse(transitions) do |from, to|
-        transition = Transition.new(@machine.env.target,
-                                    @attributes.merge(states: {from => to}))
-        name = @attributes[:name]
+        transition = Transition.new(@machine.env.target, @name,
+                                    @attributes.merge(states: { from => to }))
         silent = @attributes.fetch(:silent, false)
-
-        @machine.events_map.add(name, transition)
-
+        @machine.events_map.add(@name, transition)
         next unless @machine.auto_methods?
 
-        unless @machine.respond_to?(name)
-          @event_definition.apply(name, silent)
+        unless @machine.respond_to?(@name)
+          @event_definition.apply(@name, silent)
         end
-        @state_definition.apply({ from => to })
+        @state_definition.apply(from => to)
       end
       self
     end

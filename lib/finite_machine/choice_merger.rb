@@ -8,19 +8,21 @@ module FiniteMachine
     # Initialize a ChoiceMerger
     #
     # @param [StateMachine] machine
+    # @param [String] name
     # @param [Hash] transitions
     #   the transitions and attributes
     #
     # @api private
-    def initialize(machine, **transitions)
+    def initialize(machine, name, **transitions)
       @machine     = machine
+      @name        = name
       @transitions = transitions
     end
 
     # Create choice transition
     #
     # @example
-    #   event from: :green do
+    #   event :stop, from: :green do
     #     choice :yellow
     #   end
     #
@@ -33,7 +35,7 @@ module FiniteMachine
     #
     # @api public
     def choice(to, **conditions)
-      transition_builder = TransitionBuilder.new(@machine,
+      transition_builder = TransitionBuilder.new(@machine, @name,
                                                  @transitions.merge(conditions))
       transition_builder.call(@transitions[:from] => to)
     end
