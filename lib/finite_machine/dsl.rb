@@ -214,12 +214,12 @@ module FiniteMachine
     # @api public
     def event(name, transitions = {}, &block)
       detect_event_conflict!(name) if machine.auto_methods?
-      attributes = transitions.merge!(name: name)
+
       if block_given?
-        merger = ChoiceMerger.new(@machine, attributes)
+        merger = ChoiceMerger.new(@machine, name, transitions)
         merger.instance_eval(&block)
       else
-        transition_builder = TransitionBuilder.new(@machine, attributes)
+        transition_builder = TransitionBuilder.new(@machine, name, transitions)
         transition_builder.call(transitions)
       end
     end
