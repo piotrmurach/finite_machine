@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'threadable'
-
 module FiniteMachine
   # A class responsible for defining event methods on state machine
   #
@@ -10,10 +8,8 @@ module FiniteMachine
   #
   # @api private
   class EventDefinition
-    include Threadable
-
     # The current state machine
-    attr_threadsafe :machine
+    attr_reader :machine
 
     # Initialize an EventDefinition
     #
@@ -21,7 +17,7 @@ module FiniteMachine
     #
     # @api private
     def initialize(machine)
-      self.machine = machine
+      @machine = machine
     end
 
     # Define transition event names as state machine events

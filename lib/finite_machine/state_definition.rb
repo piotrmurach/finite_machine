@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'threadable'
-
 module FiniteMachine
   # A class responsible for defining state query methods on state machine
   #
@@ -10,15 +8,13 @@ module FiniteMachine
   #
   # @api private
   class StateDefinition
-    include Threadable
-
     # Initialize a StateDefinition
     #
     # @param [StateMachine] machine
     #
     # @api public
     def initialize(machine)
-      self.machine = machine
+      @machine = machine
     end
 
     # Define query methods for states
@@ -36,7 +32,7 @@ module FiniteMachine
     private
 
     # The current state machine
-    attr_threadsafe :machine
+    attr_reader :machine
 
     # Define helper state mehods for the transition states
     #
