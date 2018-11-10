@@ -21,21 +21,22 @@ module FiniteMachine
     end
 
     def format_error(error)
-      message = "#{error.class}: #{error.message}\n\t"
+      message = ["#{error.class}: #{error.message}\n\t"]
       if error.backtrace
         message << "occured at #{error.backtrace.join("\n\t")}"
       else
         message << "EMPTY BACKTRACE\n\t"
       end
+      message.join
     end
 
     def report_transition(name, from, to, *args)
-      message = "Transition: @event=#{name} "
+      message = ["Transition: @event=#{name} "]
       unless args.empty?
         message << "@with=[#{args.join(',')}] "
       end
       message << "#{from} -> #{to}"
-      info(message)
+      info(message.join)
     end
   end # Logger
 end # FiniteMachine
