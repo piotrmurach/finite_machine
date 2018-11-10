@@ -23,7 +23,7 @@ RSpec.describe FiniteMachine, perf: true do
   it "correctly loops through events" do
     measurement = Measurement.new
 
-    fsm = FiniteMachine.define(measurement) do
+    fsm = FiniteMachine.new(measurement) do
       initial :green
 
       events {
@@ -45,7 +45,7 @@ RSpec.describe FiniteMachine, perf: true do
   end
 
   it "performs at least 300 ips" do
-    fsm = FiniteMachine.define do
+    fsm = FiniteMachine.new do
       initial :green
 
       events {
@@ -55,6 +55,6 @@ RSpec.describe FiniteMachine, perf: true do
       }
     end
 
-    expect { fsm.next }.to perform_at_least(300).ips
+    expect { fsm.next }.to perform_at_least(400).ips
   end
 end
