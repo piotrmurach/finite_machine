@@ -13,7 +13,7 @@ module FiniteMachine
   #
   #   will be translated to
   #
-  #   Transition.new(context, {name: :go, states: {:red => :green}})
+  #   Transition.new(context, :go, {states: {:red => :green}})
   #
   # @api private
   class Transition
@@ -34,8 +34,8 @@ module FiniteMachine
     # Initialize a Transition
     #
     # @example
-    #   attributes = {parsed_states: {green: :yellow}}
-    #   Transition.new(context, attributes)
+    #   attributes = {states: {green: :yellow}}
+    #   Transition.new(context, :go, attributes)
     #
     # @param [Object] context
     #   the context this transition evaluets conditions in
