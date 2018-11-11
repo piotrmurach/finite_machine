@@ -1,23 +1,27 @@
 # Change Log
 
-## [v0.12.0] - 2018-11-x
+## [v0.12.0] - 2018-11-11
 
 ### Added
 * Add concurrent-ruby as dependency
+* Add FiniteMachine#new for declaring state machines
 * Add Observer#cancel_event for cancelling event transitions in callbacks, instead of using callback return value
 * Add Const for declaring unique machine constants
+* Add :auto_methods configuration option for disabling automatic conversion of event names into methods
 
 ### Changed
 * Change gemspec to require Ruby >= 2.0
+* Change FiniteMachine#define to create machine class instances
 * Change EventsChain to EventsMap and use Concurrent::Map for holding event transitions
+* Change Hooks to use Concurrent::Map for storing callbacks
 * Change MessageQueue to use mutex to synchronize access
-* Change StateParser to remove state and use class methods instead
+* Change StateParser to remove internal state and use class methods instead
 * Change Observer to create callbacks queue on demand
-* Change :any key to be a unique constant
-* Remove thread synchronization from AsyncCall, TransitinEvent, HookEvent,
-  DSL and Hooks objects
+* Change :any key to be a unique constant ANY_EVENT and ANY_STATE
+* Change #event_names to #events for retrieving all events
+* Remove thread synchronization from AsyncCall, TransitinEvent, HookEvent, DSL, Hooks, TransitionBuilder, ChoiceMerger objects
 * Remove #async call from StateMachine
-* Remove #target & #alias_target from DSL
+* Remove #target, #alias_target, #callbacks, #events and #handlers calls from DSL
 
 ### Fixed
 * Fix StateParser to raise error without nil
