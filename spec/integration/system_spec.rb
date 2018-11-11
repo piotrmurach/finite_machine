@@ -5,35 +5,36 @@ RSpec.describe FiniteMachine, 'system' do
   it "doesn't share state between machine callbacks" do
     callbacks = []
     stub_const("FSM_A", Class.new(FiniteMachine::Definition) do
-      events {
-        event :init, :none => :green
-        event :green, any_state => :green
-      }
+      event :init, :none => :green
+      event :start, any_state => :green
+
       callbacks {
         on_before do |event|
-          callbacks << "fsmA on_before(#{event.to})"
+          callbacks << "fsmA on_before(#{event.name})"
         end
         on_enter_green do |event|
           target.fire
-          callbacks << "fsmA on_enter_green"
+          callbacks << "fsmA on_enter(:green)"
         end
         once_on_enter_green do |event|
-          callbacks << "fsmA once_on_enter_green"
+          callbacks << "fsmA once_on_enter(:green)"
         end
       }
     end)
 
     stub_const("FSM_B", Class.new(FiniteMachine::Definition) do
-      events {
-        event :init,  :none    => :stopped
-        event :start, :stopped => :started
-      }
+      event :init,  :none    => :stopped
+      event :start, :stopped => :started
+
       callbacks {
         on_before do |event|
-          callbacks << "fsmB on_before(#{event.to})"
+          callbacks << "fsmB on_before(#{event.name})"
+        end
+        on_enter_stopped do |event|
+          callbacks << "fsmB on_enter(:stopped)"
         end
         on_enter_started do |event|
-          callbacks << "fsmB on_enter_started"
+          callbacks << "fsmB on_enter(:started)"
         end
       }
     end)
@@ -75,7 +76,8 @@ RSpec.describe FiniteMachine, 'system' do
       end
 
       def operate
-        @fsmA.green
+        #@fsmA.start # should trigger as well
+        @fsmA.init
       end
     end
 
@@ -83,12 +85,13 @@ RSpec.describe FiniteMachine, 'system' do
     fire.operate
 
     expect(callbacks).to match_array([
-      'fsmA on_before(green)',
-      'fsmA on_enter_green',
-      'fsmA once_on_enter_green',
-      'fsmB on_before(stopped)',
-      'fsmB on_before(started)',
-      'fsmB on_enter_started'
+      'fsmB on_before(init)',
+      'fsmB on_enter(:stopped)',
+      'fsmA on_before(init)',
+      'fsmA on_enter(:green)',
+      'fsmA once_on_enter(:green)',
+      'fsmB on_before(start)',
+      'fsmB on_enter(:started)'
     ])
   end
 end

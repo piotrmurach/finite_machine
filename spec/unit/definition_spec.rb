@@ -6,12 +6,10 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
     class Engine < FiniteMachine::Definition
       initial :neutral
 
-      events {
-        event :forward, [:reverse, :neutral] => :one
-        event :shift, :one => :two
-        event :shift, :two => :one
-        event :back,  [:neutral, :one] => :reverse
-      }
+      event :forward, [:reverse, :neutral] => :one
+      event :shift, :one => :two
+      event :shift, :two => :one
+      event :back,  [:neutral, :one] => :reverse
 
       callbacks {
         on_enter :reverse do |event|
@@ -33,6 +31,8 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
     engine_a = Engine.new
     engine_b = Engine.new
     expect(engine_a).not_to be(engine_b)
+
+    expect(engine_a.current).to eq(:neutral)
 
     engine_a.forward
     expect(engine_a.current).to eq(:one)
@@ -71,9 +71,7 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
     class GenericStateMachine < FiniteMachine::Definition
       initial :red
 
-      events {
-        event :start, :red => :green
-      }
+      event :start, :red => :green
 
       callbacks {
         on_enter { |event| target << 'generic' }
@@ -81,9 +79,7 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
     end
 
     class SpecificStateMachine < GenericStateMachine
-      events {
-        event :stop, :green => :yellow
-      }
+      event :stop, :green => :yellow
 
       callbacks {
         on_enter(:yellow) { |event| target << 'specific' }

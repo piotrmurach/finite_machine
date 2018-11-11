@@ -48,6 +48,8 @@ module FiniteMachine
 
   # A class responsible for adding state machine specific dsl
   class DSL < GenericDSL
+    include Safety
+
     # Initialize top level DSL
     #
     # @api public
@@ -123,18 +125,30 @@ module FiniteMachine
       self.final_state = values
     end
 
-    # Define state machine events
+    # Create event and associate transition
     #
     # @example
-    #   events do
-    #     event :start, :red => :green
-    #   end
+    #   event :go, :green => :yellow
+    #   event :go, :green => :yellow, if: :lights_on?
     #
-    # @return [FiniteMachine::StateMachine]
+    # @param [Symbol] name
+    #   the event name
+    # @param [Hash] transitions
+    #   the event transitions and conditions
+    #
+    # @return [Transition]
     #
     # @api public
-    def events(&block)
-      events_dsl.call(&block)
+    def event(name, transitions = {}, &block)
+      detect_event_conflict!(name) if machine.auto_methods?
+
+      if block_given?
+        merger = ChoiceMerger.new(machine, name, transitions)
+        merger.instance_eval(&block)
+      else
+        transition_builder = TransitionBuilder.new(machine, name, transitions)
+        transition_builder.call(transitions)
+      end
     end
 
     # Define state machine callbacks
@@ -194,36 +208,6 @@ module FiniteMachine
            'Provide state to transition :to for the initial event'
     end
   end # DSL
-
-  # A DSL for describing events
-  class EventsDSL < GenericDSL
-    include Safety
-    # Create event and associate transition
-    #
-    # @example
-    #   event :go, :green => :yellow
-    #   event :go, :green => :yellow, if: :lights_on?
-    #
-    # @param [Symbol] name
-    #   the event name
-    # @param [Hash] transitions
-    #   the event transitions and conditions
-    #
-    # @return [Transition]
-    #
-    # @api public
-    def event(name, transitions = {}, &block)
-      detect_event_conflict!(name) if machine.auto_methods?
-
-      if block_given?
-        merger = ChoiceMerger.new(@machine, name, transitions)
-        merger.instance_eval(&block)
-      else
-        transition_builder = TransitionBuilder.new(@machine, name, transitions)
-        transition_builder.call(transitions)
-      end
-    end
-  end # EventsDSL
 
   # A DSL for describing error conditions
   class ErrorsDSL < GenericDSL

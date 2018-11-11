@@ -53,12 +53,10 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green, silent: false
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         # generic callbacks
@@ -172,9 +170,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :previous, silent: false
 
-      events {
-        event :go, :previous => :next, if: -> { called << 'guard'; true}
-      }
+      event :go, :previous => :next, if: -> { called << 'guard'; true}
 
       callbacks {
         on_exit   { |event| called << "exit_#{event.from}" }
@@ -206,12 +202,10 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green, silent: false
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         # generic state callbacks
@@ -274,12 +268,10 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         # state callbacks
@@ -310,9 +302,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-      }
+      event :slow, :green  => :yellow
 
       callbacks {
         on_enter(:yellow) { |e| evt = e }
@@ -333,10 +323,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, [:red, :blue, :green] => :yellow
-        event :fast, :red => :purple
-      }
+      event :slow, [:red, :blue, :green] => :yellow
+      event :fast, :red => :purple
 
       callbacks {
         on_enter(:yellow) { |e| evt = e }
@@ -367,12 +355,10 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new(self) do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         # generic state callbacks
@@ -438,13 +424,11 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new(self) do
       initial :red
 
-      events {
-        event :power_on,  :off => :red
-        event :power_off, any_state => :off
-        event :go,   :red    => :green
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :power_on,  :off => :red
+      event :power_off, any_state => :off
+      event :go,   :red    => :green
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
 
       callbacks {
         # generic state callbacks
@@ -510,9 +494,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       FiniteMachine.new do
         initial :green
 
-        events {
-          event :slow, :green => :yellow
-        }
+        event :slow, :green => :yellow
 
         callbacks {
           on_enter(:magic) { |event| called << 'on_enter'}
@@ -524,7 +506,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
   it "doesn't allow to mix state callback with event name" do
     expect {
       FiniteMachine.new do
-        events { event :slow,  :green  => :yellow }
+        event :slow, :green  => :yellow
 
         callbacks { on_enter_slow do |event| end }
       end
@@ -534,7 +516,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
   it "doesn't allow to mix event callback with state name" do
     expect {
       FiniteMachine.new do
-        events { event :slow, :green => :yellow }
+        event :slow, :green => :yellow
 
         callbacks { on_before_green do |event| end }
       end
@@ -545,7 +527,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events { event :slow, :green => :yellow }
+      event :slow, :green => :yellow
 
       callbacks { on_enter(:yellow) { raise RuntimeError } }
     end
@@ -559,10 +541,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :stop,  :green  => :yellow
-        event :stop,  :yellow => :red
-      }
+      event :stop,  :green  => :yellow
+      event :stop,  :yellow => :red
 
       callbacks {
         on_before_stop do |event|
@@ -586,12 +566,10 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
     end
 
     fsm.on_enter_yellow do |event|
@@ -610,12 +588,10 @@ RSpec.describe FiniteMachine, 'callbacks' do
       FiniteMachine.new do
         initial :green
 
-        events {
-          event :slow,  :green  => :yellow
-          event :stop,  :yellow => :red
-          event :ready, :red    => :yellow
-          event :go,    :yellow => :green
-        }
+        event :slow,  :green  => :yellow
+        event :stop,  :yellow => :red
+        event :ready, :red    => :yellow
+        event :go,    :yellow => :green
 
         callbacks {
           on_enter_unknown do |event| end
@@ -629,10 +605,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green, silent: false
 
-      events {
-        event :slow, :green  => :yellow
-        event :go,   :yellow => :green
-      }
+      event :slow, :green  => :yellow
+      event :go,   :yellow => :green
 
       callbacks {
         # state callbacks
@@ -686,11 +660,9 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :initial, silent: false
 
-      events {
-        event :bump, :initial => :low
-        event :bump, :low     => :medium
-        event :bump, :medium  => :high
-      }
+      event :bump, :initial => :low
+      event :bump, :low     => :medium
+      event :bump, :medium  => :high
 
       callbacks {
         on_enter do |event|
@@ -760,11 +732,9 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :initial, silent: false
 
-      events {
-        event :bump, :initial => :low,
-                     :low     => :medium,
-                     :medium  => :high
-      }
+      event :bump, :initial => :low,
+                    :low     => :medium,
+                    :medium  => :high
 
       callbacks {
         on_enter do |event|
@@ -810,10 +780,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :on_hook, silent: false
 
-      events {
-        event :off_hook, :on_hook => :off_hook
-        event :on_hook,  :off_hook => :on_hook
-      }
+      event :off_hook, :on_hook => :off_hook
+      event :on_hook,  :off_hook => :on_hook
 
       callbacks {
         on_before(:on_hook) { |event| called << "on_before_#{event.name}"}
@@ -839,10 +807,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :yellow
 
-      events {
-        event :go,   :yellow => :green, silent: true
-        event :stop, :green  => :red
-      }
+      event :go,   :yellow => :green, silent: true
+      event :stop, :green  => :red
 
       callbacks {
         on_enter :green do |event| called << 'on_enter_yellow' end
@@ -860,10 +826,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :active
 
-      events {
-        event :advance, :active   => :inactive, if: -> { false }
-        event :advance, :inactive => :active,   if: -> { false }
-      }
+      event :advance, :active   => :inactive, if: -> { false }
+      event :advance, :inactive => :active,   if: -> { false }
 
       callbacks {
         on_before do |event|
@@ -887,7 +851,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events { event :slow, :green => :yellow }
+      event :slow, :green => :yellow
 
       callbacks {
         on_enter { raise RuntimeError }
@@ -900,16 +864,14 @@ RSpec.describe FiniteMachine, 'callbacks' do
     expect(fsm.current).to eq(:green)
   end
 
-  xit "" do
+  xit "narrows down on_transition callback to state transition" do
     called = []
     fsm = FiniteMachine.new do
       initial :red
 
-      events {
-        event :ready, :red => :yellow
-        event :go, :yellow => :green
-        event :stop, :green => :red
-      }
+      event :ready, :red => :yellow
+      event :go, :yellow => :green
+      event :stop, :green => :red
 
       callbacks {
         on_transition :yellow => :green do

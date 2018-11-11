@@ -45,12 +45,10 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
       stub_const("Engine", Class.new(FiniteMachine::Definition) do
         initial :neutral
 
-        events {
-          event :forward, [:reverse, :neutral] => :one
-          event :shift, :one => :two
-          event :shift, :two => :one
-          event :back,  [:neutral, :one] => :reverse
-        }
+        event :forward, [:reverse, :neutral] => :one
+        event :shift, :one => :two
+        event :shift, :two => :one
+        event :back,  [:neutral, :one] => :reverse
 
         callbacks {
           on_enter :reverse do |event|

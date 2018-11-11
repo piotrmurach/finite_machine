@@ -5,10 +5,8 @@ RSpec.describe FiniteMachine, '#inspect' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
     end
     inspected = fsm.inspect
     expect(inspected).to match(/^<#FiniteMachine::StateMachine:0x#{fsm.object_id.to_s(16)} @states=\[.*\], @events=\[.*\], @transitions=\[.*\]>$/)

@@ -18,6 +18,13 @@ module FiniteMachine
     include Catchable
     extend Forwardable
 
+    # Current state
+    #
+    # @return [Symbol]
+    #
+    # @api private
+    attr_threadsafe :state
+
     # Initial state, defaults to :none
     attr_threadsafe :initial_state
 
@@ -33,6 +40,13 @@ module FiniteMachine
     # The state machine event definitions
     attr_threadsafe :events_map
 
+    # Machine dsl
+    #
+    # @return [DSL]
+    #
+    # @api private
+    attr_threadsafe :dsl
+
     # Errors DSL
     #
     # @return [ErrorsDSL]
@@ -40,26 +54,12 @@ module FiniteMachine
     # @api private
     attr_threadsafe :errors_dsl
 
-    # Events DSL
-    #
-    # @return [EventsDSL]
-    #
-    # @api private
-    attr_threadsafe :events_dsl
-
     # The state machine observer
     #
     # @return [Observer]
     #
     # @api private
     attr_threadsafe :observer
-
-    # Current state
-    #
-    # @return [Symbol]
-    #
-    # @api private
-    attr_threadsafe :state
 
     # The state machine subscribers
     #
@@ -71,21 +71,19 @@ module FiniteMachine
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
-    def_delegators :@dsl, :initial, :terminal, :trigger_init
-
-    def_delegator :events_dsl, :event
-
-    def_delegator :@async_proxy, :event_queue
+    def_delegators :dsl, :initial, :terminal, :event, :trigger_init
 
     # Initialize state machine
     #
     # @example
     #   fsm = FiniteMachine::StateMachine.new(target_alias: :car) do
-    #     callbacks {
-    #       on_transition do |event|
-    #         car.state = event.to
-    #       end
-    #     }
+    #     initial :red
+    #
+    #     event :go, :red => :green
+    #
+    #     on_transition do |event|
+    #       car.state = event.to
+    #     end
     #   end
     #
     # @param [Hash] options
@@ -101,13 +99,12 @@ module FiniteMachine
       @observer      = Observer.new(self)
       @events_map    = EventsMap.new
       @env           = Env.new(self, [])
-      @events_dsl    = EventsDSL.new(self)
       @errors_dsl    = ErrorsDSL.new(self)
       @dsl           = DSL.new(self, options)
 
       env.target = args.pop unless args.empty?
       env.aliases << options[:alias_target] if options[:alias_target]
-      @dsl.call(&block) if block_given?
+      dsl.call(&block) if block_given?
       trigger_init
     end
 

@@ -21,12 +21,10 @@ RSpec.describe FiniteMachine, '#target' do
         @engine ||= FiniteMachine.new(self) do
           initial :neutral
 
-          events {
-            event :forward, [:reverse, :neutral] => :one
-            event :shift, :one => :two
-            event :shift, :two => :one
-            event :back,  [:neutral, :one] => :reverse
-          }
+          event :forward, [:reverse, :neutral] => :one
+          event :shift, :one => :two
+          event :shift, :two => :one
+          event :back,  [:neutral, :one] => :reverse
 
           callbacks {
             on_enter :reverse do |event|
@@ -54,9 +52,8 @@ RSpec.describe FiniteMachine, '#target' do
   it "propagates method call" do
     fsm = FiniteMachine.new do
       initial :green
-      events {
-        event :slow, :green => :yellow
-      }
+
+      event :slow, :green => :yellow
 
       callbacks {
         on_enter_yellow do |event|
@@ -73,12 +70,10 @@ RSpec.describe FiniteMachine, '#target' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         on_enter_yellow do |event|
@@ -120,12 +115,10 @@ RSpec.describe FiniteMachine, '#target' do
         @engine ||= FiniteMachine.new(self) do
           initial :neutral
 
-          events {
-            event :forward, [:reverse, :neutral] => :one
-            event :shift, :one => :two
-            event :shift, :two => :one
-            event :back,  [:neutral, :one] => :reverse
-          }
+          event :forward, [:reverse, :neutral] => :one
+          event :shift, :one => :two
+          event :shift, :two => :one
+          event :back,  [:neutral, :one] => :reverse
 
           callbacks {
             on_enter :reverse do |event|
@@ -158,10 +151,9 @@ RSpec.describe FiniteMachine, '#target' do
     fsm = FiniteMachine.new(context) do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
+
       callbacks {
         on_enter_yellow do |event|
           called = target
@@ -188,10 +180,8 @@ RSpec.describe FiniteMachine, '#target' do
     fsm = FiniteMachine.new(car) do
       initial :unsaved
 
-      events {
-        event :validate, :unsaved => :valid
-        event :save, :valid => :saved
-      }
+      event :validate, :unsaved => :valid
+      event :save, :valid => :saved
 
       callbacks {
         on_enter :valid do |event|

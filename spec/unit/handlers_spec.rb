@@ -20,10 +20,8 @@ RSpec.describe FiniteMachine, 'handlers' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
 
       handlers {
         handle FiniteMachine::InvalidStateError do |exception|
@@ -45,10 +43,8 @@ RSpec.describe FiniteMachine, 'handlers' do
     fsm = FiniteMachine.new(logger) do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
 
       handlers {
         handle FiniteMachine::InvalidStateError, with: :log_error
@@ -67,10 +63,8 @@ RSpec.describe FiniteMachine, 'handlers' do
     fsm = FiniteMachine.new(target: logger) do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
 
       callbacks {
         on_enter_yellow do |event|
@@ -95,10 +89,8 @@ RSpec.describe FiniteMachine, 'handlers' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
 
       handlers {
         handle FiniteMachine::InvalidStateError do
@@ -119,9 +111,7 @@ RSpec.describe FiniteMachine, 'handlers' do
     expect { FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green => :yellow
-      }
+      event :slow, :green => :yellow
 
       handlers {
         handle 'UnknownErrorType'
@@ -133,9 +123,7 @@ RSpec.describe FiniteMachine, 'handlers' do
     expect { FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green => :yellow
-      }
+      event :slow, :green => :yellow
 
       handlers {
         handle Object do end

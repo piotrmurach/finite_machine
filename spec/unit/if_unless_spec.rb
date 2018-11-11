@@ -30,14 +30,12 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     fsm = FiniteMachine.new do
       initial :red
 
-      events {
-        event :go, :red => :green,
-              if: proc { |context| called << "cond_red_green(#{context})"; true}
-            event :stop, from: any_state do
-          choice :red,
-                 if: proc { |context| called << "cond_any_red(#{context})"; true }
-        end
-      }
+      event :go, :red => :green,
+            if: proc { |context| called << "cond_red_green(#{context})"; true}
+      event :stop, from: any_state do
+        choice :red,
+               if: proc { |context| called << "cond_any_red(#{context})"; true }
+      end
     end
 
     expect(fsm.current).to eq(:red)
@@ -59,14 +57,12 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     fsm = FiniteMachine.new do
       initial :red
 
-      events {
-        event :go,  :red => :green,
-              if: proc { |_, a| called << "cond_red_green(#{a})"; true }
-        event :stop, from: any_state do
-          choice :red,
-                 if: proc { |_, b| called << "cond_any_red(#{b})"; true }
-        end
-      }
+      event :go,  :red => :green,
+            if: proc { |_, a| called << "cond_red_green(#{a})"; true }
+      event :stop, from: any_state do
+        choice :red,
+                if: proc { |_, b| called << "cond_any_red(#{b})"; true }
+      end
     end
 
     expect(fsm.current).to eq(:red)
@@ -89,10 +85,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green => :yellow, if: -> { return false }
-        event :stop, :yellow => :red
-      }
+      event :slow, :green => :yellow, if: -> { return false }
+      event :stop, :yellow => :red
 
       callbacks {
         # generic callbacks
@@ -125,10 +119,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green => :yellow, unless: -> { true }
-        event :stop, :yellow => :red
-      }
+      event :slow, :green => :yellow, unless: -> { true }
+      event :stop, :yellow => :red
 
       callbacks {
         # generic callbacks
@@ -161,13 +153,11 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green => :yellow,
-          if: [ -> { conditions << 'first_if'; return true },
-                -> { conditions << 'second_if'; return true}],
-          unless: -> { conditions << 'first_unless'; return true }
-        event :stop, :yellow => :red
-      }
+      event :slow, :green => :yellow,
+        if: [ -> { conditions << 'first_if'; return true },
+              -> { conditions << 'second_if'; return true}],
+        unless: -> { conditions << 'first_unless'; return true }
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:green)
@@ -187,10 +177,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new(car) do
         initial :neutral
 
-        events {
-          event :start, :neutral => :one, if: proc {|_car| _car.engine_on? }
-          event :shift, :one => :two
-        }
+        event :start, :neutral => :one, if: proc {|_car| _car.engine_on? }
+        event :shift, :one => :two
       end
       car.turn_engine_off
       expect(car.engine_on?).to be false
@@ -211,13 +199,11 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new(car) do
         initial :neutral
 
-        events {
-          event :start, :neutral => :one, if: proc { |_car, state|
-            _car.engine_on = state
-            _car.engine_on?
-          }
-          event :shift, :one => :two
+        event :start, :neutral => :one, if: proc { |_car, state|
+          _car.engine_on = state
+          _car.engine_on?
         }
+        event :shift, :one => :two
       end
       fsm.start(false)
       expect(fsm.current).to eql(:neutral)
@@ -233,10 +219,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new(car) do
         initial :neutral
 
-        events {
-          event :start, :neutral => :one, if: :engine_on?
-          event :shift, :one => :two
-        }
+        event :start, :neutral => :one, if: :engine_on?
+        event :shift, :one => :two
       end
       car.turn_engine_off
       expect(car.engine_on?).to be false
@@ -259,10 +243,8 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new(car) do
         initial :neutral
 
-        events {
-          event :start, :neutral => :one, if: "engine_on?"
-          event :shift, :one => :two
-        }
+        event :start, :neutral => :one, if: "engine_on?"
+        event :shift, :one => :two
       end
       car.turn_engine_off
       expect(car.engine_on?).to be false
@@ -284,11 +266,9 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new(bug) do
         initial :initial
 
-        events {
-          event :bump, :initial => :low
-          event :bump, :low     => :medium, if: :pending?
-          event :bump, :medium  => :high
-        }
+        event :bump, :initial => :low
+        event :bump, :low     => :medium, if: :pending?
+        event :bump, :medium  => :high
       end
       expect(fsm.current).to eq(:initial)
       fsm.bump
@@ -301,12 +281,11 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new do
         initial :company_form
 
-        events {
-          event :next, :company_form => :agreement_form, if: -> { false }
-          event :next, :company_form => :promo_form,     if: -> { false }
-          event :next, :company_form => :official_form,  if: -> { true }
-        }
+        event :next, :company_form => :agreement_form, if: -> { false }
+        event :next, :company_form => :promo_form,     if: -> { false }
+        event :next, :company_form => :official_form,  if: -> { true }
       end
+
       expect(fsm.current).to eq(:company_form)
       fsm.next
       expect(fsm.current).to eq(:official_form)
@@ -316,11 +295,9 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       fsm = FiniteMachine.new do
         initial :company_form
 
-        events {
-          event :next, :company_form => :agreement_form, if: proc { |_, a| a < 1 }
-          event :next, :company_form => :promo_form,     if: proc { |_, a| a == 1 }
-          event :next, :company_form => :official_form,  if: proc { |_, a| a > 1 }
-        }
+        event :next, :company_form => :agreement_form, if: proc { |_, a| a < 1 }
+        event :next, :company_form => :promo_form,     if: proc { |_, a| a == 1 }
+        event :next, :company_form => :official_form,  if: proc { |_, a| a > 1 }
       end
       expect(fsm.current).to eq(:company_form)
 

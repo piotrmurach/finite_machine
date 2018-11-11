@@ -9,10 +9,8 @@ RSpec.describe FiniteMachine, ':log_transitions' do
     fsm = FiniteMachine.new log_transitions: true do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     fsm.slow

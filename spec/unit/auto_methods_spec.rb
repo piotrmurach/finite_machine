@@ -5,12 +5,10 @@ RSpec.describe FiniteMachine, ':auto_methods' do
     fsm = FiniteMachine.new(auto_methods: false) do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         # allows for fluid callback names

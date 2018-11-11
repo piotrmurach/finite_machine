@@ -6,10 +6,8 @@ RSpec.describe FiniteMachine::StateMachine, '#trigger' do
     fsm = FiniteMachine.new do
       initial :red
 
-      events {
-        event :start, :red   => :green, if: proc { |_, name| called << name; true }
-        event :stop,  :green => :red
-      }
+      event :start, :red   => :green, if: proc { |_, name| called << name; true }
+      event :stop,  :green => :red
     end
 
     expect(fsm.current).to eq(:red)

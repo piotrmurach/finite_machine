@@ -14,13 +14,11 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new do
       initial :company_form
 
-      events {
-        event :next, from: :company_form do
-          choice :agreement_form, if: -> { false }
-          choice :promo_form,     if: -> { false }
-          choice :official_form,  if: -> { true }
-        end
-      }
+      event :next, from: :company_form do
+        choice :agreement_form, if: -> { false }
+        choice :promo_form,     if: -> { false }
+        choice :official_form,  if: -> { true }
+      end
 
       callbacks {
         on_exit  do |event| called << "on_exit_#{event.from}" end
@@ -40,13 +38,11 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new do
       initial :company_form
 
-      events {
-        event :next, from: :company_form do
-          choice :agreement_form, if: proc { |_, a| a < 1 }
-          choice :promo_form,     if: proc { |_, a| a == 1 }
-          choice :official_form,  if: proc { |_, a| a > 1 }
-        end
-      }
+      event :next, from: :company_form do
+        choice :agreement_form, if: proc { |_, a| a < 1 }
+        choice :promo_form,     if: proc { |_, a| a == 1 }
+        choice :official_form,  if: proc { |_, a| a > 1 }
+      end
     end
     expect(fsm.current).to eq(:company_form)
     fsm.next(0)
@@ -66,12 +62,10 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new(user) do
       initial :company_form
 
-      events {
-        event :next, from: :company_form do
-          choice :agreement_form, if: proc { |_user, token| _user.promo?(token) }
-          choice :promo_form, unless: proc { |_user, token| _user.promo?(token) }
-        end
-      }
+      event :next, from: :company_form do
+        choice :agreement_form, if: proc { |_user, token| _user.promo?(token) }
+        choice :promo_form, unless: proc { |_user, token| _user.promo?(token) }
+      end
     end
     expect(fsm.current).to eq(:company_form)
     fsm.next(:no)
@@ -85,13 +79,11 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new do
       initial :company_form
 
-      events {
-        event :next, from: :company_form do
-          choice :agreement_form, if: -> { false }
-          choice :promo_form
-          choice :official_form,  if: -> { true }
-        end
-      }
+      event :next, from: :company_form do
+        choice :agreement_form, if: -> { false }
+        choice :promo_form
+        choice :official_form,  if: -> { true }
+      end
     end
     expect(fsm.current).to eq(:company_form)
     fsm.next
@@ -102,13 +94,11 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new do
       initial :company_form
 
-      events {
-        event :next, from: :company_form do
-          choice :agreement_form, if: -> { false }
-          choice :promo_form,     if: -> { false }
-          default :official_form
-        end
-      }
+      event :next, from: :company_form do
+        choice :agreement_form, if: -> { false }
+        choice :promo_form,     if: -> { false }
+        default :official_form
+      end
     end
     expect(fsm.current).to eq(:company_form)
     fsm.next
@@ -119,12 +109,10 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new do
       initial :company_form
 
-      events {
-        event :next, from: :company_form do
-          choice :agreement_form, if: -> { false }
-          choice :promo_form,     if: -> { false }
-        end
-      }
+      event :next, from: :company_form do
+        choice :agreement_form, if: -> { false }
+        choice :promo_form,     if: -> { false }
+      end
     end
     expect(fsm.current).to eq(:company_form)
     fsm.next
@@ -186,19 +174,17 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new(ticket) do
       initial :inactive
 
-      events {
-        event :advance, from: [:inactive, :paused, :fulfilled] do
-          choice :active, if: proc { |_ticket| !_ticket.pending? }
-        end
+      event :advance, from: [:inactive, :paused, :fulfilled] do
+        choice :active, if: proc { |_ticket| !_ticket.pending? }
+      end
 
-        event :advance, from: [:inactive, :active, :fulfilled] do
-          choice :paused, if: proc { |_ticket| _ticket.pending? }
-        end
+      event :advance, from: [:inactive, :active, :fulfilled] do
+        choice :paused, if: proc { |_ticket| _ticket.pending? }
+      end
 
-        event :advance, from: [:inactive, :active, :paused] do
-          choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
-        end
-      }
+      event :advance, from: [:inactive, :active, :paused] do
+        choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
+      end
     end
     expect(fsm.current).to eq(:inactive)
     fsm.advance
@@ -213,19 +199,17 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new(ticket) do
       initial :inactive
 
-      events {
-        event :advance, from: [:inactive, :paused, :fulfilled] do
-          choice :active, if: proc { |_ticket| !_ticket.pending? }
-        end
+      event :advance, from: [:inactive, :paused, :fulfilled] do
+        choice :active, if: proc { |_ticket| !_ticket.pending? }
+      end
 
-        event :advance, from: [:inactive, :active, :fulfilled] do
-          choice :paused, if: proc { |_ticket| _ticket.pending? }
-        end
+      event :advance, from: [:inactive, :active, :fulfilled] do
+        choice :paused, if: proc { |_ticket| _ticket.pending? }
+      end
 
-        event :advance, from: [:inactive, :active, :paused] do
-          choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
-        end
-      }
+      event :advance, from: [:inactive, :active, :paused] do
+        choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
+      end
 
       callbacks {
         on_before(:advance) { called << 'on_before_advance' }
@@ -260,22 +244,20 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm = FiniteMachine.new(self) do
       initial :red
 
-      events {
-        event :next, from: :red do
-          choice :green, if: -> { false }
-          choice :yellow
-        end
+      event :next, from: :red do
+        choice :green, if: -> { false }
+        choice :yellow
+      end
 
-        event :next, from: :yellow do
-          choice :green, if: -> { true }
-          choice :yellow
-        end
+      event :next, from: :yellow do
+        choice :green, if: -> { true }
+        choice :yellow
+      end
 
-        event :finish, from: any_state do
-          choice :green, if: -> { false }
-          choice :red
-        end
-      }
+      event :finish, from: any_state do
+        choice :green, if: -> { false }
+        choice :red
+      end
 
       callbacks {
         # generic state callbacks

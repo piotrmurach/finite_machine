@@ -12,9 +12,7 @@ RSpec.describe FiniteMachine, '#respond_to' do
     FiniteMachine.new target: Car.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-      }
+      event :slow,  :green  => :yellow
     end
   }
 

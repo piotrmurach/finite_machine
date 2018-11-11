@@ -5,10 +5,8 @@ RSpec.describe FiniteMachine, '#event_names' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :start, :red => :green
-        event :stop,  :green => :red
-      }
+      event :start, :red => :green
+      event :stop,  :green => :red
     end
 
     expect(fsm.current).to eql(:green)

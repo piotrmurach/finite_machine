@@ -5,10 +5,8 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:green)
@@ -18,25 +16,12 @@ RSpec.describe FiniteMachine, 'events' do
     expect(fsm.current).to eql(:red)
   end
 
-  it "allows to add event without events scope" do
-    fsm = FiniteMachine.new do
-      initial :green
-
-      event :slow, :green  => :yellow
-      event :stop, :yellow => :red
-    end
-
-    expect(fsm.current).to eql(:green)
-  end
-
   it "allows for (:from | :to) key pairs to describe transition" do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, from: :green, to: :yellow
-        event :stop, from: :yellow, to: :red
-      }
+      event :slow, from: :green, to: :yellow
+      event :stop, from: :yellow, to: :red
     end
 
     expect(fsm.current).to eql(:green)
@@ -50,13 +35,11 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :noop,  from: :green
-        event :slow,  from: :green,  to: :yellow
-        event :stop,  from: :yellow, to: :red
-        event :ready, from: :red,    to: :yellow
-        event :go,    from: :yellow, to: :green
-      }
+      event :noop,  from: :green
+      event :slow,  from: :green,  to: :yellow
+      event :stop,  from: :yellow, to: :red
+      event :ready, from: :red,    to: :yellow
+      event :go,    from: :yellow, to: :green
     end
 
     expect(fsm.current).to eql(:green)
@@ -77,13 +60,11 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  from: :green,  to: :yellow
-        event :stop,  from: :yellow, to: :red
-        event :ready, from: :red,    to: :yellow
-        event :go,    from: :yellow, to: :green
-        event :run,   from: any_state, to: :green
-      }
+      event :slow,  from: :green,  to: :yellow
+      event :stop,  from: :yellow, to: :red
+      event :ready, from: :red,    to: :yellow
+      event :go,    from: :yellow, to: :green
+      event :run,   from: any_state, to: :green
     end
 
     expect(fsm.current).to eql(:green)
@@ -112,12 +93,10 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :red
 
-      events {
-        event :start, :red    => :yellow
-        event :run,   :yellow => :green
-        event :stop,  :green  => :red
-        event :go,    any_state => :green
-      }
+      event :start, :red    => :yellow
+      event :run,   :yellow => :green
+      event :stop,  :green  => :red
+      event :go,    any_state => :green
     end
 
     expect(fsm.current).to eql(:red)
@@ -135,13 +114,11 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  from: :green,  to: :yellow
-        event :stop,  from: :yellow, to: :red
-        event :ready, from: :red,    to: :yellow
-        event :go,    from: :yellow, to: :green
-        event :run,                  to: :green
-      }
+      event :slow,  from: :green,  to: :yellow
+      event :stop,  from: :yellow, to: :red
+      event :ready, from: :red,    to: :yellow
+      event :go,    from: :yellow, to: :green
+      event :run,                  to: :green
     end
 
     expect(fsm.current).to eql(:green)
@@ -171,9 +148,8 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :stop, from: :yellow, to: :red
-      }
+      event :stop, from: :yellow, to: :red
+
       callbacks {
         on_before :stop do |event| called << 'on_before_stop' end
         on_after  :stop do |event| called << 'on_before_stop' end
@@ -192,9 +168,8 @@ RSpec.describe FiniteMachine, 'events' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :stop, from: :yellow, to: :red
-        }
+        event :stop, from: :yellow, to: :red
+
         callbacks {
           on_before :stop do |event| called << 'on_before_stop' end
           on_after  :stop do |event| called << 'on_before_stop' end
@@ -212,10 +187,9 @@ RSpec.describe FiniteMachine, 'events' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :slow,  from: :green,  to: :yellow
-          event :stop,  from: :yellow, to: :red, silent: true
-        }
+        event :slow,  from: :green,  to: :yellow
+        event :stop,  from: :yellow, to: :red, silent: true
+
         callbacks {
           on_before :stop do |event| called << 'on_before_stop' end
           on_after  :stop do |event| called << 'on_before_stop' end
@@ -234,9 +208,8 @@ RSpec.describe FiniteMachine, 'events' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :start, :red => :yellow, silent: true
-        }
+        event :start, :red => :yellow, silent: true
+
         callbacks {
           on_before :start do |event| called << 'on_before_start' end
           on_after  :start do |event| called << 'on_after_start' end
@@ -254,9 +227,8 @@ RSpec.describe FiniteMachine, 'events' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :start, :red => :yellow
-        }
+        event :start, :red => :yellow
+
         callbacks {
           on_before :start do |event| called << 'on_before_start' end
           on_after  :start do |event| called << 'on_after_start' end
@@ -276,12 +248,10 @@ RSpec.describe FiniteMachine, 'events' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :slow,  :green            => :yellow
-          event :stop,  [:green, :yellow] => :red
-          event :ready, :red              => :yellow
-          event :go,    [:yellow, :red]   => :green
-        }
+        event :slow,  :green            => :yellow
+        event :stop,  [:green, :yellow] => :red
+        event :ready, :red              => :yellow
+        event :go,    [:yellow, :red]   => :green
       end
 
       expect(fsm.current).to eql(:green)
@@ -304,12 +274,10 @@ RSpec.describe FiniteMachine, 'events' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :slow,  :green  => :yellow
-          event :stop,  :green  => :red,   :yellow => :red
-          event :ready, :red    => :yellow
-          event :go,    :yellow => :green, :red    => :green
-        }
+        event :slow,  :green  => :yellow
+        event :stop,  :green  => :red,   :yellow => :red
+        event :ready, :red    => :yellow
+        event :go,    :yellow => :green, :red    => :green
       end
 
       expect(fsm.current).to eql(:green)
@@ -333,12 +301,10 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :stop,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :stop,  :red    => :pink
-        event :cycle, [:yellow, :red, :pink] => :green
-      }
+      event :stop,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :stop,  :red    => :pink
+      event :cycle, [:yellow, :red, :pink] => :green
     end
 
     expect(fsm.current).to eql(:green)
@@ -359,11 +325,9 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :initial
 
-      events {
-        event :bump, :initial => :low,
-                     :low     => :medium,
-                     :medium  => :high
-      }
+      event :bump, :initial => :low,
+                    :low     => :medium,
+                    :medium  => :high
     end
 
     expect(fsm.current).to eq(:initial)
@@ -376,11 +340,9 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :neutral
 
-      events {
-        event :start,  :neutral   => :engine_on
-        event :drive,  :engine_on => :running, if: -> { return false }
-        event :stop,   any_state  => :neutral
-      }
+      event :start,  :neutral   => :engine_on
+      event :drive,  :engine_on => :running, if: -> { return false }
+      event :stop,   any_state  => :neutral
 
       callbacks {
         on_before(:drive) { cancel_event }
@@ -401,11 +363,9 @@ RSpec.describe FiniteMachine, 'events' do
     phone = FiniteMachine.new do
       initial :on_hook
 
-      events {
-        event :digit,    :on_hook => :dialing
-        event :digit,    :dialing => :dialing
-        event :off_hook, :dialing => :alerting
-      }
+      event :digit,    :on_hook => :dialing
+      event :digit,    :dialing => :dialing
+      event :off_hook, :dialing => :alerting
 
       callbacks {
         on_before_digit { |event, digit| digits << digit}
@@ -430,10 +390,8 @@ RSpec.describe FiniteMachine, 'events' do
     fsm = FiniteMachine.new do
       initial :red
 
-      events {
-        event :start, :red => :green
-        event :stop,  :green => :red
-      }
+      event :start, :red => :green
+      event :stop,  :green => :red
     end
 
     expect(fsm.current).to eq(:red)

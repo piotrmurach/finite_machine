@@ -6,12 +6,10 @@ RSpec.describe FiniteMachine, '#is?' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
     end
 
     expect(fsm.current).to eql(:green)
@@ -33,12 +31,10 @@ RSpec.describe FiniteMachine, '#is?' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
     end
     expect(fsm.current).to eql(:green)
 

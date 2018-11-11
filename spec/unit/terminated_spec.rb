@@ -7,10 +7,8 @@ RSpec.describe FiniteMachine, '#terminated?' do
       initial :green
       terminal :red
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:green)
@@ -29,10 +27,8 @@ RSpec.describe FiniteMachine, '#terminated?' do
     fsm = FiniteMachine.new terminal: :red do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
     fsm.slow
     fsm.stop
@@ -43,10 +39,8 @@ RSpec.describe FiniteMachine, '#terminated?' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:green)
@@ -67,11 +61,9 @@ RSpec.describe FiniteMachine, '#terminated?' do
 
       terminal :close, :canceled, :faulty
 
-      events {
-        event :resolve, :open => :close
-        event :decline, :open => :canceled
-        event :error,   :open => :faulty
-      }
+      event :resolve, :open => :close
+      event :decline, :open => :canceled
+      event :error,   :open => :faulty
     end
     expect(fsm.current).to eql(:open)
     expect(fsm.terminated?).to be(false)

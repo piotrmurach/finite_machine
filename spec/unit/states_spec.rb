@@ -5,12 +5,10 @@ RSpec.describe FiniteMachine, '#states' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
     end
 
     expect(fsm.states).to match_array([:none, :green, :yellow, :red])
@@ -20,12 +18,10 @@ RSpec.describe FiniteMachine, '#states' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :next, from: :green do
-          choice :yellow, if: -> { false }
-          choice :red,    if: -> { true }
-        end
-      }
+      event :next, from: :green do
+        choice :yellow, if: -> { false }
+        choice :red,    if: -> { true }
+      end
     end
     expect(fsm.states).to match_array([:none, :green, :yellow, :red])
   end

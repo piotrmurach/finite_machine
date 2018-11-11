@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, 'cancell callbacks' do
+RSpec.describe FiniteMachine, '#cancel_event' do
   it "cancels transition on event callback" do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :go,   :yellow => :green
-      }
+      event :slow, :green  => :yellow
+      event :go,   :yellow => :green
 
       callbacks {
         on_exit :green do |event|
@@ -28,7 +26,7 @@ RSpec.describe FiniteMachine, 'cancell callbacks' do
     fsm = FiniteMachine.new do
       initial :initial
 
-      events { event :bump, initial: :low }
+      event :bump, initial: :low
 
       callbacks {
         on_before do |event|

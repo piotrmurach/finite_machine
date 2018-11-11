@@ -13,12 +13,10 @@ RSpec.describe FiniteMachine, 'can?' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow,  :green  => :yellow
-        event :stop,  :yellow => :red
-        event :ready, :red    => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :stop,  :yellow => :red
+      event :ready, :red    => :yellow
+      event :go,    :yellow => :green
     end
 
     expect(fsm.current).to eql(:green)
@@ -58,10 +56,8 @@ RSpec.describe FiniteMachine, 'can?' do
       fsm = FiniteMachine.new do
         initial :green
 
-        events {
-          event :slow,  :green  => :yellow
-          event :stop,  :yellow => :red, if: proc { |_, state| state }
-        }
+        event :slow,  :green  => :yellow
+        event :stop,  :yellow => :red, if: proc { |_, state| state }
       end
       expect(fsm.current).to eq(:green)
       expect(fsm.can?(:slow)).to be(true)
@@ -78,11 +74,9 @@ RSpec.describe FiniteMachine, 'can?' do
       fsm = FiniteMachine.new(bug) do
         initial :initial
 
-        events {
-          event :bump, :initial => :low
-          event :bump, :low     => :medium, if: :pending?
-          event :bump, :medium  => :high
-        }
+        event :bump, :initial => :low
+        event :bump, :low     => :medium, if: :pending?
+        event :bump, :medium  => :high
       end
       expect(fsm.current).to eq(:initial)
 

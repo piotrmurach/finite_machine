@@ -14,10 +14,8 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "defaults initial state to :none" do
     fsm = FiniteMachine.new do
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:none)
@@ -25,11 +23,9 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "requires initial state transition from :none" do
     fsm = FiniteMachine.new do
-      events {
-        event :init, :none   => :green
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :init, :none   => :green
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:none)
@@ -42,10 +38,9 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
+
       callbacks {
         on_exit :none   do |event| called << 'on_exit_none' end
         on_enter :green do |event| called << 'on_enter_green' end
@@ -57,10 +52,8 @@ RSpec.describe FiniteMachine, 'initial' do
 
   it "allows to specify initial state through parameter" do
     fsm = FiniteMachine.new initial: :green do
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
     expect(fsm.current).to eql(:green)
   end
@@ -69,10 +62,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green, defer: true
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:none)
@@ -85,10 +76,8 @@ RSpec.describe FiniteMachine, 'initial' do
       FiniteMachine.new do
         initial defer: true
 
-        events {
-          event :slow, :green  => :yellow
-          event :stop, :yellow => :red
-        }
+        event :slow, :green  => :yellow
+        event :stop, :yellow => :red
       end
     }.to raise_error(FiniteMachine::MissingInitialStateError)
   end
@@ -97,10 +86,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green, event: :start
 
-      events {
-        event :slow, :green  => :none
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :none
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:green)
@@ -114,10 +101,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green, event: :start, defer: true
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
 
     expect(fsm.current).to eql(:none)
@@ -130,10 +115,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial logger.level
 
-      events {
-        event :slow, :green  => :none
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :none
+      event :stop, :yellow => :red
     end
     expect(fsm.current).to eql(:pending)
   end
@@ -141,10 +124,9 @@ RSpec.describe FiniteMachine, 'initial' do
   it "doesn't care about state type" do
     fsm = FiniteMachine.new do
       initial 1
-      events {
-        event :a, 1 => 2
-        event :b, 2 => 3
-      }
+
+      event :a, 1 => 2
+      event :b, 2 => 3
     end
     expect(fsm.current).to eql(1)
     fsm.a
@@ -157,10 +139,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
     expect(fsm.current).to eq(:green)
     expect(fsm.initial_state).to eq(:green)
@@ -173,10 +153,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green, defer: true
 
-      events {
-        event :slow, :green  => :yellow
-        event :stop, :yellow => :red
-      }
+      event :slow, :green  => :yellow
+      event :stop, :yellow => :red
     end
     expect(fsm.current).to eq(:none)
     expect(fsm.initial_state).to eq(:none)
@@ -190,9 +168,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green, silent: false
 
-      events {
-        event :slow, :green => :yellow
-      }
+      event :slow, :green => :yellow
+
       callbacks {
         on_enter :green do |event| called << 'on_enter_green' end
       }
@@ -206,9 +183,8 @@ RSpec.describe FiniteMachine, 'initial' do
     fsm = FiniteMachine.new do
       initial :green, silent: false, defer: true
 
-      events {
-        event :slow, :green => :yellow
-      }
+      event :slow, :green => :yellow
+
       callbacks {
         on_enter :green do |event| called << 'on_enter_green' end
       }

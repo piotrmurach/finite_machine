@@ -6,10 +6,8 @@ RSpec.describe FiniteMachine, 'async callbacks' do
     fsm = FiniteMachine.new do
       initial :green, silent: false
 
-      events {
-        event :slow,  :green  => :yellow
-        event :go,    :yellow => :green
-      }
+      event :slow,  :green  => :yellow
+      event :go,    :yellow => :green
 
       callbacks {
         on_enter  :green,  :async  do |event| called << 'on_enter_green' end
