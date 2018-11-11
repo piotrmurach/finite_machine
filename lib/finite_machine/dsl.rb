@@ -151,20 +151,6 @@ module FiniteMachine
       end
     end
 
-    # Define state machine callbacks
-    #
-    # @example
-    #   callbacks do
-    #     on_enter :green do |event| ... end
-    #   end
-    #
-    # @return [FiniteMachine::Observer]
-    #
-    # @api public
-    def callbacks(&block)
-      observer.call(&block)
-    end
-
     # Error handler that throws exception when machine is in illegal state
     #
     # @api public

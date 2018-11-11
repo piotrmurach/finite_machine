@@ -88,22 +88,20 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       event :slow, :green => :yellow, if: -> { return false }
       event :stop, :yellow => :red
 
-      callbacks {
-        # generic callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
-        on_exit       do |event| called << 'on_exit' end
+      # generic callbacks
+      on_enter      do |event| called << 'on_enter' end
+      on_transition do |event| called << 'on_transition' end
+      on_exit       do |event| called << 'on_exit' end
 
-        # state callbacks
-        on_enter :green do |event| called << 'on_enter_green' end
-        on_enter :yellow do |event| called << "on_enter_yellow" end
+      # state callbacks
+      on_enter :green do |event| called << 'on_enter_green' end
+      on_enter :yellow do |event| called << "on_enter_yellow" end
 
-        on_transition :green  do |event| called << 'on_transition_green' end
-        on_transition :yellow do |event| called << "on_transition_yellow" end
+      on_transition :green  do |event| called << 'on_transition_green' end
+      on_transition :yellow do |event| called << "on_transition_yellow" end
 
-        on_exit :green  do |event| called << 'on_exit_green' end
-        on_exit :yellow do |event| called << "on_exit_yellow" end
-      }
+      on_exit :green  do |event| called << 'on_exit_green' end
+      on_exit :yellow do |event| called << "on_exit_yellow" end
     end
 
     expect(fsm.current).to eql(:green)
@@ -122,22 +120,20 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       event :slow, :green => :yellow, unless: -> { true }
       event :stop, :yellow => :red
 
-      callbacks {
-        # generic callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
-        on_exit       do |event| called << 'on_exit' end
+      # generic callbacks
+      on_enter      do |event| called << 'on_enter' end
+      on_transition do |event| called << 'on_transition' end
+      on_exit       do |event| called << 'on_exit' end
 
-        # state callbacks
-        on_enter :green do |event| called << 'on_enter_green' end
-        on_enter :yellow do |event| called << "on_enter_yellow" end
+      # state callbacks
+      on_enter :green do |event| called << 'on_enter_green' end
+      on_enter :yellow do |event| called << "on_enter_yellow" end
 
-        on_transition :green  do |event| called << 'on_transition_green' end
-        on_transition :yellow do |event| called << "on_transition_yellow" end
+      on_transition :green  do |event| called << 'on_transition_green' end
+      on_transition :yellow do |event| called << "on_transition_yellow" end
 
-        on_exit :green  do |event| called << 'on_exit_green' end
-        on_exit :yellow do |event| called << "on_exit_yellow" end
-      }
+      on_exit :green  do |event| called << 'on_exit_green' end
+      on_exit :yellow do |event| called << "on_exit_yellow" end
     end
 
     expect(fsm.current).to eql(:green)

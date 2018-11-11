@@ -50,15 +50,13 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
         event :shift, :two => :one
         event :back,  [:neutral, :one] => :reverse
 
-        callbacks {
-          on_enter :reverse do |event|
-            car.turn_reverse_lights_on
-          end
+        on_enter :reverse do |event|
+          car.turn_reverse_lights_on
+        end
 
-          on_exit :reverse do |event|
-            car.turn_reverse_lights_off
-          end
-        }
+        on_exit :reverse do |event|
+          car.turn_reverse_lights_off
+        end
 
         handlers {
           handle FiniteMachine::InvalidStateError do |exception| end

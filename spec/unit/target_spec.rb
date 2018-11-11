@@ -26,15 +26,13 @@ RSpec.describe FiniteMachine, '#target' do
           event :shift, :two => :one
           event :back,  [:neutral, :one] => :reverse
 
-          callbacks {
-            on_enter :reverse do |event|
-              target.turn_reverse_lights_on
-            end
+          on_enter :reverse do |event|
+            target.turn_reverse_lights_on
+          end
 
-            on_exit :reverse do |event|
-              target.turn_reverse_lights_off
-            end
-          }
+          on_exit :reverse do |event|
+            target.turn_reverse_lights_off
+          end
         end
       end
     end)
@@ -55,11 +53,9 @@ RSpec.describe FiniteMachine, '#target' do
 
       event :slow, :green => :yellow
 
-      callbacks {
-        on_enter_yellow do |event|
-          uknown_method
-        end
-      }
+      on_enter_yellow do |event|
+        uknown_method
+      end
     end
     expect(fsm.current).to eql(:green)
     expect { fsm.slow }.to raise_error(StandardError)
@@ -75,15 +71,13 @@ RSpec.describe FiniteMachine, '#target' do
       event :ready, :red    => :yellow
       event :go,    :yellow => :green
 
-      callbacks {
-        on_enter_yellow do |event|
-          stop(:now)
-        end
+      on_enter_yellow do |event|
+        stop(:now)
+      end
 
-        on_enter_red do |event, param|
-          called << "#{event.from} #{param}"
-        end
-      }
+      on_enter_red do |event, param|
+        called << "#{event.from} #{param}"
+      end
     end
 
     expect(fsm.current).to eql(:green)
@@ -120,16 +114,14 @@ RSpec.describe FiniteMachine, '#target' do
           event :shift, :two => :one
           event :back,  [:neutral, :one] => :reverse
 
-          callbacks {
-            on_enter :reverse do |event|
-              target.called << 'on_enter_reverse'
-              target.turn_reverse_lights_on
-              forward('Piotr!')
-            end
-            on_before :forward do |event, name|
-              target.called << "on_enter_forward with #{name}"
-            end
-          }
+          on_enter :reverse do |event|
+            target.called << 'on_enter_reverse'
+            target.turn_reverse_lights_on
+            forward('Piotr!')
+          end
+          on_before :forward do |event, name|
+            target.called << "on_enter_forward with #{name}"
+          end
         end
       end
     end)
@@ -154,11 +146,9 @@ RSpec.describe FiniteMachine, '#target' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      callbacks {
-        on_enter_yellow do |event|
-          called = target
-        end
-      }
+      on_enter_yellow do |event|
+        called = target
+      end
     end
     expect(fsm.current).to eql(:green)
     fsm.slow
@@ -183,15 +173,13 @@ RSpec.describe FiniteMachine, '#target' do
       event :validate, :unsaved => :valid
       event :save, :valid => :saved
 
-      callbacks {
-        on_enter :valid do |event|
-          target.save
-          save
-        end
-        on_after :save do |event|
-          called << 'event save called'
-        end
-      }
+      on_enter :valid do |event|
+        target.save
+        save
+      end
+      on_after :save do |event|
+        called << 'event save called'
+      end
     end
     expect(fsm.current).to eql(:unsaved)
     fsm.validate

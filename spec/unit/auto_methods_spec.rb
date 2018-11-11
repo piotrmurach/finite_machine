@@ -10,10 +10,8 @@ RSpec.describe FiniteMachine, ':auto_methods' do
       event :ready, :red    => :yellow
       event :go,    :yellow => :green
 
-      callbacks {
-        # allows for fluid callback names
-        once_on_enter_yellow do |event| 'once_on_enter_yellow' end
-      }
+      # allows for fluid callback names
+      once_on_enter_yellow do |event| 'once_on_enter_yellow' end
     end
 
     expect(fsm.respond_to?(:slow)).to eq(false)

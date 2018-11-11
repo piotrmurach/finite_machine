@@ -30,10 +30,8 @@ RSpec.describe FiniteMachine, perf: true do
                     :yellow => :red,
                     :red => :green
 
-      callbacks {
-        on_enter do |event| target.inc_step; true end
-        on_enter :red do |event| target.inc_loop; true end
-      }
+      on_enter do |event| target.inc_step; true end
+      on_enter :red do |event| target.inc_loop; true end
     end
 
     100.times { fsm.next }
@@ -42,7 +40,7 @@ RSpec.describe FiniteMachine, perf: true do
     expect(measurement.loops).to eq(100 / 3)
   end
 
-  it "performs at least 400 ips" do
+  it "performs at least 500 ips" do
     fsm = FiniteMachine.new do
       initial :green
 
@@ -51,6 +49,6 @@ RSpec.describe FiniteMachine, perf: true do
                     :red => :green
     end
 
-    expect { fsm.next }.to perform_at_least(400).ips
+    expect { fsm.next }.to perform_at_least(500).ips
   end
 end

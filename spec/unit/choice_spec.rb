@@ -20,10 +20,8 @@ RSpec.describe FiniteMachine, '#choice' do
         choice :official_form,  if: -> { true }
       end
 
-      callbacks {
-        on_exit  do |event| called << "on_exit_#{event.from}" end
-        on_enter do |event| called << "on_enter_#{event.to}"  end
-      }
+      on_exit  do |event| called << "on_exit_#{event.from}" end
+      on_enter do |event| called << "on_enter_#{event.to}"  end
     end
     expect(fsm.current).to eq(:company_form)
     fsm.next
@@ -211,10 +209,8 @@ RSpec.describe FiniteMachine, '#choice' do
         choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
       end
 
-      callbacks {
-        on_before(:advance) { called << 'on_before_advance' }
-        on_after(:advance)  { called << 'on_after_advance' }
-      }
+      on_before(:advance) { called << 'on_before_advance' }
+      on_after(:advance)  { called << 'on_after_advance' }
     end
     expect(fsm.current).to eq(:inactive)
     fsm.advance
@@ -259,33 +255,31 @@ RSpec.describe FiniteMachine, '#choice' do
         choice :red
       end
 
-      callbacks {
-        # generic state callbacks
-        on_enter(&callback)
-        on_transition(&callback)
-        on_exit(&callback)
+      # generic state callbacks
+      on_enter(&callback)
+      on_transition(&callback)
+      on_exit(&callback)
 
-        # generic event callbacks
-        on_before(&callback)
-        on_after(&callback)
+      # generic event callbacks
+      on_before(&callback)
+      on_after(&callback)
 
-        # state callbacks
-        on_enter :green,  &callback
-        on_enter :yellow, &callback
-        on_enter :red,    &callback
+      # state callbacks
+      on_enter :green,  &callback
+      on_enter :yellow, &callback
+      on_enter :red,    &callback
 
-        on_transition :green,  &callback
-        on_transition :yellow, &callback
-        on_transition :red,    &callback
+      on_transition :green,  &callback
+      on_transition :yellow, &callback
+      on_transition :red,    &callback
 
-        on_exit :green,  &callback
-        on_exit :yellow, &callback
-        on_exit :red,    &callback
+      on_exit :green,  &callback
+      on_exit :yellow, &callback
+      on_exit :red,    &callback
 
-        # event callbacks
-        on_before :next, &callback
-        on_after  :next, &callback
-      }
+      # event callbacks
+      on_before :next, &callback
+      on_after  :next, &callback
     end
     expect(fsm.current).to eq(:red)
 

@@ -11,15 +11,13 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
       event :shift, :two => :one
       event :back,  [:neutral, :one] => :reverse
 
-      callbacks {
-        on_enter :reverse do |event|
-          target.turn_reverse_lights_on
-        end
+      on_enter :reverse do |event|
+        target.turn_reverse_lights_on
+      end
 
-        on_exit :reverse do |event|
-          target.turn_reverse_lights_off
-        end
-      }
+      on_exit :reverse do |event|
+        target.turn_reverse_lights_off
+      end
 
       handlers {
         handle FiniteMachine::InvalidStateError do |exception| end
@@ -73,17 +71,13 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
 
       event :start, :red => :green
 
-      callbacks {
-        on_enter { |event| target << 'generic' }
-      }
+      on_enter { |event| target << 'generic' }
     end
 
     class SpecificStateMachine < GenericStateMachine
       event :stop, :green => :yellow
 
-      callbacks {
-        on_enter(:yellow) { |event| target << 'specific' }
-      }
+      on_enter(:yellow) { |event| target << 'specific' }
     end
 
     called = []

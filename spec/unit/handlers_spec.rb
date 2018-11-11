@@ -66,11 +66,10 @@ RSpec.describe FiniteMachine, 'handlers' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      callbacks {
-        on_enter_yellow do |event|
-          raise_error
-        end
-      }
+      on_enter_yellow do |event|
+        raise_error
+      end
+
       handlers {
         handle 'InvalidStateError' do |exception|
           called << 'invalid_state_error'

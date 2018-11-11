@@ -8,11 +8,9 @@ RSpec.describe FiniteMachine, '#cancel_event' do
       event :slow, :green  => :yellow
       event :go,   :yellow => :green
 
-      callbacks {
-        on_exit :green do |event|
-          cancel_event(event)
-        end
-      }
+      on_exit :green do |event|
+        cancel_event(event)
+      end
     end
 
     expect(fsm.current).to eql(:green)
@@ -28,19 +26,17 @@ RSpec.describe FiniteMachine, '#cancel_event' do
 
       event :bump, initial: :low
 
-      callbacks {
-        on_before do |event|
-          called << "enter_#{event.name}_#{event.from}_#{event.to}"
+      on_before do |event|
+        called << "enter_#{event.name}_#{event.from}_#{event.to}"
 
-          cancel_event(event)
-        end
+        cancel_event(event)
+      end
 
-        on_exit :initial do |event| called << "exit_initial" end
-        on_exit          do |event| called << "exit_any" end
-        on_enter :low    do |event| called << "enter_low" end
-        on_after :bump   do |event| called << "after_#{event.name}" end
-        on_after         do |event| called << "after_any" end
-      }
+      on_exit :initial do |event| called << "exit_initial" end
+      on_exit          do |event| called << "exit_any" end
+      on_enter :low    do |event| called << "enter_low" end
+      on_after :bump   do |event| called << "after_#{event.name}" end
+      on_after         do |event| called << "after_any" end
     end
 
     fsm.bump

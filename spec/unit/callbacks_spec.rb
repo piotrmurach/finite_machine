@@ -6,30 +6,28 @@ RSpec.describe FiniteMachine, 'callbacks' do
     fsm = FiniteMachine.new do
       initial :green, defer: true, silent: false
 
-      callbacks {
-        # generic state callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
-        on_exit       do |event| called << 'on_exit' end
+      # generic state callbacks
+      on_enter      do |event| called << 'on_enter' end
+      on_transition do |event| called << 'on_transition' end
+      on_exit       do |event| called << 'on_exit' end
 
-        # generic event callbacks
-        on_before any_event do |event| called << 'on_before' end
-        on_after  do |event| called << 'on_after' end
+      # generic event callbacks
+      on_before any_event do |event| called << 'on_before' end
+      on_after  do |event| called << 'on_after' end
 
-        # state callbacks
-        on_enter :none  do |event| called << 'on_enter_none' end
-        on_enter :green do |event| called << 'on_enter_green' end
+      # state callbacks
+      on_enter :none  do |event| called << 'on_enter_none' end
+      on_enter :green do |event| called << 'on_enter_green' end
 
-        on_transition :none  do |event| called << 'on_transition_none' end
-        on_transition :green do |event| called << 'on_transition_green' end
+      on_transition :none  do |event| called << 'on_transition_none' end
+      on_transition :green do |event| called << 'on_transition_green' end
 
-        on_exit :none  do |event| called << 'on_exit_none' end
-        on_exit :green do |event| called << 'on_exit_green' end
+      on_exit :none  do |event| called << 'on_exit_none' end
+      on_exit :green do |event| called << 'on_exit_green' end
 
-        # event callbacks
-        on_before :init do |event| called << 'on_before_init' end
-        on_after  :init do |event| called << 'on_after_init' end
-      }
+      # event callbacks
+      on_before :init do |event| called << 'on_before_init' end
+      on_after  :init do |event| called << 'on_after_init' end
     end
 
     expect(fsm.current).to eql(:none)
@@ -58,39 +56,37 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :ready, :red    => :yellow
       event :go,    :yellow => :green
 
-      callbacks {
-        # generic callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
-        on_exit       do |event| called << 'on_exit' end
+      # generic callbacks
+      on_enter      do |event| called << 'on_enter' end
+      on_transition do |event| called << 'on_transition' end
+      on_exit       do |event| called << 'on_exit' end
 
-        on_before do |event| called << 'on_before' end
-        on_after  do |event| called << 'on_after' end
+      on_before do |event| called << 'on_before' end
+      on_after  do |event| called << 'on_after' end
 
-        # state callbacks
-        on_enter :green  do |event| called << 'on_enter_green' end
-        on_enter :yellow do |event| called << "on_enter_yellow" end
-        on_enter :red    do |event| called << "on_enter_red" end
+      # state callbacks
+      on_enter :green  do |event| called << 'on_enter_green' end
+      on_enter :yellow do |event| called << "on_enter_yellow" end
+      on_enter :red    do |event| called << "on_enter_red" end
 
-        on_transition :green  do |event| called << 'on_transition_green' end
-        on_transition :yellow do |event| called << "on_transition_yellow" end
-        on_transition :red    do |event| called << "on_transition_red" end
+      on_transition :green  do |event| called << 'on_transition_green' end
+      on_transition :yellow do |event| called << "on_transition_yellow" end
+      on_transition :red    do |event| called << "on_transition_red" end
 
-        on_exit :green  do |event| called << 'on_exit_green' end
-        on_exit :yellow do |event| called << "on_exit_yellow" end
-        on_exit :red    do |event| called << "on_exit_red" end
+      on_exit :green  do |event| called << 'on_exit_green' end
+      on_exit :yellow do |event| called << "on_exit_yellow" end
+      on_exit :red    do |event| called << "on_exit_red" end
 
-        # event callbacks
-        on_before :slow  do |event| called << 'on_before_slow' end
-        on_before :stop  do |event| called << "on_before_stop" end
-        on_before :ready do |event| called << "on_before_ready" end
-        on_before :go    do |event| called << "on_before_go" end
+      # event callbacks
+      on_before :slow  do |event| called << 'on_before_slow' end
+      on_before :stop  do |event| called << "on_before_stop" end
+      on_before :ready do |event| called << "on_before_ready" end
+      on_before :go    do |event| called << "on_before_go" end
 
-        on_after :slow  do |event| called << 'on_after_slow' end
-        on_after :stop  do |event| called << "on_after_stop" end
-        on_after :ready do |event| called << "on_after_ready" end
-        on_after :go    do |event| called << "on_after_go" end
-      }
+      on_after :slow  do |event| called << 'on_after_slow' end
+      on_after :stop  do |event| called << "on_after_stop" end
+      on_after :ready do |event| called << "on_after_ready" end
+      on_after :go    do |event| called << "on_after_go" end
     end
 
     expect(fsm.current).to eq(:green)
@@ -172,14 +168,13 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
       event :go, :previous => :next, if: -> { called << 'guard'; true}
 
-      callbacks {
-        on_exit   { |event| called << "exit_#{event.from}" }
-        on_before { |event| called << "before_#{event.name}" }
-        on_transition { |event| called << "transition_#{event.from}_#{event.to}"}
-        on_enter  { |event| called << "enter_#{event.to}"}
-        on_after  { |event| called << "after_#{event.name}" }
-      }
+      on_exit   { |event| called << "exit_#{event.from}" }
+      on_before { |event| called << "before_#{event.name}" }
+      on_transition { |event| called << "transition_#{event.from}_#{event.to}"}
+      on_enter  { |event| called << "enter_#{event.to}"}
+      on_after  { |event| called << "after_#{event.name}" }
     end
+
     expect(fsm.current).to eq(:previous)
     fsm.go
     expect(called).to eq([
@@ -207,30 +202,28 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :ready, :red    => :yellow
       event :go,    :yellow => :green
 
-      callbacks {
-        # generic state callbacks
-        on_enter      do |event| called << 'on_enter' end
-        on_transition do |event| called << 'on_transition' end
-        on_exit       do |event| called << 'on_exit' end
+      # generic state callbacks
+      on_enter      do |event| called << 'on_enter' end
+      on_transition do |event| called << 'on_transition' end
+      on_exit       do |event| called << 'on_exit' end
 
-        # generic event callbacks
-        on_before do |event| called << 'on_before' end
-        on_after  do |event| called << 'on_after' end
+      # generic event callbacks
+      on_before do |event| called << 'on_before' end
+      on_after  do |event| called << 'on_after' end
 
-        # state callbacks
-        on_exit       :green  do |event| called << 'on_exit_green_1' end
-        on_exit       :green  do |event| called << 'on_exit_green_2' end
-        on_enter      :yellow do |event| called << 'on_enter_yellow_1' end
-        on_enter      :yellow do |event| called << 'on_enter_yellow_2' end
-        on_transition :yellow do |event| called << 'on_transition_yellow_1' end
-        on_transition :yellow do |event| called << 'on_transition_yellow_2' end
+      # state callbacks
+      on_exit       :green  do |event| called << 'on_exit_green_1' end
+      on_exit       :green  do |event| called << 'on_exit_green_2' end
+      on_enter      :yellow do |event| called << 'on_enter_yellow_1' end
+      on_enter      :yellow do |event| called << 'on_enter_yellow_2' end
+      on_transition :yellow do |event| called << 'on_transition_yellow_1' end
+      on_transition :yellow do |event| called << 'on_transition_yellow_2' end
 
-        # event callbacks
-        on_before :slow do |event| called << 'on_before_slow_1' end
-        on_before :slow do |event| called << 'on_before_slow_2' end
-        on_after  :slow do |event| called << 'on_after_slow_1' end
-        on_after  :slow do |event| called << 'on_after_slow_2' end
-      }
+      # event callbacks
+      on_before :slow do |event| called << 'on_before_slow_1' end
+      on_before :slow do |event| called << 'on_before_slow_2' end
+      on_after  :slow do |event| called << 'on_after_slow_1' end
+      on_after  :slow do |event| called << 'on_after_slow_2' end
     end
 
     expect(fsm.current).to eql(:green)
@@ -273,16 +266,14 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :ready, :red    => :yellow
       event :go,    :yellow => :green
 
-      callbacks {
-        # state callbacks
-        on_exit_green do |event| called << 'on_exit_green' end
-        on_enter_yellow do |event| called << 'on_enter_yellow' end
-        on_transition_yellow do |event| called << 'on_transition_yellow' end
+      # state callbacks
+      on_exit_green do |event| called << 'on_exit_green' end
+      on_enter_yellow do |event| called << 'on_enter_yellow' end
+      on_transition_yellow do |event| called << 'on_transition_yellow' end
 
-        # event callbacks
-        on_before_slow do |event| called << 'on_before_slow' end
-        on_after_slow do |event| called << 'on_after_slow' end
-      }
+      # event callbacks
+      on_before_slow do |event| called << 'on_before_slow' end
+      on_after_slow do |event| called << 'on_after_slow' end
     end
 
     called = []
@@ -304,9 +295,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
       event :slow, :green  => :yellow
 
-      callbacks {
-        on_enter(:yellow) { |e| evt = e }
-      }
+      on_enter(:yellow) { |e| evt = e }
     end
 
     expect(fsm.current).to eql(:green)
@@ -326,9 +315,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :slow, [:red, :blue, :green] => :yellow
       event :fast, :red => :purple
 
-      callbacks {
-        on_enter(:yellow) { |e| evt = e }
-      }
+      on_enter(:yellow) { |e| evt = e }
     end
 
     expect(fsm.current).to eql(:green)
@@ -360,40 +347,38 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :ready, :red    => :yellow
       event :go,    :yellow => :green
 
-      callbacks {
-        # generic state callbacks
-        on_enter(&callback)
-        on_transition(&callback)
-        on_exit(&callback)
+      # generic state callbacks
+      on_enter(&callback)
+      on_transition(&callback)
+      on_exit(&callback)
 
-        # generic event callbacks
-        on_before(&callback)
-        on_after(&callback)
+      # generic event callbacks
+      on_before(&callback)
+      on_after(&callback)
 
-        # state callbacks
-        on_enter :green,  &callback
-        on_enter :yellow, &callback
-        on_enter :red,    &callback
+      # state callbacks
+      on_enter :green,  &callback
+      on_enter :yellow, &callback
+      on_enter :red,    &callback
 
-        on_transition :green , &callback
-        on_transition :yellow, &callback
-        on_transition :red   , &callback
+      on_transition :green , &callback
+      on_transition :yellow, &callback
+      on_transition :red   , &callback
 
-        on_exit :green , &callback
-        on_exit :yellow, &callback
-        on_exit :red   , &callback
+      on_exit :green , &callback
+      on_exit :yellow, &callback
+      on_exit :red   , &callback
 
-        # event callbacks
-        on_before :slow , &callback
-        on_before :stop , &callback
-        on_before :ready, &callback
-        on_before :go   , &callback
+      # event callbacks
+      on_before :slow , &callback
+      on_before :stop , &callback
+      on_before :ready, &callback
+      on_before :go   , &callback
 
-        on_after :slow , &callback
-        on_after :stop , &callback
-        on_after :ready, &callback
-        on_after :go   , &callback
-      }
+      on_after :slow , &callback
+      on_after :stop , &callback
+      on_after :ready, &callback
+      on_after :go   , &callback
     end
 
     expected = {name: :slow, from: :green, to: :yellow, a: 1, b: 2, c: 3}
@@ -430,48 +415,46 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      callbacks {
-        # generic state callbacks
-        on_enter(&callback)
-        on_transition(&callback)
-        on_exit(&callback)
+      # generic state callbacks
+      on_enter(&callback)
+      on_transition(&callback)
+      on_exit(&callback)
 
-        # generic event callbacks
-        on_before(&callback)
-        on_after(&callback)
+      # generic event callbacks
+      on_before(&callback)
+      on_after(&callback)
 
-        # state callbacks
-        on_enter :green,  &callback
-        on_enter :yellow, &callback
-        on_enter :red,    &callback
-        on_enter :off,    &callback
-        on_enter :off,    &callback
+      # state callbacks
+      on_enter :green,  &callback
+      on_enter :yellow, &callback
+      on_enter :red,    &callback
+      on_enter :off,    &callback
+      on_enter :off,    &callback
 
-        on_transition :green,  &callback
-        on_transition :yellow, &callback
-        on_transition :red,    &callback
-        on_transition :off,    &callback
-        on_transition :off,    &callback
+      on_transition :green,  &callback
+      on_transition :yellow, &callback
+      on_transition :red,    &callback
+      on_transition :off,    &callback
+      on_transition :off,    &callback
 
-        on_exit :green,  &callback
-        on_exit :yellow, &callback
-        on_exit :red,    &callback
-        on_exit :off,    &callback
-        on_exit :off,    &callback
+      on_exit :green,  &callback
+      on_exit :yellow, &callback
+      on_exit :red,    &callback
+      on_exit :off,    &callback
+      on_exit :off,    &callback
 
-        # event callbacks
-        on_before :power_on, &callback
-        on_before :power_off, &callback
-        on_before :go,       &callback
-        on_before :slow,     &callback
-        on_before :stop,     &callback
+      # event callbacks
+      on_before :power_on, &callback
+      on_before :power_off, &callback
+      on_before :go,       &callback
+      on_before :slow,     &callback
+      on_before :stop,     &callback
 
-        on_after :power_on, &callback
-        on_after :power_off, &callback
-        on_after :go,       &callback
-        on_after :slow,     &callback
-        on_after :stop,     &callback
-      }
+      on_after :power_on, &callback
+      on_after :power_off, &callback
+      on_after :go,       &callback
+      on_after :slow,     &callback
+      on_after :stop,     &callback
     end
 
     expect(fsm.current).to eq(:red)
@@ -496,9 +479,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
         event :slow, :green => :yellow
 
-        callbacks {
-          on_enter(:magic) { |event| called << 'on_enter'}
-        }
+        on_enter(:magic) { |event| called << 'on_enter'}
       end
     }.to raise_error(FiniteMachine::InvalidCallbackNameError, /\"magic\" is not a valid callback name/)
   end
@@ -508,7 +489,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       FiniteMachine.new do
         event :slow, :green  => :yellow
 
-        callbacks { on_enter_slow do |event| end }
+        on_enter_slow do |event| end
       end
     }.to raise_error(FiniteMachine::InvalidCallbackNameError, "\"on_enter\" callback is a state listener and cannot be used with \"slow\" event name. Please use on_before or on_after instead.")
   end
@@ -518,7 +499,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
       FiniteMachine.new do
         event :slow, :green => :yellow
 
-        callbacks { on_before_green do |event| end }
+        on_before_green do |event| end
       end
     }.to raise_error(FiniteMachine::InvalidCallbackNameError, '"on_before" callback is an event listener and cannot be used with "green" state name. Please use on_enter, on_transition or on_exit instead.')
   end
@@ -529,7 +510,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
       event :slow, :green => :yellow
 
-      callbacks { on_enter(:yellow) { raise RuntimeError } }
+      on_enter(:yellow) { raise RuntimeError }
     end
 
     expect(fsm.current).to eql(:green)
@@ -544,11 +525,9 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :stop,  :green  => :yellow
       event :stop,  :yellow => :red
 
-      callbacks {
-        on_before_stop do |event|
-          called << 'on_before_stop'
-        end
-      }
+      on_before_stop do |event|
+        called << 'on_before_stop'
+      end
     end
     expect(fsm.current).to eql(:green)
     fsm.stop
@@ -593,9 +572,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
         event :ready, :red    => :yellow
         event :go,    :yellow => :green
 
-        callbacks {
-          on_enter_unknown do |event| end
-        } 
+        on_enter_unknown do |event| end
       end
     }.to raise_error(NameError, /`on_enter_unknown'/)
   end
@@ -608,26 +585,24 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :slow, :green  => :yellow
       event :go,   :yellow => :green
 
-      callbacks {
-        # state callbacks
-        once_on_enter_green  do |event| called << 'once_on_enter_green' end
-        once_on_enter_yellow do |event| called << 'once_on_enter_yellow' end
+      # state callbacks
+      once_on_enter_green  do |event| called << 'once_on_enter_green' end
+      once_on_enter_yellow do |event| called << 'once_on_enter_yellow' end
 
-        once_on_transition_green do |event| called << 'once_on_transition_green' end
-        once_on_transition_yellow do |event| called << 'once_on_transition_yellow' end
-        once_on_exit_none   do |event| called << 'once_on_exit_none' end
-        once_on_exit_green  do |event| called << 'once_on_exit_green' end
-        once_on_exit_yellow do |event| called << 'once_on_exit_yellow' end
+      once_on_transition_green do |event| called << 'once_on_transition_green' end
+      once_on_transition_yellow do |event| called << 'once_on_transition_yellow' end
+      once_on_exit_none   do |event| called << 'once_on_exit_none' end
+      once_on_exit_green  do |event| called << 'once_on_exit_green' end
+      once_on_exit_yellow do |event| called << 'once_on_exit_yellow' end
 
-        # event callbacks
-        once_on_before_init do |event| called << 'once_on_before_init' end
-        once_on_before_slow do |event| called << 'once_on_before_slow' end
-        once_on_before_go   do |event| called << 'once_on_before_go' end
+      # event callbacks
+      once_on_before_init do |event| called << 'once_on_before_init' end
+      once_on_before_slow do |event| called << 'once_on_before_slow' end
+      once_on_before_go   do |event| called << 'once_on_before_go' end
 
-        once_on_after_init do |event| called << 'once_on_after_init' end
-        once_on_after_slow do |event| called << 'once_on_after_slow' end
-        once_on_after_go   do |event| called << 'once_on_after_go' end
-      }
+      once_on_after_init do |event| called << 'once_on_after_init' end
+      once_on_after_slow do |event| called << 'once_on_after_slow' end
+      once_on_after_go   do |event| called << 'once_on_after_go' end
     end
     expect(fsm.current).to eql(:green)
     fsm.slow
@@ -664,21 +639,20 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :bump, :low     => :medium
       event :bump, :medium  => :high
 
-      callbacks {
-        on_enter do |event|
-          callbacks << "enter_#{event.name}_#{event.from}_#{event.to}"
-        end
-        on_exit do |event|
-          callbacks << "exit_#{event.name}_#{event.from}_#{event.to}"
-        end
-        on_before do |event|
-          callbacks << "before_#{event.name}_#{event.from}_#{event.to}"
-        end
-        on_after do |event|
-          callbacks << "after_#{event.name}_#{event.from}_#{event.to}"
-        end
-      }
+      on_enter do |event|
+        callbacks << "enter_#{event.name}_#{event.from}_#{event.to}"
+      end
+      on_exit do |event|
+        callbacks << "exit_#{event.name}_#{event.from}_#{event.to}"
+      end
+      on_before do |event|
+        callbacks << "before_#{event.name}_#{event.from}_#{event.to}"
+      end
+      on_after do |event|
+        callbacks << "after_#{event.name}_#{event.from}_#{event.to}"
+      end
     end
+
     expect(fsm.current).to eq(:initial)
     fsm.bump
     expect(callbacks).to eq([
@@ -736,15 +710,14 @@ RSpec.describe FiniteMachine, 'callbacks' do
                     :low     => :medium,
                     :medium  => :high
 
-      callbacks {
-        on_enter do |event|
-          callbacks << "enter_#{event.name}_#{event.from}_#{event.to}"
-        end
-        on_before do |event|
-          callbacks << "before_#{event.name}_#{event.from}_#{event.to}"
-        end
-      }
+      on_enter do |event|
+        callbacks << "enter_#{event.name}_#{event.from}_#{event.to}"
+      end
+      on_before do |event|
+        callbacks << "before_#{event.name}_#{event.from}_#{event.to}"
+      end
     end
+
     expect(fsm.current).to eq(:initial)
     fsm.bump
     expect(callbacks).to eq([
@@ -783,10 +756,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :off_hook, :on_hook => :off_hook
       event :on_hook,  :off_hook => :on_hook
 
-      callbacks {
-        on_before(:on_hook) { |event| called << "on_before_#{event.name}"}
-        on_enter(:on_hook)  { |event| called << "on_enter_#{event.to}"}
-      }
+      on_before(:on_hook) { |event| called << "on_before_#{event.name}"}
+      on_enter(:on_hook)  { |event| called << "on_enter_#{event.to}"}
     end
     expect(fsm.current).to eq(:on_hook)
     expect(called).to eq([
@@ -810,10 +781,8 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :go,   :yellow => :green, silent: true
       event :stop, :green  => :red
 
-      callbacks {
-        on_enter :green do |event| called << 'on_enter_yellow' end
-        on_enter :red   do |event| called << 'on_enter_red' end
-      }
+      on_enter :green do |event| called << 'on_enter_yellow' end
+      on_enter :red   do |event| called << 'on_enter_red' end
     end
     expect(fsm.current).to eq(:yellow)
     fsm.go
@@ -829,14 +798,12 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :advance, :active   => :inactive, if: -> { false }
       event :advance, :inactive => :active,   if: -> { false }
 
-      callbacks {
-        on_before do |event|
-          called << "before_#{event.name}_#{event.from}_#{event.to}"
-        end
-        on_after do |event|
-          called << "after_#{event.name}_#{event.from}_#{event.to}"
-        end
-      }
+      on_before do |event|
+        called << "before_#{event.name}_#{event.from}_#{event.to}"
+      end
+      on_after do |event|
+        called << "after_#{event.name}_#{event.from}_#{event.to}"
+      end
     end
     expect(fsm.current).to eq(:active)
     fsm.advance
@@ -853,9 +820,7 @@ RSpec.describe FiniteMachine, 'callbacks' do
 
       event :slow, :green => :yellow
 
-      callbacks {
-        on_enter { raise RuntimeError }
-      }
+      on_enter { raise RuntimeError }
     end
 
     expect {
@@ -873,11 +838,9 @@ RSpec.describe FiniteMachine, 'callbacks' do
       event :go, :yellow => :green
       event :stop, :green => :red
 
-      callbacks {
-        on_transition :yellow => :green do
-          called << 'on_transition_yellow_green'
-        end
-      }
+      on_transition :yellow => :green do
+        called << 'on_transition_yellow_green'
+      end
     end
 
     fsm.ready

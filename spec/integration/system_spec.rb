@@ -8,35 +8,31 @@ RSpec.describe FiniteMachine, 'system' do
       event :init, :none => :green
       event :start, any_state => :green
 
-      callbacks {
-        on_before do |event|
-          callbacks << "fsmA on_before(#{event.name})"
-        end
-        on_enter_green do |event|
-          target.fire
-          callbacks << "fsmA on_enter(:green)"
-        end
-        once_on_enter_green do |event|
-          callbacks << "fsmA once_on_enter(:green)"
-        end
-      }
+      on_before do |event|
+        callbacks << "fsmA on_before(#{event.name})"
+      end
+      on_enter_green do |event|
+        target.fire
+        callbacks << "fsmA on_enter(:green)"
+      end
+      once_on_enter_green do |event|
+        callbacks << "fsmA once_on_enter(:green)"
+      end
     end)
 
     stub_const("FSM_B", Class.new(FiniteMachine::Definition) do
       event :init,  :none    => :stopped
       event :start, :stopped => :started
 
-      callbacks {
-        on_before do |event|
-          callbacks << "fsmB on_before(#{event.name})"
-        end
-        on_enter_stopped do |event|
-          callbacks << "fsmB on_enter(:stopped)"
-        end
-        on_enter_started do |event|
-          callbacks << "fsmB on_enter(:started)"
-        end
-      }
+      on_before do |event|
+        callbacks << "fsmB on_before(#{event.name})"
+      end
+      on_enter_stopped do |event|
+        callbacks << "fsmB on_enter(:stopped)"
+      end
+      on_enter_started do |event|
+        callbacks << "fsmB on_enter(:started)"
+      end
     end)
 
     class Backend

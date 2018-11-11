@@ -41,10 +41,8 @@ RSpec.describe FiniteMachine, 'initial' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      callbacks {
-        on_exit :none   do |event| called << 'on_exit_none' end
-        on_enter :green do |event| called << 'on_enter_green' end
-      }
+      on_exit :none   do |event| called << 'on_exit_none' end
+      on_enter :green do |event| called << 'on_enter_green' end
     end
     expect(fsm.current).to eql(:green)
     expect(called).to be_empty
@@ -170,9 +168,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
       event :slow, :green => :yellow
 
-      callbacks {
-        on_enter :green do |event| called << 'on_enter_green' end
-      }
+      on_enter :green do |event| called << 'on_enter_green' end
     end
     expect(fsm.current).to eq(:green)
     expect(called).to eq(['on_enter_green'])
@@ -185,9 +181,7 @@ RSpec.describe FiniteMachine, 'initial' do
 
       event :slow, :green => :yellow
 
-      callbacks {
-        on_enter :green do |event| called << 'on_enter_green' end
-      }
+      on_enter :green do |event| called << 'on_enter_green' end
     end
     expect(fsm.current).to eq(:none)
     fsm.init

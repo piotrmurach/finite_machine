@@ -150,10 +150,8 @@ RSpec.describe FiniteMachine, 'events' do
 
       event :stop, from: :yellow, to: :red
 
-      callbacks {
-        on_before :stop do |event| called << 'on_before_stop' end
-        on_after  :stop do |event| called << 'on_before_stop' end
-      }
+      on_before :stop do |event| called << 'on_before_stop' end
+      on_after  :stop do |event| called << 'on_before_stop' end
     end
 
     expect(fsm.current).to eq(:green)
@@ -170,10 +168,8 @@ RSpec.describe FiniteMachine, 'events' do
 
         event :stop, from: :yellow, to: :red
 
-        callbacks {
-          on_before :stop do |event| called << 'on_before_stop' end
-          on_after  :stop do |event| called << 'on_before_stop' end
-        }
+        on_before :stop do |event| called << 'on_before_stop' end
+        on_after  :stop do |event| called << 'on_before_stop' end
       end
 
       expect(fsm.current).to eq(:green)
@@ -190,10 +186,8 @@ RSpec.describe FiniteMachine, 'events' do
         event :slow,  from: :green,  to: :yellow
         event :stop,  from: :yellow, to: :red, silent: true
 
-        callbacks {
-          on_before :stop do |event| called << 'on_before_stop' end
-          on_after  :stop do |event| called << 'on_before_stop' end
-        }
+        on_before :stop do |event| called << 'on_before_stop' end
+        on_after  :stop do |event| called << 'on_before_stop' end
       end
 
       expect(fsm.current).to eql(:green)
@@ -210,10 +204,8 @@ RSpec.describe FiniteMachine, 'events' do
 
         event :start, :red => :yellow, silent: true
 
-        callbacks {
-          on_before :start do |event| called << 'on_before_start' end
-          on_after  :start do |event| called << 'on_after_start' end
-        }
+        on_before :start do |event| called << 'on_before_start' end
+        on_after  :start do |event| called << 'on_after_start' end
       end
 
       expect(fsm.current).to eq(:green)
@@ -229,10 +221,8 @@ RSpec.describe FiniteMachine, 'events' do
 
         event :start, :red => :yellow
 
-        callbacks {
-          on_before :start do |event| called << 'on_before_start' end
-          on_after  :start do |event| called << 'on_after_start' end
-        }
+        on_before :start do |event| called << 'on_before_start' end
+        on_after  :start do |event| called << 'on_after_start' end
       end
 
       expect(fsm.current).to eq(:green)
@@ -344,10 +334,8 @@ RSpec.describe FiniteMachine, 'events' do
       event :drive,  :engine_on => :running, if: -> { return false }
       event :stop,   any_state  => :neutral
 
-      callbacks {
-        on_before(:drive) { cancel_event }
-        on_after(:stop)   { }
-      }
+      on_before(:drive) { cancel_event }
+      on_after(:stop)   { }
     end
 
     expect(fsm.current).to eql(:neutral)
@@ -367,10 +355,8 @@ RSpec.describe FiniteMachine, 'events' do
       event :digit,    :dialing => :dialing
       event :off_hook, :dialing => :alerting
 
-      callbacks {
-        on_before_digit { |event, digit| digits << digit}
-        on_before_off_hook { |event| callbacks << "dialing #{digits.join}" }
-      }
+      on_before_digit { |event, digit| digits << digit}
+      on_before_off_hook { |event| callbacks << "dialing #{digits.join}" }
     end
 
     expect(phone.current).to eq(:on_hook)
