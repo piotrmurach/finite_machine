@@ -12,7 +12,7 @@ require_relative '../lib/finite_machine'
   p objects_before[:T_OBJECT]
 
   1_000.times do
-    FiniteMachine.define do
+    FiniteMachine.new do
       initial :green
 
       events { event :slow, :green => :yellow }
