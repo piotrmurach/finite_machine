@@ -47,13 +47,6 @@ module FiniteMachine
     # @api private
     attr_threadsafe :dsl
 
-    # Errors DSL
-    #
-    # @return [ErrorsDSL]
-    #
-    # @api private
-    attr_threadsafe :errors_dsl
-
     # The state machine observer
     #
     # @return [Observer]
@@ -99,7 +92,6 @@ module FiniteMachine
       @observer      = Observer.new(self)
       @events_map    = EventsMap.new
       @env           = Env.new(self, [])
-      @errors_dsl    = ErrorsDSL.new(self)
       @dsl           = DSL.new(self, options)
 
       env.target = args.pop unless args.empty?

@@ -151,11 +151,18 @@ module FiniteMachine
       end
     end
 
-    # Error handler that throws exception when machine is in illegal state
+    # Add error handler
+    #
+    # @param [Array] exceptions
+    #
+    # @example
+    #   handle InvalidStateError, with: :log_errors
+    #
+    # @return [Array[Exception]]
     #
     # @api public
-    def handlers(&block)
-      errors_dsl.call(&block)
+    def handle(*exceptions, &block)
+      @machine.handle(*exceptions, &block)
     end
 
     # Decide whether to log transitions
@@ -194,21 +201,4 @@ module FiniteMachine
            'Provide state to transition :to for the initial event'
     end
   end # DSL
-
-  # A DSL for describing error conditions
-  class ErrorsDSL < GenericDSL
-    # Add error handler
-    #
-    # @param [Array] exceptions
-    #
-    # @example
-    #   handle InvalidStateError, with: :log_errors
-    #
-    # @return [Array[Exception]]
-    #
-    # @api public
-    def handle(*exceptions, &block)
-      @machine.handle(*exceptions, &block)
-    end
-  end # ErrorsDSL
 end # FiniteMachine

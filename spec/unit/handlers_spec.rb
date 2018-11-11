@@ -23,11 +23,9 @@ RSpec.describe FiniteMachine, 'handlers' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      handlers {
-        handle FiniteMachine::InvalidStateError do |exception|
-          called << 'invalidstate'
-        end
-      }
+      handle FiniteMachine::InvalidStateError do |exception|
+        called << 'invalidstate'
+      end
     end
 
     expect(fsm.current).to eql(:green)
@@ -46,9 +44,7 @@ RSpec.describe FiniteMachine, 'handlers' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      handlers {
-        handle FiniteMachine::InvalidStateError, with: :log_error
-      }
+      handle FiniteMachine::InvalidStateError, with: :log_error
     end
 
     expect(fsm.current).to eql(:green)
@@ -70,11 +66,9 @@ RSpec.describe FiniteMachine, 'handlers' do
         raise_error
       end
 
-      handlers {
-        handle 'InvalidStateError' do |exception|
-          called << 'invalid_state_error'
-        end
-      }
+      handle 'InvalidStateError' do |exception|
+        called << 'invalid_state_error'
+      end
     end
 
     expect(fsm.current).to eql(:green)
@@ -91,11 +85,9 @@ RSpec.describe FiniteMachine, 'handlers' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      handlers {
-        handle FiniteMachine::InvalidStateError do
-          called << 'invalidstate'
-        end
-      }
+      handle FiniteMachine::InvalidStateError do
+        called << 'invalidstate'
+      end
     end
 
     expect(fsm.current).to eql(:green)
@@ -112,9 +104,7 @@ RSpec.describe FiniteMachine, 'handlers' do
 
       event :slow, :green => :yellow
 
-      handlers {
-        handle 'UnknownErrorType'
-      }
+      handle 'UnknownErrorType'
     end }.to raise_error(ArgumentError, /error handler/)
   end
 
@@ -124,9 +114,7 @@ RSpec.describe FiniteMachine, 'handlers' do
 
       event :slow, :green => :yellow
 
-      handlers {
-        handle Object do end
-      }
+      handle Object do end
     end }.to raise_error(ArgumentError, /Object isn't an Exception/)
   end
 end

@@ -58,9 +58,7 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
           car.turn_reverse_lights_off
         end
 
-        handlers {
-          handle FiniteMachine::InvalidStateError do |exception| end
-        }
+        handle FiniteMachine::InvalidStateError do |exception| end
       end)
     end
 
