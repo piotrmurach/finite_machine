@@ -59,13 +59,13 @@ Or install it yourself as:
     * [2.5 terminal](#25-terminal)
     * [2.6 is?](#26-is)
     * [2.7 trigger](#27-trigger)
-      * [2.7.1 :auto_methods](#211-auto_methods)
+      * [2.7.1 :auto_methods](#271-auto_methods)
     * [2.8 can? and cannot?](#28-can-and-cannot)
     * [2.9 target](#29-target)
       * [2.9.1 :alias_target](#27-alias_target)
     * [2.10 restore!](#210-restore)
     * [2.11 states](#211-states)
-    * [2.12 events](#212-event-names)
+    * [2.12 events](#212-events)
 * [3. States and Transitions](#3-states-and-transitions)
     * [3.1 Triggering transitions](#31-triggering-transitions)
     * [3.2 Dangerous transitions](#32-dangerous-transitions)
@@ -527,18 +527,18 @@ fm.states # => [:none, :green, :yellow, :red]
 
 ### 2.12 events
 
-To find out all the event names supported by the state machine issue `event_names` method:
+To find out all the event names supported by the state machine issue `events` method:
 
 ```ruby
-fm.event_names # => [:init, :ready, :go, :stop]
+fm.events # => [:init, :ready, :go, :stop]
 ```
 
 ## 3. States and Transitions
 
 The **FiniteMachine** DSL exposes the `event` helper to define possible state transitions.
 
-The `event` helper accepts as a first parameter the name which will later be used to create
-method on the **FiniteMachine** instance. As a second parameter `event` accepts an arbitrary number of states either
+The `event` helper accepts as a first argument the transition's name which will later be used to create
+method on the **FiniteMachine** instance. As a second argument the `event` accepts an arbitrary number of states either
 in the form of `:from` and `:to` hash keys or by using the state names themselves as key value pairs.
 
 ```ruby
@@ -553,6 +553,8 @@ The following methods trigger transitions for the example state machine.
 * ready
 * go
 * stop
+
+You can always opt out from automatic method generation by using [:auto_methods](#271-auto_methods) option.
 
 ### 3.1 Triggering transitions
 
@@ -613,7 +615,7 @@ end
 
 The **FiniteMachine** offers few ways to transition out of any state. This is particularly useful when the machine already defines many states.
 
-You can use `any_state` for the name of the state, for instance:
+You can use `any_state` as the name for a given state, for instance:
 
 ```ruby
 event :run, from: any_state, to: :green
