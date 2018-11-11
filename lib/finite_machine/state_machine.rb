@@ -178,13 +178,13 @@ module FiniteMachine
     # Retireve all event names
     #
     # @example
-    #   fsm.event_names # => [:init, :start, :stop]
+    #   fsm.events # => [:init, :start, :stop]
     #
     # @return [Array[Symbol]]
     #
     # @api public
-    def event_names
-      sync_shared { events_map.events }
+    def events
+      events_map.events
     end
 
     # Checks if event can be triggered
@@ -390,7 +390,7 @@ module FiniteMachine
     def inspect
       sync_shared do
         "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
-        "@events=#{event_names}, " \
+        "@events=#{events}, " \
         "@transitions=#{events_map.state_transitions}>"
       end
     end

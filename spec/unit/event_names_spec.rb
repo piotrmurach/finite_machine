@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#event_names' do
+RSpec.describe FiniteMachine, '#events' do
   it "retrieves all event names" do
     fsm = FiniteMachine.new do
       initial :green
@@ -10,6 +10,6 @@ RSpec.describe FiniteMachine, '#event_names' do
     end
 
     expect(fsm.current).to eql(:green)
-    expect(fsm.event_names).to match_array([:init, :start, :stop])
+    expect(fsm.events).to match_array([:init, :start, :stop])
   end
 end

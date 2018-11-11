@@ -221,7 +221,7 @@ module FiniteMachine
     #
     # @api private
     def callback_names
-      machine.states + machine.event_names + [ANY_EVENT, ANY_STATE]
+      machine.states + machine.events + [ANY_EVENT, ANY_STATE]
     end
 
     # Forward the message to observer

@@ -89,7 +89,7 @@ module FiniteMachine
     # @api private
     def wrong_event_name?(name, event_type)
       machine.states.include?(name) &&
-      !machine.event_names.include?(name) &&
+      !machine.events.include?(name) &&
       event_type < HookEvent::Anyaction
     end
 
@@ -103,7 +103,7 @@ module FiniteMachine
     #
     # @api private
     def wrong_state_name?(name, event_type)
-      machine.event_names.include?(name) &&
+      machine.events.include?(name) &&
       !machine.states.include?(name) &&
       event_type < HookEvent::Anystate
     end
