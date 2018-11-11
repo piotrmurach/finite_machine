@@ -63,6 +63,20 @@ module FiniteMachine
     def new(*args, **options, &block)
       StateMachine.new(*args, **options, &block)
     end
+
+    # A factory method for creating reusable FiniteMachine definitions
+    #
+    # @example
+    #   TrafficLights = FiniteMachine.define
+    #   lights_fm_a = TrafficLights.new
+    #   lights_fm_b = TrafficLights.new
+    #
+    # @return [Class]
+    #
+    # @api public
+    def define(&block)
+      Class.new(Definition, &block)
+    end
   end
 end # FiniteMachine
 
