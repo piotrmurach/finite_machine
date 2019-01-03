@@ -358,20 +358,20 @@ table {
   font-family: 'Font Awesome 5 Free';
   font-style: normal;
   font-weight: 900;
-  src: url(/assets/font-awesome/fa-solid-900-c141af323058f12f8b0bc760162f9928f6a415fa04940b486fdb4086284e6ecf.eot);
-  src: url(/assets/font-awesome/fa-solid-900-c141af323058f12f8b0bc760162f9928f6a415fa04940b486fdb4086284e6ecf.eot#iefix) format("embedded-opentype"), url(/assets/font-awesome/fa-solid-900-08aa3a5ee68a21d5771a70b20495b6da1c0f996c46982cd1b0447ad2db730d11.woff2) format("woff2"), url(/assets/font-awesome/fa-solid-900-1675e164e5ec88e30fb8c912cf9343c06c18fe419663b40de0a3bf92371b1d07.woff) format("woff"), url(/assets/font-awesome/fa-solid-900-cef5dd667be89aa0b9d1bd0a2ceb7c017c7b183f81d0213f8f99bd380f042577.ttf) format("truetype"), url(/assets/font-awesome/fa-solid-900-7ad9caabf64ee35d113612f7bb10e531fb17ab431a51e0b088e93f89e1915549.svg#fontawesome) format("svg"); }
+  src: url(/finite_machine/assets/font-awesome/fa-solid-900-c141af323058f12f8b0bc760162f9928f6a415fa04940b486fdb4086284e6ecf.eot);
+  src: url(/finite_machine/assets/font-awesome/fa-solid-900-c141af323058f12f8b0bc760162f9928f6a415fa04940b486fdb4086284e6ecf.eot#iefix) format("embedded-opentype"), url(/finite_machine/assets/font-awesome/fa-solid-900-08aa3a5ee68a21d5771a70b20495b6da1c0f996c46982cd1b0447ad2db730d11.woff2) format("woff2"), url(/finite_machine/assets/font-awesome/fa-solid-900-1675e164e5ec88e30fb8c912cf9343c06c18fe419663b40de0a3bf92371b1d07.woff) format("woff"), url(/finite_machine/assets/font-awesome/fa-solid-900-cef5dd667be89aa0b9d1bd0a2ceb7c017c7b183f81d0213f8f99bd380f042577.ttf) format("truetype"), url(/finite_machine/assets/font-awesome/fa-solid-900-7ad9caabf64ee35d113612f7bb10e531fb17ab431a51e0b088e93f89e1915549.svg#fontawesome) format("svg"); }
 @font-face {
   font-family: 'Font Awesome 5 Free';
   font-style: normal;
   font-weight: 400;
-  src: url(/assets/font-awesome/fa-regular-400-6e70525bb429041c5ec84a81cf4733303cee90966809ed255741fa50e123ae47.eot);
-  src: url(/assets/font-awesome/fa-regular-400-6e70525bb429041c5ec84a81cf4733303cee90966809ed255741fa50e123ae47.eot#iefix) format("embedded-opentype"), url(/assets/font-awesome/fa-regular-400-e5c1d9e7bdeaf3372dee724d175d25aca879ed52ae9afd018f503e9d74e09b50.woff2) format("woff2"), url(/assets/font-awesome/fa-regular-400-9064839b35308c034ecf20f0335ea37331328d962baff8e589e69d01f5a56ffe.woff) format("woff"), url(/assets/font-awesome/fa-regular-400-418571014c9250c6197fc3ac4e8e5d96d7a49711a5d6308ca0d36b6f3045c611.ttf) format("truetype"), url(/assets/font-awesome/fa-regular-400-a849aa4ab8a20512c2e073ed66cf146c5615220c74da85c10909eb2c33d3317a.svg#fontawesome) format("svg"); }
+  src: url(/finite_machine/assets/font-awesome/fa-regular-400-6e70525bb429041c5ec84a81cf4733303cee90966809ed255741fa50e123ae47.eot);
+  src: url(/finite_machine/assets/font-awesome/fa-regular-400-6e70525bb429041c5ec84a81cf4733303cee90966809ed255741fa50e123ae47.eot#iefix) format("embedded-opentype"), url(/finite_machine/assets/font-awesome/fa-regular-400-e5c1d9e7bdeaf3372dee724d175d25aca879ed52ae9afd018f503e9d74e09b50.woff2) format("woff2"), url(/finite_machine/assets/font-awesome/fa-regular-400-9064839b35308c034ecf20f0335ea37331328d962baff8e589e69d01f5a56ffe.woff) format("woff"), url(/finite_machine/assets/font-awesome/fa-regular-400-418571014c9250c6197fc3ac4e8e5d96d7a49711a5d6308ca0d36b6f3045c611.ttf) format("truetype"), url(/finite_machine/assets/font-awesome/fa-regular-400-a849aa4ab8a20512c2e073ed66cf146c5615220c74da85c10909eb2c33d3317a.svg#fontawesome) format("svg"); }
 @font-face {
   font-family: 'Font Awesome 5 Brands';
   font-style: normal;
   font-weight: normal;
-  src: url(/assets/font-awesome/fa-brands-400-c563adbadc5eafb6708b610268fbd393d59ae41e220aae5aac99ca2d45a6e151.eot);
-  src: url(/assets/font-awesome/fa-brands-400-c563adbadc5eafb6708b610268fbd393d59ae41e220aae5aac99ca2d45a6e151.eot#iefix) format("embedded-opentype"), url(/assets/font-awesome/fa-brands-400-c885e9f2017a2ed7075db9e876d40a04aa3208114443803bdb120a34afd3b1d6.woff2) format("woff2"), url(/assets/font-awesome/fa-brands-400-ca734c792a24c20ff91ec878fd146b3354d4859f728f481c1089a3e2ffa2d30f.woff) format("woff"), url(/assets/font-awesome/fa-brands-400-3b3fbc59f287f33a3870175b19eb94d7cbb546af2fdbab29df91ba834352d3ea.ttf) format("truetype"), url(/assets/font-awesome/fa-brands-400-f6ae6226846422df4abf64b65814d3ccd3570af5e0350983fdb01fbc0dd055d6.svg#fontawesome) format("svg"); }
+  src: url(/finite_machine/assets/font-awesome/fa-brands-400-c563adbadc5eafb6708b610268fbd393d59ae41e220aae5aac99ca2d45a6e151.eot);
+  src: url(/finite_machine/assets/font-awesome/fa-brands-400-c563adbadc5eafb6708b610268fbd393d59ae41e220aae5aac99ca2d45a6e151.eot#iefix) format("embedded-opentype"), url(/finite_machine/assets/font-awesome/fa-brands-400-c885e9f2017a2ed7075db9e876d40a04aa3208114443803bdb120a34afd3b1d6.woff2) format("woff2"), url(/finite_machine/assets/font-awesome/fa-brands-400-ca734c792a24c20ff91ec878fd146b3354d4859f728f481c1089a3e2ffa2d30f.woff) format("woff"), url(/finite_machine/assets/font-awesome/fa-brands-400-3b3fbc59f287f33a3870175b19eb94d7cbb546af2fdbab29df91ba834352d3ea.ttf) format("truetype"), url(/finite_machine/assets/font-awesome/fa-brands-400-f6ae6226846422df4abf64b65814d3ccd3570af5e0350983fdb01fbc0dd055d6.svg#fontawesome) format("svg"); }
 .fa,
 .fas {
   font-family: 'Font Awesome 5 Free';
@@ -4634,7 +4634,7 @@ pre {
     .site-header .logo a {
       display: inline-block;
       overflow: hidden;
-      background: url("../assets/finite_machine_logo-3cb8bb55e2c91a8e9b452f7779c8019e062846a0928a45f623f27ee71718cdb1.svg") no-repeat;
+      background: url(/finite_machine/assets/finite_machine_logo-3cb8bb55e2c91a8e9b452f7779c8019e062846a0928a45f623f27ee71718cdb1.svg) no-repeat;
       background-size: contain;
       width: 250px;
       height: 176px; }
