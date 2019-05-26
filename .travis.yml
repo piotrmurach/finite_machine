@@ -1,7 +1,6 @@
 ---
 language: ruby
 before_install: "gem install bundler -v '< 2.0'"
-bundler_args: --without yard benchmarks
 script: bundle exec rake ci
 rvm:
   - 2.0.0
