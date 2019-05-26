@@ -28,7 +28,7 @@
 * easy [custom object integration](#29-target)
 * natural DSL for declaring events, callbacks and exception handlers
 * [callbacks](#4-callbacks) for state and event changes
-* ability to check [reachable](#25-can-and-cannot) state(s)
+* ability to check [reachable](#28-can-and-cannot) state(s)
 * ability to check for [terminal](#25-terminal) state(s)
 * transition [guard conditions](#38-conditional-transitions)
 * dynamic [choice pseudostates](#39-choice-pseudostates)
@@ -1412,7 +1412,7 @@ Please note that you do not need to call `target.save` inside callback, it is en
 
 ### 7.3 Transactions
 
-When using **FiniteMachine** with ActiveRecord it advisable to trigger state changes inside transactions to ensure integrity of the database. Given Account example from section 8.2 one can run event in transaction in the following way:
+When using **FiniteMachine** with ActiveRecord it advisable to trigger state changes inside transactions to ensure integrity of the database. Given Account example from section 7.2 one can run event in transaction in the following way:
 
 ```ruby
 ActiveRecord::Base.transaction do
