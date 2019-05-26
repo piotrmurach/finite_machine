@@ -2,6 +2,7 @@
 install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - gem install bundler -v '< 2.0'
+  - bundle install
 before_test:
   - ruby -v
   - gem -v
