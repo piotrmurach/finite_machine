@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "finite_machine"
   spec.version       = FiniteMachine::VERSION
   spec.authors       = ["Piotr Murach"]
-  spec.email         = [""]
+  spec.email         = ["me@piotrmurach.com"]
   spec.description   = %q{A minimal finite state machine with a straightforward syntax. You can quickly model states, add callbacks and use object-oriented techniques to integrate with ORMs.}
   spec.summary       = %q{A minimal finite state machine with a straightforward syntax.}
   spec.homepage      = "http://piotrmurach.github.io/finite_machine/"
