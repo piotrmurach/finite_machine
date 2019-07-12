@@ -60,8 +60,8 @@ module FiniteMachine
     # @return [FiniteMachine::StateMachine]
     #
     # @api public
-    def new(*args, **options, &block)
-      StateMachine.new(*args, **options, &block)
+    def new(*args, &block)
+      StateMachine.new(*args, &block)
     end
 
     # A factory method for creating reusable FiniteMachine definitions

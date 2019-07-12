@@ -189,4 +189,37 @@ RSpec.describe FiniteMachine, '#target' do
       'event save called'
     ])
   end
+
+  it "handles targets responding to :to_hash message" do
+    stub_const("Serializer", Class.new do
+      def initialize(data)
+        @data = data
+      end
+
+      def write(new_data)
+        @data.merge!(new_data)
+      end
+
+      def to_hash
+        @data
+      end
+      alias to_h to_hash
+    end)
+
+    model = Serializer.new({a: 1, b: 2})
+
+    fsm = FiniteMachine.new(model) do
+      initial :a
+
+      event :serialize, :a => :b
+
+      on_after :serialize do |event|
+        target.write(c: 3)
+      end
+    end
+
+    fsm.serialize
+
+    expect(model.to_h).to include({a: 1, b: 2, c: 3})
+  end
 end

@@ -85,7 +85,8 @@ module FiniteMachine
     #   the alias for target object
     #
     # @api private
-    def initialize(*args, **options, &block)
+    def initialize(*args, &block)
+      options = args.last.is_a?(::Hash) ? args.pop : {}
       @initial_state = DEFAULT_STATE
       @auto_methods  = options.fetch(:auto_methods, true)
       @subscribers   = Subscribers.new
