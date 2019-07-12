@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.12.1] - 2019-07-12
+
+### Changed
+* Change to relax dev dependencies versions
+
+### Fixed
+# Fix FiniteMachine.new to stop coercing object target that responds to to_hash into options
+
 ## [v0.12.0] - 2018-11-11
 
 ### Added
