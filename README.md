@@ -200,7 +200,7 @@ TrafficLights = FiniteMachine.define do
   event :stop,  :yellow => :red
   event :ready, :red    => :yellow
   event :go,    :yellow => :green
-end)
+end
 ```
 
 Then you can create however many instance of above class:
