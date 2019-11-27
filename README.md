@@ -1394,7 +1394,7 @@ class Account < ActiveRecord::Base
       event :authorize, :pending => :access
 
       on_enter do |event|
-        target.state = state.to
+        target.state = state
       end
     end
   end
