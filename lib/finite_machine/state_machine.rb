@@ -28,8 +28,8 @@ module FiniteMachine
     # Initial state, defaults to :none
     attr_threadsafe :initial_state
 
-    # Final state, defaults to :none
-    attr_threadsafe :final_state
+    # Final state, defaults to nil
+    attr_threadsafe :terminal_states
 
     # The prefix used to name events.
     attr_threadsafe :namespace
@@ -226,7 +226,7 @@ module FiniteMachine
     #
     # @api public
     def terminated?
-      is?(final_state)
+      is?(terminal_states)
     end
 
     # Restore this machine to a known state

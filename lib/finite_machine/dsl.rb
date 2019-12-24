@@ -122,7 +122,7 @@ module FiniteMachine
     #
     # @api public
     def terminal(*values)
-      self.final_state = values
+      self.terminal_states = values
     end
 
     # Create event and associate transition
