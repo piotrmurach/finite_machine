@@ -13,7 +13,7 @@ module FiniteMachine
     #   the transitions and attributes
     #
     # @api private
-    def initialize(machine, name, **transitions)
+    def initialize(machine, name, transitions = {})
       @machine     = machine
       @name        = name
       @transitions = transitions
@@ -34,7 +34,7 @@ module FiniteMachine
     # @return [FiniteMachine::Transition]
     #
     # @api public
-    def choice(to, **conditions)
+    def choice(to, conditions = {})
       transition_builder = TransitionBuilder.new(@machine, @name,
                                                  @transitions.merge(conditions))
       transition_builder.call(@transitions[:from] => to)

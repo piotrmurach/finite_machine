@@ -10,7 +10,7 @@ module FiniteMachine
     # Initialize a generic DSL
     #
     # @api public
-    def initialize(machine, **attrs)
+    def initialize(machine, attrs)
       @machine = machine
       @attrs   = attrs
     end
@@ -53,7 +53,7 @@ module FiniteMachine
     # Initialize top level DSL
     #
     # @api public
-    def initialize(machine, **attrs)
+    def initialize(machine, attrs)
       super(machine, attrs)
 
       @machine.state = FiniteMachine::DEFAULT_STATE
@@ -96,7 +96,7 @@ module FiniteMachine
     # @return [StateMachine]
     #
     # @api public
-    def initial(value, **options)
+    def initial(value, options = {})
       state = (value && !value.is_a?(Hash)) ? value : raise_missing_state
       name, @defer_initial, @silent_initial = *parse_initial(options)
       @initial_event = name
