@@ -16,7 +16,6 @@ if ENV['COVERAGE'] || ENV['TRAVIS']
 end
 
 require 'finite_machine'
-require 'thwait'
 require 'rspec-benchmark'
 
 RSpec.configure do |config|
