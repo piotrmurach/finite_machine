@@ -1,12 +1,25 @@
 # Change Log
 
+## [v0.13.0] - 2020-01-04
+
+### Added
+* Add metadata to gemspec
+
+### Changed
+* Change StateMachine#final_state to #terminal_states by Brad Gessler(@bradgessler)
+* Change TwoPhaseLock to use Concurrent::ReadWriteLock and remove sync requirement
+* Change to remove artefacts like tests & tasks from gemspec
+
+### Fixed
+* Fix Ruby 2.7 keyword arguments warnings
+
 ## [v0.12.1] - 2019-07-12
 
 ### Changed
 * Change to relax dev dependencies versions
 
 ### Fixed
-# Fix FiniteMachine.new to stop coercing object target that responds to to_hash into options
+* Fix FiniteMachine.new to stop coercing object target that responds to to_hash into options
 
 ## [v0.12.0] - 2018-11-11
 
@@ -291,6 +304,7 @@
 
 * Initial release
 
+[v0.12.1]: https://github.com/peter-murach/finite_machine/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/peter-murach/finite_machine/compare/v0.11.3...v0.12.0
 [v0.11.3]: https://github.com/peter-murach/finite_machine/compare/v0.11.2...v0.11.3
 [v0.11.2]: https://github.com/peter-murach/finite_machine/compare/v0.11.1...v0.11.2
