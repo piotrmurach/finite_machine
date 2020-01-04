@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'sync'
+require "concurrent/atomic/read_write_lock"
 
 module FiniteMachine
   # Mixin to provide lock to a {Threadable}
@@ -9,12 +9,13 @@ module FiniteMachine
   module TwoPhaseLock
     # Create synchronization lock
     #
-    # @return [Sync]
+    # @return [Concurrent::ReadWriteLock]
     #
     # @api private
-    def sync
-      @sync = Sync.new
+    def lock
+      @lock = Concurrent::ReadWriteLock.new
     end
+    module_function :lock
 
     # Synchronize given block of code
     #
@@ -25,9 +26,13 @@ module FiniteMachine
     #
     # @api private
     def synchronize(mode, &block)
-      sync.synchronize(mode, &block)
+      case mode
+      when :EX
+        lock.with_write_lock(&block)
+      when :SH
+        lock.with_read_lock(&block)
+      end
     end
-
-    module_function :sync, :synchronize
+    module_function :synchronize
   end # TwoPhaseLock
 end # FiniteMachine
