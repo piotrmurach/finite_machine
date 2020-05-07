@@ -5,7 +5,7 @@ gemspec
 group :development do
   gem 'ruby-prof', '~> 0.17.0', platforms: :mri
   gem 'pry',   '~> 0.10.1'
-  gem 'rspec-benchmark', RUBY_VERSION < '2.1.0' ? '~> 0.4' : '~> 0.6'
+  gem 'rspec-benchmark', RUBY_VERSION < "2.1.0" ? "~> 0.4" : "~> 0.6"
 end
 
 group :metrics do
