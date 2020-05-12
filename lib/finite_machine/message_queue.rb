@@ -180,7 +180,6 @@ module FiniteMachine
       until @dead
         @mutex.synchronize do
           while @queue.empty?
-            break if @dead
             @not_empty.wait(@mutex)
           end
           event = @queue.pop
