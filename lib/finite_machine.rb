@@ -47,7 +47,7 @@ module FiniteMachine
   # Raised when argument is already defined
   AlreadyDefinedError = Class.new(::ArgumentError)
 
-  class << self
+  module ClassMethods
     attr_accessor :logger
 
     # Initialize an instance of finite machine
@@ -78,6 +78,8 @@ module FiniteMachine
       Class.new(Definition, &block)
     end
   end
+
+  extend ClassMethods
 end # FiniteMachine
 
 FiniteMachine.logger = Logger.new(STDERR)
