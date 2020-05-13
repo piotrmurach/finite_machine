@@ -1,6 +1,6 @@
 # Change Log
 
-## [v0.13.0] - 2020-01-04
+## [v0.13.0] - 2020-05-13
 
 ### Added
 * Add sync as a dependency
@@ -12,6 +12,7 @@
 
 ### Fixed
 * Fix Ruby 2.7 keyword arguments warnings
+* Fix MessageQueue deadlock by Pavel Rosický(@ahorek)
 
 ## [v0.12.1] - 2019-07-12
 
