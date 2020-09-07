@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
-require_relative 'catchable'
-require_relative 'dsl'
-require_relative 'env'
-require_relative 'events_map'
-require_relative 'hook_event'
-require_relative 'observer'
-require_relative 'threadable'
-require_relative 'subscribers'
+require_relative "catchable"
+require_relative "dsl"
+require_relative "env"
+require_relative "events_map"
+require_relative "hook_event"
+require_relative "observer"
+require_relative "threadable"
+require_relative "subscribers"
 
 module FiniteMachine
   # Base class for state machine
@@ -64,7 +64,8 @@ module FiniteMachine
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
-    def_delegators :dsl, :initial, :terminal, :event, :trigger_init, :alias_target
+    def_delegators :dsl, :initial, :terminal, :event, :trigger_init,
+                   :alias_target
 
     # Initialize state machine
     #
@@ -194,7 +195,7 @@ module FiniteMachine
     #   fsm.can?(:go) # => true
     #
     # @example
-    #   fsm.can?(:go, 'Piotr')  # checks condition with parameter 'Piotr'
+    #   fsm.can?(:go, "Piotr")  # checks condition with parameter "Piotr"
     #
     # @param [String] event
     #
@@ -202,7 +203,7 @@ module FiniteMachine
     #
     # @api public
     def can?(*args)
-      event_name  = args.shift
+      event_name = args.shift
       events_map.can_perform?(event_name, current, *args)
     end
 
@@ -284,7 +285,7 @@ module FiniteMachine
       else
         exception = InvalidStateError
         catch_error(exception) ||
-          fail(exception, "inappropriate current state '#{current}'")
+          raise(exception, "inappropriate current state '#{current}'")
 
         false
       end
@@ -407,7 +408,7 @@ module FiniteMachine
     #
     # @api private
     def raise_transition_error(error)
-      fail TransitionError, Logger.format_error(error)
+      raise TransitionError, Logger.format_error(error)
     end
 
     # Forward the message to observer or self
