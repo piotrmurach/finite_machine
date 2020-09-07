@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Definition, '#alias_target' do
+RSpec.describe FiniteMachine::Definition, "#alias_target" do
 
   before do
     stub_const("Car", Class.new do
@@ -40,7 +40,7 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
     expect { fsm_b.delorean }.to raise_error(NameError)
   end
 
-  context 'when inside definition' do
+  context "when outside definition" do
     before do
       stub_const("Engine", Class.new(FiniteMachine::Definition) do
         initial :neutral
@@ -84,6 +84,52 @@ RSpec.describe FiniteMachine::Definition, '#alias_target' do
       engine.back
       expect(engine.current).to eq(:reverse)
       expect(car.reverse_lights?).to be true
+    end
+  end
+
+  context "when target aliased inside definition" do
+    before do
+      stub_const("Matter", Class.new do
+        attr_accessor :state
+
+        def initialize
+          @state = :gas
+        end
+      end)
+
+      stub_const("Diesel", Class.new(FiniteMachine::Definition) do
+        alias_target :matter
+
+        initial :gas
+
+        event :fuel, :gas => :liquid
+
+        on_transition do |event|
+          matter.state = event.to
+        end
+      end)
+    end
+
+    it "uses alias_target helper" do
+      matter = Matter.new
+      diesel = Diesel.new(matter)
+      expect(diesel.current).to eq(:gas)
+      expect(matter.state).to eq(:gas)
+
+      diesel.fuel
+
+      expect(diesel.current).to eq(:liquid)
+      expect(matter.state).to eq(:liquid)
+    end
+
+    it "adds additional alias with alias_target helper" do
+      matter = Matter.new
+      diesel = Diesel.new(matter)
+      expect(diesel.env.aliases).to eq(%i[matter])
+
+      diesel.alias_target :substance
+
+      expect(diesel.env.aliases).to eq(%i[matter substance])
     end
   end
 end

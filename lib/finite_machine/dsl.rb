@@ -65,6 +65,29 @@ module FiniteMachine
       log_transitions(@attrs.fetch(:log_transitions, false))
     end
 
+    # Add aliases for the target object
+    #
+    # @example
+    #   FiniteMachine.define do
+    #     target_alias :engine
+    #
+    #     on_transition do |event|
+    #       engine.state = event.to
+    #     end
+    #   end
+    #
+    # @param [Array<Symbol>] aliases
+    #   the names for target alias
+    #
+    # @api public
+    def alias_target(*aliases)
+      aliases.each do |alias_name|
+        next if env.aliases.include?(alias_name)
+
+        env.aliases << alias_name
+      end
+    end
+
     # Define initial state
     #
     # @param [Symbol] value

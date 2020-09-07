@@ -64,7 +64,7 @@ module FiniteMachine
     # Allow or not logging of transitions
     attr_threadsafe :log_transitions
 
-    def_delegators :dsl, :initial, :terminal, :event, :trigger_init
+    def_delegators :dsl, :initial, :terminal, :event, :trigger_init, :alias_target
 
     # Initialize state machine
     #
