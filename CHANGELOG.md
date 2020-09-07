@@ -1,5 +1,10 @@
 # Change Log
 
+## [v0.14.0] - unreleased
+
+### Added
+* Add ability to declare alias target inside definition
+
 ## [v0.13.0] - 2020-05-13
 
 ### Added
@@ -305,6 +310,7 @@
 
 * Initial release
 
+[v0.14.0]: https://github.com/peter-murach/finite_machine/compare/v0.13.0...v0.14.0
 [v0.13.0]: https://github.com/peter-murach/finite_machine/compare/v0.12.1...v0.13.0
 [v0.12.1]: https://github.com/peter-murach/finite_machine/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/peter-murach/finite_machine/compare/v0.11.3...v0.12.0
