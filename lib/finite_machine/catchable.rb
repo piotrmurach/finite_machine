@@ -101,15 +101,23 @@ module FiniteMachine
     # @api private
     def evaluate_exceptions(exceptions, options)
       exceptions.each do |exception|
-        key = if exception.is_a?(Class) && exception <= Exception
-          exception.name
-        elsif exception.is_a?(String)
-          exception
-        else
-          raise ArgumentError, "#{exception} isn't an Exception"
-        end
-
+        key = extract_exception_name(exception)
         error_handlers << [key, options[:with]]
+      end
+    end
+
+    # Extract exception name
+    #
+    # @param [Class,Exception,String] exception
+    #
+    # @api private
+    def extract_exception_name(exception)
+      if exception.is_a?(Class) && exception <= Exception
+        exception.name
+      elsif exception.is_a?(String)
+        exception
+      else
+        raise ArgumentError, "#{exception} isn't an Exception"
       end
     end
   end # Catchable
