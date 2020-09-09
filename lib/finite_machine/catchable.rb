@@ -33,7 +33,7 @@ module FiniteMachine
         if block_given?
           options[:with] = block
         else
-          raise ArgumentError, 'Need to provide error handler.'
+          raise ArgumentError, "Need to provide error handler."
         end
       end
       evaluate_exceptions(exceptions, options)
@@ -71,7 +71,7 @@ module FiniteMachine
     #
     # @api private
     def extract_const(class_name)
-      class_name.split('::').reduce(FiniteMachine) do |constant, part|
+      class_name.split("::").reduce(FiniteMachine) do |constant, part|
         constant.const_get(part)
       end
     end
@@ -85,9 +85,9 @@ module FiniteMachine
         target.method(handler)
       when Proc
         if handler.arity.zero?
-          proc { instance_exec(&handler) }
+          -> { instance_exec(&handler) }
         else
-          proc { |_exception| instance_exec(_exception, &handler) }
+          ->(exception) { instance_exec(exception, &handler) }
         end
       end
     end
