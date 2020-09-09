@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'choice_merger'
-require_relative 'safety'
-require_relative 'transition_builder'
+require_relative "choice_merger"
+require_relative "safety"
+require_relative "transition_builder"
 
 module FiniteMachine
   # A generic DSL for describing the state machine
@@ -220,8 +220,8 @@ module FiniteMachine
     #
     # @api private
     def raise_missing_state
-      fail MissingInitialStateError,
-           'Provide state to transition :to for the initial event'
+      raise MissingInitialStateError,
+            "Provide state to transition :to for the initial event"
     end
   end # DSL
 end # FiniteMachine
