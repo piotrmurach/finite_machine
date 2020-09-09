@@ -38,6 +38,13 @@ module FiniteMachine
       end
     end
 
+    # Check if message can be handled by this DSL
+    #
+    # @api private
+    def respond_to_missing?(method_name, include_private = false)
+      @machine.respond_to?(method_name) || super
+    end
+
     # Configure state machine properties
     #
     # @api private
