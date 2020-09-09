@@ -1,11 +1,11 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-desc 'Measure code coverage'
+desc "Measure code coverage"
 task :coverage do
   begin
-    original, ENV['COVERAGE'] = ENV['COVERAGE'], 'true'
-    Rake::Task['spec'].invoke
+    original, ENV["COVERAGE"] = ENV["COVERAGE"], "true"
+    Rake::Task["spec"].invoke
   ensure
-    ENV['COVERAGE'] = original
+    ENV["COVERAGE"] = original
   end
 end

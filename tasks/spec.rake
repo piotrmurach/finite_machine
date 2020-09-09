@@ -1,27 +1,27 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 begin
-  require 'rspec/core/rake_task'
+  require "rspec/core/rake_task"
 
-  desc 'Run all specs'
+  desc "Run all specs"
   RSpec::Core::RakeTask.new(:spec) do |task|
-    task.pattern = 'spec/{unit,integration}{,/*/**}/*_spec.rb'
+    task.pattern = "spec/{unit,integration}{,/*/**}/*_spec.rb"
   end
 
   namespace :spec do
-    desc 'Run unit specs'
+    desc "Run unit specs"
     RSpec::Core::RakeTask.new(:unit) do |task|
-      task.pattern = 'spec/unit{,/*/**}/*_spec.rb'
+      task.pattern = "spec/unit{,/*/**}/*_spec.rb"
     end
 
-    desc 'Run integration specs'
+    desc "Run integration specs"
     RSpec::Core::RakeTask.new(:integration) do |task|
-      task.pattern = 'spec/integration{,/*/**}/*_spec.rb'
+      task.pattern = "spec/integration{,/*/**}/*_spec.rb"
     end
 
-    desc 'Run performance specs'
+    desc "Run performance specs"
     RSpec::Core::RakeTask.new(:perf) do |task|
-      task.pattern = 'spec/performance{,/*/**}/*_spec.rb'
+      task.pattern = "spec/performance{,/*/**}/*_spec.rb"
     end
   end
 
