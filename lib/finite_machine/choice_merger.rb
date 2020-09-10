@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'transition_builder'
+require_relative "transition_builder"
 
 module FiniteMachine
   # A class responsible for merging choice options
@@ -39,6 +39,6 @@ module FiniteMachine
                                                  @transitions.merge(conditions))
       transition_builder.call(@transitions[:from] => to)
     end
-    alias_method :default, :choice
+    alias default choice
   end # ChoiceMerger
 end # FiniteMachine
