@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#terminated?' do
+RSpec.describe FiniteMachine, "#terminated?" do
 
   it "allows to specify terminal state" do
     fsm = FiniteMachine.new do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Hooks, '#clear' do
+RSpec.describe FiniteMachine::Hooks, "#clear" do
   it "clears all registered hooks" do
     hooks = described_class.new
 

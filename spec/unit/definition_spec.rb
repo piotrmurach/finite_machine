@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Definition, 'definition' do
+RSpec.describe FiniteMachine::Definition, "definition" do
 
   before do
     class Engine < FiniteMachine::Definition
@@ -69,13 +69,13 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
 
       event :start, :red => :green
 
-      on_enter { |event| target << 'generic' }
+      on_enter { |event| target << "generic" }
     end
 
     class SpecificStateMachine < GenericStateMachine
       event :stop, :green => :yellow
 
-      on_enter(:yellow) { |event| target << 'specific' }
+      on_enter(:yellow) { |event| target << "specific" }
     end
 
     called = []
@@ -89,10 +89,10 @@ RSpec.describe FiniteMachine::Definition, 'definition' do
 
     specific_fsm.start
     expect(specific_fsm.current).to eq(:green)
-    expect(called).to match_array(['generic'])
+    expect(called).to match_array(["generic"])
 
     specific_fsm.stop
     expect(specific_fsm.current).to eq(:yellow)
-    expect(called).to match_array(['generic', 'generic', 'specific'])
+    expect(called).to match_array(["generic", "generic", "specific"])
   end
 end

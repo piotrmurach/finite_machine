@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::HookEvent, '#build' do
+RSpec.describe FiniteMachine::HookEvent, "#build" do
   it "builds action event" do
     hook_event = FiniteMachine::HookEvent::Before.build(:green, :go, :red)
     expect(hook_event.name).to eq(:go)

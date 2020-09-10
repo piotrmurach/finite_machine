@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#events' do
+RSpec.describe FiniteMachine::EventsMap, "#events" do
   it "has no event names" do
     events_map = described_class.new
     expect(events_map.events).to eq([])

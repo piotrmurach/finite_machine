@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-if ENV['COVERAGE'] || ENV['TRAVIS']
-  require 'simplecov'
-  require 'coveralls'
+if ENV["COVERAGE"] || ENV["TRAVIS"]
+  require "simplecov"
+  require "coveralls"
 
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
     SimpleCov::Formatter::HTMLFormatter,
@@ -10,13 +10,13 @@ if ENV['COVERAGE'] || ENV['TRAVIS']
   ])
 
   SimpleCov.start do
-    command_name 'spec'
-    add_filter 'spec'
+    command_name "spec"
+    add_filter "spec"
   end
 end
 
-require 'finite_machine'
-require 'rspec-benchmark'
+require "finite_machine"
+require "rspec-benchmark"
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
@@ -27,7 +27,7 @@ RSpec.configure do |config|
   end
   config.disable_monkey_patching!
   if config.files_to_run.one?
-    config.default_formatter = 'doc'
+    config.default_formatter = "doc"
   end
   config.order = :random
 end

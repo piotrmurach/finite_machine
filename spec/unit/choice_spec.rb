@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#choice' do
+RSpec.describe FiniteMachine, "#choice" do
   before(:each) {
     stub_const("User", Class.new do
       def promo?(token = false)
@@ -27,8 +27,8 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm.next
     expect(fsm.current).to eq(:official_form)
     expect(called).to eq([
-      'on_exit_company_form',
-      'on_enter_official_form'
+      "on_exit_company_form",
+      "on_enter_official_form"
     ])
   end
 
@@ -209,8 +209,8 @@ RSpec.describe FiniteMachine, '#choice' do
         choice :fulfilled, if: proc { |_ticket| _ticket.finished? }
       end
 
-      on_before(:advance) { called << 'on_before_advance' }
-      on_after(:advance)  { called << 'on_after_advance' }
+      on_before(:advance) { called << "on_before_advance" }
+      on_after(:advance)  { called << "on_after_advance" }
     end
     expect(fsm.current).to eq(:inactive)
     fsm.advance
@@ -218,10 +218,10 @@ RSpec.describe FiniteMachine, '#choice' do
     fsm.advance
     expect(fsm.current).to eq(:paused)
     expect(called).to eq([
-      'on_before_advance',
-      'on_after_advance',
-      'on_before_advance',
-      'on_after_advance'
+      "on_before_advance",
+      "on_after_advance",
+      "on_before_advance",
+      "on_after_advance"
     ])
   end
 

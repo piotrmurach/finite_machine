@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#target' do
+RSpec.describe FiniteMachine, "#target" do
   it "allows to target external object" do
     stub_const("Car", Class.new do
       attr_accessor :reverse_lights
@@ -83,7 +83,7 @@ RSpec.describe FiniteMachine, '#target' do
     expect(fsm.current).to eql(:green)
     fsm.slow
     expect(fsm.current).to eql(:red)
-    expect(called).to eql(['yellow now'])
+    expect(called).to eql(["yellow now"])
   end
 
   it "allows context methods take precedence over machine ones" do
@@ -115,9 +115,9 @@ RSpec.describe FiniteMachine, '#target' do
           event :back,  [:neutral, :one] => :reverse
 
           on_enter :reverse do |event|
-            target.called << 'on_enter_reverse'
+            target.called << "on_enter_reverse"
             target.turn_reverse_lights_on
-            forward('Piotr!')
+            forward("Piotr!")
           end
           on_before :forward do |event, name|
             target.called << "on_enter_forward with #{name}"
@@ -132,8 +132,8 @@ RSpec.describe FiniteMachine, '#target' do
     car.engine.back
     expect(car.engine.current).to eql(:one)
     expect(car.called).to eql([
-      'on_enter_reverse',
-      'on_enter_forward with Piotr!'
+      "on_enter_reverse",
+      "on_enter_forward with Piotr!"
     ])
   end
 
@@ -162,7 +162,7 @@ RSpec.describe FiniteMachine, '#target' do
         @called = called
       end
       def save
-        @called << 'car save called'
+        @called << "car save called"
       end
     end)
 
@@ -178,15 +178,15 @@ RSpec.describe FiniteMachine, '#target' do
         save
       end
       on_after :save do |event|
-        called << 'event save called'
+        called << "event save called"
       end
     end
     expect(fsm.current).to eql(:unsaved)
     fsm.validate
     expect(fsm.current).to eql(:saved)
     expect(called).to eq([
-      'car save called',
-      'event save called'
+      "car save called",
+      "event save called"
     ])
   end
 

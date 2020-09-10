@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#inspect' do
+RSpec.describe FiniteMachine::EventsMap, "#inspect" do
   it "inspects empty events map" do
     events_map = described_class.new
     expect(events_map.inspect).to eq("<#FiniteMachine::EventsMap @events_map={}>")

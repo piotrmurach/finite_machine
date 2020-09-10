@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Transition, '#states' do
+RSpec.describe FiniteMachine::Transition, "#states" do
   let(:machine) { double(:machine) }
 
   it "groups states with :to key only" do

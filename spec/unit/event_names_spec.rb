@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#events' do
+RSpec.describe FiniteMachine, "#events" do
   it "retrieves all event names" do
     fsm = FiniteMachine.new do
       initial :green

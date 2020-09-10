@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#respond_to' do
+RSpec.describe FiniteMachine, "#respond_to" do
 
   subject(:fsm) {
     stub_const("Car", Class.new do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Hooks, '#inspect' do
+RSpec.describe FiniteMachine::Hooks, "#inspect" do
   it "displays name and transitions" do
     hooks = FiniteMachine::Hooks.new
     hook = -> { }

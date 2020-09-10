@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#clear' do
+RSpec.describe FiniteMachine::EventsMap, "#clear" do
   it "clears map events" do
     event = double(:event)
     events_map = described_class.new

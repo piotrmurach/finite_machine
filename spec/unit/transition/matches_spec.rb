@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Transition, '#matches?' do
+RSpec.describe FiniteMachine::Transition, "#matches?" do
   let(:machine) { double(:machine) }
 
   it "matches from state" do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#move_to' do
+RSpec.describe FiniteMachine::EventsMap, "#move_to" do
   it "moves to state by matching individual transition" do
     transition_a = double(:transition_a, matches?: false)
     transition_b = double(:transition_b, matches?: true)

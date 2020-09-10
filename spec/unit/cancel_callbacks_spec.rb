@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#cancel_event' do
+RSpec.describe FiniteMachine, "#cancel_event" do
   it "cancels transition on event callback" do
     fsm = FiniteMachine.new do
       initial :green
@@ -41,6 +41,6 @@ RSpec.describe FiniteMachine, '#cancel_event' do
 
     fsm.bump
 
-    expect(called).to eq(['enter_bump_initial_low'])
+    expect(called).to eq(["enter_bump_initial_low"])
   end
 end

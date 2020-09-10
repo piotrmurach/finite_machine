@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#choice_transition?' do
+RSpec.describe FiniteMachine::EventsMap, "#choice_transition?" do
   it "checks if transition has many branches" do
     transition_a = double(:transition_a, matches?: true)
     transition_b = double(:transition_b, matches?: true)

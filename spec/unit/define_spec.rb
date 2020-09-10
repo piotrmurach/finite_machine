@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '.define' do
-  context 'with block' do
+RSpec.describe FiniteMachine, ".define" do
+  context "with block" do
     it "creates system state machine" do
       stub_const("TrafficLights", FiniteMachine.define do
         initial :green
@@ -28,7 +28,7 @@ RSpec.describe FiniteMachine, '.define' do
     end
   end
 
-  context 'without block' do
+  context "without block" do
     it "creates state machine" do
       called = []
       stub_const("TrafficLights", FiniteMachine.define)
@@ -37,9 +37,9 @@ RSpec.describe FiniteMachine, '.define' do
       TrafficLights.event(:stop, :yellow => :red)
       TrafficLights.event(:ready,:red    => :yellow)
       TrafficLights.event(:go,   :yellow => :green)
-      TrafficLights.on_enter(:yellow) { |event| called << 'on_enter_yellow' }
+      TrafficLights.on_enter(:yellow) { |event| called << "on_enter_yellow" }
       TrafficLights.handle(FiniteMachine::InvalidStateError) { |exception|
-        called << 'error_handler'
+        called << "error_handler"
       }
 
       fsm = TrafficLights.new
@@ -49,7 +49,7 @@ RSpec.describe FiniteMachine, '.define' do
       expect(fsm.current).to eql(:yellow)
       fsm.ready
       expect(fsm.current).to eql(:yellow)
-      expect(called).to match_array(['on_enter_yellow', 'error_handler'])
+      expect(called).to match_array(["on_enter_yellow", "error_handler"])
     end
   end
 end

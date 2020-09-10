@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Transition, '#check_conditions' do
+RSpec.describe FiniteMachine::Transition, "#check_conditions" do
   it "verifies all conditions pass" do
     context = double(:context)
     exec_conditions = 0

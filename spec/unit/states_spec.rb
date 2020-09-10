@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '#states' do
+RSpec.describe FiniteMachine, "#states" do
   it "retrieves all available states" do
     fsm = FiniteMachine.new do
       initial :green

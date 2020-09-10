@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::HookEvent, '#notify' do
+RSpec.describe FiniteMachine::HookEvent, "#notify" do
   it "emits event on the subscriber" do
     subscriber = spy(:subscriber)
     hook_event = described_class.new(:green, :go, :red)

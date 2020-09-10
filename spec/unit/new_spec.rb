@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, '.new' do
-  context 'with block' do
+RSpec.describe FiniteMachine, ".new" do
+  context "with block" do
     it "creates system state machine" do
       fsm = FiniteMachine.new do
         initial :green
@@ -25,7 +25,7 @@ RSpec.describe FiniteMachine, '.new' do
     end
   end
 
-  context 'without block' do
+  context "without block" do
     it "creates state machine" do
       called = []
       fsm = FiniteMachine.new
@@ -34,9 +34,9 @@ RSpec.describe FiniteMachine, '.new' do
       fsm.event(:stop, :yellow => :red)
       fsm.event(:ready,:red    => :yellow)
       fsm.event(:go,   :yellow => :green)
-      fsm.on_enter(:yellow) { |event| called << 'on_enter_yellow' }
+      fsm.on_enter(:yellow) { |event| called << "on_enter_yellow" }
       fsm.handle(FiniteMachine::InvalidStateError) { |exception|
-        called << 'error_handler'
+        called << "error_handler"
       }
       fsm.init
       expect(fsm.current).to eql(:green)
@@ -44,7 +44,7 @@ RSpec.describe FiniteMachine, '.new' do
       expect(fsm.current).to eql(:yellow)
       fsm.ready
       expect(fsm.current).to eql(:yellow)
-      expect(called).to match_array(['on_enter_yellow', 'error_handler'])
+      expect(called).to match_array(["on_enter_yellow", "error_handler"])
     end
   end
 end

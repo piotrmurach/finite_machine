@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, 'handlers' do
+RSpec.describe FiniteMachine, "handlers" do
   before(:each) {
     stub_const("DummyLogger", Class.new do
       attr_reader :result
@@ -24,7 +24,7 @@ RSpec.describe FiniteMachine, 'handlers' do
       event :stop, :yellow => :red
 
       handle FiniteMachine::InvalidStateError do |exception|
-        called << 'invalidstate'
+        called << "invalidstate"
       end
     end
 
@@ -32,11 +32,11 @@ RSpec.describe FiniteMachine, 'handlers' do
     fsm.stop
     expect(fsm.current).to eql(:green)
     expect(called).to eql([
-      'invalidstate'
+      "invalidstate"
     ])
   end
 
-  it 'allows for :with to be symbol' do
+  it "allows for :with to be symbol" do
     logger = DummyLogger.new
     fsm = FiniteMachine.new(logger) do
       initial :green
@@ -50,10 +50,10 @@ RSpec.describe FiniteMachine, 'handlers' do
     expect(fsm.current).to eql(:green)
     fsm.stop
     expect(fsm.current).to eql(:green)
-    expect(logger.result).to eql('log_error(FiniteMachine::InvalidStateError)')
+    expect(logger.result).to eql("log_error(FiniteMachine::InvalidStateError)")
   end
 
-  it 'allows for error type as string' do
+  it "allows for error type as string" do
     logger = DummyLogger.new
     called = []
     fsm = FiniteMachine.new(target: logger) do
@@ -66,18 +66,18 @@ RSpec.describe FiniteMachine, 'handlers' do
         raise_error
       end
 
-      handle 'InvalidStateError' do |exception|
-        called << 'invalid_state_error'
+      handle "InvalidStateError" do |exception|
+        called << "invalid_state_error"
       end
     end
 
     expect(fsm.current).to eql(:green)
     fsm.stop
     expect(fsm.current).to eql(:green)
-    expect(called).to eql(['invalid_state_error'])
+    expect(called).to eql(["invalid_state_error"])
   end
 
-  it 'allows for empty block handler' do
+  it "allows for empty block handler" do
     called = []
     fsm = FiniteMachine.new do
       initial :green
@@ -86,7 +86,7 @@ RSpec.describe FiniteMachine, 'handlers' do
       event :stop, :yellow => :red
 
       handle FiniteMachine::InvalidStateError do
-        called << 'invalidstate'
+        called << "invalidstate"
       end
     end
 
@@ -94,21 +94,21 @@ RSpec.describe FiniteMachine, 'handlers' do
     fsm.stop
     expect(fsm.current).to eql(:green)
     expect(called).to eql([
-      'invalidstate'
+      "invalidstate"
     ])
   end
 
-  it 'requires error handler' do
+  it "requires error handler" do
     expect { FiniteMachine.new do
       initial :green
 
       event :slow, :green => :yellow
 
-      handle 'UnknownErrorType'
+      handle "UnknownErrorType"
     end }.to raise_error(ArgumentError, /error handler/)
   end
 
-  it 'checks handler class to be Exception' do
+  it "checks handler class to be Exception" do
     expect { FiniteMachine.new do
       initial :green
 

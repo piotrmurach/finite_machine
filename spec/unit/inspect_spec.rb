@@ -1,6 +1,6 @@
 # frozen_string_literal
 
-RSpec.describe FiniteMachine, '#inspect' do
+RSpec.describe FiniteMachine, "#inspect" do
   it "print useful information about state machine" do
     fsm = FiniteMachine.new do
       initial :green

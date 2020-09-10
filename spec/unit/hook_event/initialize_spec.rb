@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::HookEvent, '#new' do
+RSpec.describe FiniteMachine::HookEvent, "#new" do
   it "reads event name" do
     hook_event = described_class.new(:green, :go, :green)
     expect(hook_event.name).to eql(:green)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Hooks, '#register' do
+RSpec.describe FiniteMachine::Hooks, "#register" do
   it "adds and removes a single hook" do
     hooks = FiniteMachine::Hooks.new
     expect(hooks).to be_empty

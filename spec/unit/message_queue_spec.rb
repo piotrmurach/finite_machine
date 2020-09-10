@@ -5,8 +5,8 @@ RSpec.describe FiniteMachine::MessageQueue do
     event_queue = FiniteMachine::MessageQueue.new
     event_queue.start
     called = []
-    event1 = double(:event1, dispatch: called << 'event1_dispatched')
-    event2 = double(:event2, dispatch: called << 'event2_dispatched')
+    event1 = double(:event1, dispatch: called << "event1_dispatched")
+    event2 = double(:event2, dispatch: called << "event2_dispatched")
 
     expect(event_queue.size).to be_zero
 
@@ -14,7 +14,7 @@ RSpec.describe FiniteMachine::MessageQueue do
     event_queue << event2
     event_queue.join(0.001)
 
-    expect(called).to match_array(['event1_dispatched', 'event2_dispatched'])
+    expect(called).to match_array(["event1_dispatched", "event2_dispatched"])
     event_queue.shutdown
   end
 

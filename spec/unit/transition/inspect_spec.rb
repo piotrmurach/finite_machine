@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Transition, '#inspect' do
+RSpec.describe FiniteMachine::Transition, "#inspect" do
   let(:machine) { double(:machine) }
 
   subject(:transition) { described_class.new(machine, event_name, attrs) }
 
-  context 'when inspecting' do
+  context "when inspecting" do
     let(:event_name) { :start }
     let(:attrs) { { states: { :foo => :bar, :baz => :daz } } }
 
@@ -14,7 +14,7 @@ RSpec.describe FiniteMachine::Transition, '#inspect' do
     end
   end
 
-  context 'when converting to string' do
+  context "when converting to string" do
     let(:event_name) { :start }
     let(:attrs) { { states: { :foo => :bar } } }
 

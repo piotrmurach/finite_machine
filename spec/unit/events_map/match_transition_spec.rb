@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#match_transition' do
+RSpec.describe FiniteMachine::EventsMap, "#match_transition" do
   it "matches transition without conditions" do
     transition_a = double(:transition_a, matches?: false)
     transition_b = double(:transition_b, matches?: true)
@@ -29,7 +29,7 @@ RSpec.describe FiniteMachine::EventsMap, '#match_transition' do
     allow(transition_a).to receive(:check_conditions).and_return(false)
     allow(transition_b).to receive(:check_conditions).and_return(true)
 
-    expect(events_map.match_transition_with(:a, :green, 'Piotr')).to eq(transition_b)
-    expect(transition_a).to have_received(:check_conditions).with('Piotr')
+    expect(events_map.match_transition_with(:a, :green, "Piotr")).to eq(transition_b)
+    expect(transition_a).to have_received(:check_conditions).with("Piotr")
   end
 end

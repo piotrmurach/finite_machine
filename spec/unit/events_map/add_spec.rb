@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::EventsMap, '#add' do
+RSpec.describe FiniteMachine::EventsMap, "#add" do
   it "adds transitions" do
     transition = double(:transition)
     events_map = described_class.new

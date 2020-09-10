@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::UndefinedTransition, '#==' do
+RSpec.describe FiniteMachine::UndefinedTransition, "#==" do
   it "is true with the same name" do
     expect(described_class.new(:go)).to eq(described_class.new(:go))
   end

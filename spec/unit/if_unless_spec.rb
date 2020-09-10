@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, ':if, :unless' do
+RSpec.describe FiniteMachine, ":if, :unless" do
   before(:each) {
     stub_const("Car", Class.new do
       attr_accessor :engine_on
@@ -89,18 +89,18 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       event :stop, :yellow => :red
 
       # generic callbacks
-      on_enter      do |event| called << 'on_enter' end
-      on_transition do |event| called << 'on_transition' end
-      on_exit       do |event| called << 'on_exit' end
+      on_enter      do |event| called << "on_enter" end
+      on_transition do |event| called << "on_transition" end
+      on_exit       do |event| called << "on_exit" end
 
       # state callbacks
-      on_enter :green do |event| called << 'on_enter_green' end
+      on_enter :green do |event| called << "on_enter_green" end
       on_enter :yellow do |event| called << "on_enter_yellow" end
 
-      on_transition :green  do |event| called << 'on_transition_green' end
+      on_transition :green  do |event| called << "on_transition_green" end
       on_transition :yellow do |event| called << "on_transition_yellow" end
 
-      on_exit :green  do |event| called << 'on_exit_green' end
+      on_exit :green  do |event| called << "on_exit_green" end
       on_exit :yellow do |event| called << "on_exit_yellow" end
     end
 
@@ -121,18 +121,18 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       event :stop, :yellow => :red
 
       # generic callbacks
-      on_enter      do |event| called << 'on_enter' end
-      on_transition do |event| called << 'on_transition' end
-      on_exit       do |event| called << 'on_exit' end
+      on_enter      do |event| called << "on_enter" end
+      on_transition do |event| called << "on_transition" end
+      on_exit       do |event| called << "on_exit" end
 
       # state callbacks
-      on_enter :green do |event| called << 'on_enter_green' end
+      on_enter :green do |event| called << "on_enter_green" end
       on_enter :yellow do |event| called << "on_enter_yellow" end
 
-      on_transition :green  do |event| called << 'on_transition_green' end
+      on_transition :green  do |event| called << "on_transition_green" end
       on_transition :yellow do |event| called << "on_transition_yellow" end
 
-      on_exit :green  do |event| called << 'on_exit_green' end
+      on_exit :green  do |event| called << "on_exit_green" end
       on_exit :yellow do |event| called << "on_exit_yellow" end
     end
 
@@ -150,9 +150,9 @@ RSpec.describe FiniteMachine, ':if, :unless' do
       initial :green
 
       event :slow, :green => :yellow,
-        if: [ -> { conditions << 'first_if'; return true },
-              -> { conditions << 'second_if'; return true}],
-        unless: -> { conditions << 'first_unless'; return true }
+        if: [ -> { conditions << "first_if"; return true },
+              -> { conditions << "second_if"; return true}],
+        unless: -> { conditions << "first_unless"; return true }
       event :stop, :yellow => :red
     end
 
@@ -160,13 +160,13 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     fsm.slow
     expect(fsm.current).to eql(:green)
     expect(conditions).to eql([
-      'first_if',
-      'second_if',
-      'first_unless'
+      "first_if",
+      "second_if",
+      "first_unless"
     ])
   end
 
-  context 'when proc' do
+  context "when proc" do
     it "specifies :if and :unless" do
       car = Car.new
 
@@ -208,7 +208,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     end
   end
 
-  context 'when symbol' do
+  context "when symbol" do
     it "specifies :if and :unless" do
       car = Car.new
 
@@ -232,7 +232,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     end
   end
 
-  context 'when string' do
+  context "when string" do
     it "specifies :if and :unless" do
       car = Car.new
 
@@ -256,7 +256,7 @@ RSpec.describe FiniteMachine, ':if, :unless' do
     end
   end
 
-  context 'when same event name' do
+  context "when same event name" do
     it "preservers conditions for the same named event" do
       bug = Bug.new
       fsm = FiniteMachine.new(bug) do

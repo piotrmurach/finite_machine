@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, 'initial' do
+RSpec.describe FiniteMachine, "initial" do
 
   before(:each) {
     stub_const("DummyLogger", Class.new do
@@ -41,8 +41,8 @@ RSpec.describe FiniteMachine, 'initial' do
       event :slow, :green  => :yellow
       event :stop, :yellow => :red
 
-      on_exit :none   do |event| called << 'on_exit_none' end
-      on_enter :green do |event| called << 'on_enter_green' end
+      on_exit :none   do |event| called << "on_exit_none" end
+      on_enter :green do |event| called << "on_enter_green" end
     end
     expect(fsm.current).to eql(:green)
     expect(called).to be_empty
@@ -168,10 +168,10 @@ RSpec.describe FiniteMachine, 'initial' do
 
       event :slow, :green => :yellow
 
-      on_enter :green do |event| called << 'on_enter_green' end
+      on_enter :green do |event| called << "on_enter_green" end
     end
     expect(fsm.current).to eq(:green)
-    expect(called).to eq(['on_enter_green'])
+    expect(called).to eq(["on_enter_green"])
   end
 
   it "allows to trigger callbacks on deferred initial state" do
@@ -181,10 +181,10 @@ RSpec.describe FiniteMachine, 'initial' do
 
       event :slow, :green => :yellow
 
-      on_enter :green do |event| called << 'on_enter_green' end
+      on_enter :green do |event| called << "on_enter_green" end
     end
     expect(fsm.current).to eq(:none)
     fsm.init
-    expect(called).to eq(['on_enter_green'])
+    expect(called).to eq(["on_enter_green"])
   end
 end

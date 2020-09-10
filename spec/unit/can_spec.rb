@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, 'can?' do
+RSpec.describe FiniteMachine, "can?" do
   before(:each) {
     stub_const("Bug", Class.new do
       def pending?
@@ -51,7 +51,7 @@ RSpec.describe FiniteMachine, 'can?' do
     expect(fsm.can?(:go)).to be(true)
   end
 
-  context 'with conditionl transition' do
+  context "with conditionl transition" do
     it "evalutes condition with parameters" do
       fsm = FiniteMachine.new do
         initial :green

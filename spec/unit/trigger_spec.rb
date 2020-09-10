@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::StateMachine, '#trigger' do
+RSpec.describe FiniteMachine::StateMachine, "#trigger" do
   it "triggers event manually" do
     called = []
     fsm = FiniteMachine.new do
@@ -11,8 +11,8 @@ RSpec.describe FiniteMachine::StateMachine, '#trigger' do
     end
 
     expect(fsm.current).to eq(:red)
-    fsm.trigger(:start, 'Piotr')
+    fsm.trigger(:start, "Piotr")
     expect(fsm.current).to eq(:green)
-    expect(called).to eq(['Piotr'])
+    expect(called).to eq(["Piotr"])
   end
 end

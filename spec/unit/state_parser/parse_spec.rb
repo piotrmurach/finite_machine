@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::StateParser, '#parse' do
+RSpec.describe FiniteMachine::StateParser, "#parse" do
   let(:object) { described_class }
 
-  context 'when no attributes' do
+  context "when no attributes" do
     let(:attrs) { { } }
 
     it "raises error for no transitions" do
@@ -14,7 +14,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     end
   end
 
-  context 'when :from and :to keys' do
+  context "when :from and :to keys" do
     let(:attrs) { { from: :green, to: :yellow }}
 
     it "removes :from and :to keys" do
@@ -22,7 +22,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     end
   end
 
-  context 'when only :from key' do
+  context "when only :from key" do
     let(:attrs) { { from: :green }}
 
     it "adds to state as copy of from" do
@@ -30,7 +30,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     end
   end
 
-  context 'when only :to key' do
+  context "when only :to key" do
     let(:attrs) { { to: :green }}
 
     it "inserts :any from state" do
@@ -38,7 +38,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     end
   end
 
-  context 'when attribuets as hash' do
+  context "when attribuets as hash" do
     let(:attrs) { { green: :yellow } }
 
     it "copies attributes over" do
@@ -46,7 +46,7 @@ RSpec.describe FiniteMachine::StateParser, '#parse' do
     end
   end
 
-  context 'when array of from states' do
+  context "when array of from states" do
     let(:attrs) { { [:green, :red] => :yellow } }
 
     it "extracts states" do

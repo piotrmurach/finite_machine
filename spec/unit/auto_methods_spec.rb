@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, ':auto_methods' do
+RSpec.describe FiniteMachine, ":auto_methods" do
   it "allows turning off automatic methods generation" do
     fsm = FiniteMachine.new(auto_methods: false) do
       initial :green
@@ -11,7 +11,7 @@ RSpec.describe FiniteMachine, ':auto_methods' do
       event :go,    :yellow => :green
 
       # allows for fluid callback names
-      once_on_enter_yellow do |event| 'once_on_enter_yellow' end
+      once_on_enter_yellow do |event| "once_on_enter_yellow" end
     end
 
     expect(fsm.respond_to?(:slow)).to eq(false)

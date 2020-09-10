@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine, 'events' do
+RSpec.describe FiniteMachine, "events" do
   it "allows for hash rocket syntax to describe transition" do
     fsm = FiniteMachine.new do
       initial :green
@@ -150,17 +150,17 @@ RSpec.describe FiniteMachine, 'events' do
 
       event :stop, from: :yellow, to: :red
 
-      on_before :stop do |event| called << 'on_before_stop' end
-      on_after  :stop do |event| called << 'on_before_stop' end
+      on_before :stop do |event| called << "on_before_stop" end
+      on_after  :stop do |event| called << "on_before_stop" end
     end
 
     expect(fsm.current).to eq(:green)
     expect(fsm.stop).to eq(false)
     expect(fsm.current).to eq(:green)
-    expect(called).to match_array(['on_before_stop'])
+    expect(called).to match_array(["on_before_stop"])
   end
 
-  context 'for non-dangerous version' do
+  context "for non-dangerous version" do
     it "doesn't raise error on invalid transition and fires callbacks" do
       called = []
       fsm = FiniteMachine.new do
@@ -168,14 +168,14 @@ RSpec.describe FiniteMachine, 'events' do
 
         event :stop, from: :yellow, to: :red
 
-        on_before :stop do |event| called << 'on_before_stop' end
-        on_after  :stop do |event| called << 'on_before_stop' end
+        on_before :stop do |event| called << "on_before_stop" end
+        on_after  :stop do |event| called << "on_before_stop" end
       end
 
       expect(fsm.current).to eq(:green)
       expect(fsm.stop).to eq(false)
       expect(fsm.current).to eq(:green)
-      expect(called).to match_array(['on_before_stop'])
+      expect(called).to match_array(["on_before_stop"])
     end
 
     it "raises error on invalid transition for dangerous version" do
@@ -186,8 +186,8 @@ RSpec.describe FiniteMachine, 'events' do
         event :slow,  from: :green,  to: :yellow
         event :stop,  from: :yellow, to: :red, silent: true
 
-        on_before :stop do |event| called << 'on_before_stop' end
-        on_after  :stop do |event| called << 'on_before_stop' end
+        on_before :stop do |event| called << "on_before_stop" end
+        on_after  :stop do |event| called << "on_before_stop" end
       end
 
       expect(fsm.current).to eql(:green)
@@ -196,7 +196,7 @@ RSpec.describe FiniteMachine, 'events' do
     end
   end
 
-  context 'for dangerous version' do
+  context "for dangerous version" do
     it "raises error on invalid transition without callbacks" do
       called = []
       fsm = FiniteMachine.new do
@@ -204,8 +204,8 @@ RSpec.describe FiniteMachine, 'events' do
 
         event :start, :red => :yellow, silent: true
 
-        on_before :start do |event| called << 'on_before_start' end
-        on_after  :start do |event| called << 'on_after_start' end
+        on_before :start do |event| called << "on_before_start" end
+        on_after  :start do |event| called << "on_after_start" end
       end
 
       expect(fsm.current).to eq(:green)
@@ -221,19 +221,19 @@ RSpec.describe FiniteMachine, 'events' do
 
         event :start, :red => :yellow
 
-        on_before :start do |event| called << 'on_before_start' end
-        on_after  :start do |event| called << 'on_after_start' end
+        on_before :start do |event| called << "on_before_start" end
+        on_after  :start do |event| called << "on_after_start" end
       end
 
       expect(fsm.current).to eq(:green)
       expect { fsm.start! }.to raise_error(FiniteMachine::InvalidStateError,
                                            /inappropriate current state 'green'/)
-      expect(called).to eq(['on_before_start'])
+      expect(called).to eq(["on_before_start"])
       expect(fsm.current).to eq(:green)
     end
   end
 
-  context 'when multiple from states' do
+  context "when multiple from states" do
     it "allows for array from key" do
       fsm = FiniteMachine.new do
         initial :green
@@ -385,6 +385,6 @@ RSpec.describe FiniteMachine, 'events' do
     fsm.start do |from, to|
       called << "execute_start_#{from}_#{to}"
     end
-    expect(called).to eq(['execute_start_red_green'])
+    expect(called).to eq(["execute_start_red_green"])
   end
 end

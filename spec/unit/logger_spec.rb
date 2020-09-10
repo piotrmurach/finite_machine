@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe FiniteMachine::Logger do
-  let(:message) { 'error' }
+  let(:message) { "error" }
   let(:log) { spy }
 
   subject(:logger) { described_class }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Transition, '#to_state' do
+RSpec.describe FiniteMachine::Transition, "#to_state" do
   let(:machine) { double(:machine) }
 
   it "finds to state" do
