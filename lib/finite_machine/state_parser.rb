@@ -7,7 +7,9 @@ module FiniteMachine
   #
   # @api private
   class StateParser
-    BLACKLIST = [:name, :if, :unless, :silent].freeze
+    NON_STATE_KEYS = %i[name if unless silent].freeze
+
+    STATE_KEYS = %i[from to].freeze
 
     # Extract states from user defined attributes
     #
@@ -35,7 +37,7 @@ module FiniteMachine
     # @api private
     def self.ensure_only_states!(attrs)
       attributes = attrs.dup
-      BLACKLIST.each { |key| attributes.delete(key) }
+      NON_STATE_KEYS.each { |key| attributes.delete(key) }
       raise_not_enough_transitions unless attributes.any?
       attributes
     end
@@ -69,7 +71,7 @@ module FiniteMachine
     #
     # @api public
     def self.contains_from_to_keys?(attrs)
-      [:from, :to].any? { |key| attrs.keys.include?(key) }
+      STATE_KEYS.any? { |key| attrs.keys.include?(key) }
     end
     private_class_method :contains_from_to_keys?
 
