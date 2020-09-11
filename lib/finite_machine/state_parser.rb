@@ -81,9 +81,8 @@ module FiniteMachine
     #
     # @api private
     def self.convert_from_to_attributes_to_states_hash(attrs)
-      Array(attrs[:from] || ANY_STATE).reduce({}) do |hash, state|
+      Array(attrs[:from] || ANY_STATE).each_with_object({}) do |state, hash|
         hash[state] = attrs[:to] || state
-        hash
       end
     end
     private_class_method :convert_from_to_attributes_to_states_hash
@@ -101,13 +100,12 @@ module FiniteMachine
     #
     # @api private
     def self.convert_attributes_to_states_hash(attrs)
-      attrs.reduce({}) do |hash, (k, v)|
+      attrs.each_with_object({}) do |(k, v), hash|
         if k.respond_to?(:to_ary)
           k.each { |el| hash[el] = v }
         else
           hash[k] = v
         end
-        hash
       end
     end
     private_class_method :convert_attributes_to_states_hash
@@ -121,7 +119,7 @@ module FiniteMachine
     #
     # @api private
     def self.raise_not_enough_transitions
-      raise NotEnoughTransitionsError, 'please provide state transitions'
+      raise NotEnoughTransitionsError, "please provide state transitions"
     end
     private_class_method :raise_not_enough_transitions
   end # StateParser
