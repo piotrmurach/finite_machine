@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'concurrent/map'
+require "concurrent/map"
 
-require_relative 'hook_event'
+require_relative "hook_event"
 
 module FiniteMachine
   # A class reponsible for registering callbacks

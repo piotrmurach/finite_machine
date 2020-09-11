@@ -29,7 +29,7 @@ module FiniteMachine
     #
     # @api public
     def self.event_name
-      name.split('::').last.downcase.to_sym
+      name.split("::").last.downcase.to_sym
     end
 
     # String representation

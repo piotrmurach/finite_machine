@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'callable'
-require_relative 'threadable'
+require_relative "callable"
+require_relative "threadable"
 
 module FiniteMachine
   # Class describing a transition associated with a given event
@@ -117,7 +117,7 @@ module FiniteMachine
     #
     # @example
     #   transition = Transition.new(context, name: :go)
-    #   transition.to_s # => 'go'
+    #   transition.to_s # => "go"
     #
     # @return [String]
     #
@@ -132,8 +132,9 @@ module FiniteMachine
     #
     # @api public
     def inspect
-      transitions = @states.map { |from, to| "#{from} -> #{to}" }.join(', ')
-      "<##{self.class} @name=#{@name}, @transitions=#{transitions}, @when=#{@conditions}>"
+      transitions = @states.map { |from, to| "#{from} -> #{to}" }.join(", ")
+      "<##{self.class} @name=#{@name}, @transitions=#{transitions}, " \
+        "@when=#{@conditions}>"
     end
   end # Transition
 end # FiniteMachine

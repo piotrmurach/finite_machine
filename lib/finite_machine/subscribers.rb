@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'monitor'
+require "monitor"
 
 module FiniteMachine
   # A class responsibile for storage of event subscribers

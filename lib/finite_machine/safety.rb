@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'hook_event'
+require_relative "hook_event"
 
 module FiniteMachine
   # Module responsible for safety checks against known methods
@@ -39,7 +39,7 @@ module FiniteMachine
           name: event_name,
           type: :instance,
           method: method_name,
-          source: 'FiniteMachine'
+          source: "FiniteMachine"
         }
       end
     end

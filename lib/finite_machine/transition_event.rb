@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'threadable'
+require_relative "threadable"
 
 module FiniteMachine
   # A class representing a callback transition event

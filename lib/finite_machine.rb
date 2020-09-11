@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'logger'
+require "logger"
 
-require_relative 'finite_machine/const'
-require_relative 'finite_machine/logger'
-require_relative 'finite_machine/definition'
-require_relative 'finite_machine/state_machine'
-require_relative 'finite_machine/version'
+require_relative "finite_machine/const"
+require_relative "finite_machine/logger"
+require_relative "finite_machine/definition"
+require_relative "finite_machine/state_machine"
+require_relative "finite_machine/version"
 
 module FiniteMachine
   # Default state name

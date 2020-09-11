@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'two_phase_lock'
+require_relative "two_phase_lock"
 
 module FiniteMachine
   # A mixin to allow instance methods to be synchronized

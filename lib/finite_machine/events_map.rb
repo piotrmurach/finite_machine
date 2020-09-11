@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'concurrent/map'
-require 'forwardable'
+require "concurrent/map"
+require "forwardable"
 
-require_relative 'threadable'
-require_relative 'undefined_transition'
+require_relative "threadable"
+require_relative "undefined_transition"
 
 module FiniteMachine
   # A class responsible for storing mappings between event namess and
@@ -182,8 +182,7 @@ module FiniteMachine
     # @api public
     def match_transition_with(name, from_state, *conditions)
       find(name).find do |trans|
-        trans.matches?(from_state) &&
-        trans.check_conditions(*conditions)
+        trans.matches?(from_state) && trans.check_conditions(*conditions)
       end
     end
 
