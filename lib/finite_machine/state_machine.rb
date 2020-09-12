@@ -391,8 +391,10 @@ module FiniteMachine
     # @api public
     def inspect
       sync_shared do
-        "<##{self.class}:0x#{object_id.to_s(16)} @states=#{states}, " \
-        "@events=#{events}, " \
+        "<##{self.class}:0x#{object_id.to_s(16)} " \
+        "@current=#{current.inspect} " \
+        "@states=#{states} " \
+        "@events=#{events} " \
         "@transitions=#{events_map.state_transitions}>"
       end
     end
