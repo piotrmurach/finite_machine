@@ -89,8 +89,8 @@ module FiniteMachine
     # @api private
     def wrong_event_name?(name, event_type)
       machine.states.include?(name) &&
-      !machine.events.include?(name) &&
-      event_type < HookEvent::Anyaction
+        !machine.events.include?(name) &&
+        event_type < HookEvent::Anyaction
     end
 
     # Check if state name exists
@@ -104,8 +104,8 @@ module FiniteMachine
     # @api private
     def wrong_state_name?(name, event_type)
       machine.events.include?(name) &&
-      !machine.states.include?(name) &&
-      event_type < HookEvent::Anystate
+        !machine.states.include?(name) &&
+        event_type < HookEvent::Anystate
     end
 
     def raise_invalid_callback_error(message)
