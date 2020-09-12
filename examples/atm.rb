@@ -1,45 +1,41 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+# frozen_string_literal: true
 
-require 'finite_machine'
+require_relative "../lib/finite_machine"
 
 class Account
-  attr_accessor :number
+  attr_accessor :message
 
   def verify(account_number, pin)
-    return account_number == 123456 && pin == 666
+    account_number == 123456 && pin == 666
   end
 end
 
 account = Account.new
 
-atm = FiniteMachine.define do
+ATM = FiniteMachine.define do
+  alias_target :account
+
   initial :unauthorized
 
-  target account
+  event :authorize, :unauthorized => :authorized
+  event :deauthorize, :authorized => :unauthorized
 
-  events {
-    event :authorize, :unauthorized => :authorized, if: -> (account, account_number, pin) {
-      account.verify(account_number, pin)
-    }
-    event :deauthorize, :authorized => :unauthorized
-  }
-
-  callbacks {
-    on_exit :unauthorized do |event, account_number, pin|
-      # if verify(account_number, pin)
-        self.number = account_number
-#       else
-#         puts "Invalid Account and/or PIN"
-#         FiniteMachine::CANCELLED
-#       end
+  on_exit :unauthorized do |event, account_number, pin|
+    if account.verify(account_number, pin)
+      account.message = "Welcome to your Account"
+    else
+      account.message = "Invalid Account and/or PIN"
+      cancel_event
     end
-  }
+  end
 end
+
+atm = ATM.new(account)
 
 atm.authorize(111222, 666)
 puts "authorized: #{atm.authorized?}"
-puts "Number: #{account.number}"
+puts "Number: #{account.message}"
 
 atm.authorize(123456, 666)
 puts "authorized: #{atm.authorized?}"
-puts "Number: #{account.number}"
+puts "Number: #{account.message}"
