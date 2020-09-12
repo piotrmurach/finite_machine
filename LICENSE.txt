@@ -1,4 +1,4 @@
-Copyright (c) 2014 Piotr Murach
+Copyright (c) 2014 Piotr Murach (piotrmurach.com)
 
 MIT License
 
