@@ -49,7 +49,7 @@ module FiniteMachine
     def self.inherited(subclass)
       super
 
-      self.deferreds.each { |d| subclass.add_deferred(d) }
+      deferreds.each { |d| subclass.add_deferred(d) }
     end
 
     # Delay lookup of DSL method
