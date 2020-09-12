@@ -5,6 +5,7 @@
 ### Added
 * Add ability to declare alias target inside definition
 * Add #respond_to_missing? to DSL to check if a given method is supported
+* Add current state attribute to StateMachine#inspect
 
 ## [v0.13.0] - 2020-05-13
 
