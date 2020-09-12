@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="http://piotrmurach.github.io/finite_machine/"><img width="236" src="https://raw.githubusercontent.com/piotrmurach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
+  <a href="http://piotrmurach.github.io/finite_machine/"><img width="236" src="https://github.com/piotrmurach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
 </div>
 
 # FiniteMachine
@@ -38,7 +38,7 @@
 
 Add this line to your application's Gemfile:
 
-    gem 'finite_machine'
+    gem "finite_machine"
 
 Then execute:
 
@@ -380,14 +380,14 @@ Transitions events can be fired by calling the `trigger` method with the event n
 
 ```ruby
 fm.trigger(:ready) # => true
-fm.trigger(:ready, 'one', 'two', 'three') # => true
+fm.trigger(:ready, "one", "two", "three") # => true
 ```
 
 By default the **FiniteMachine** automatically converts all the transition event names into methods:
 
 ```ruby
 fm.ready # => true
-fm.ready('one', 'two', 'three') # => true
+fm.ready("one", "two", "three") # => true
 ```
 
 Please see [States and Transitions](#3-states-and-transitions) for in-depth treatment of firing transitions.
@@ -574,7 +574,7 @@ fm.trigger(:ready)  # => true
 Furthermore, you can pass additional parameters with the method call that will be available in the triggered callback as well as used by any present guarding conditions.
 
 ```ruby
-fm.go('Piotr!')  # => true
+fm.go("Piotr!")  # => true
 fm.current       # => :green
 ```
 
@@ -928,7 +928,7 @@ fm = FiniteMachine.new do
 end
 
 fm.ready(1, 2, 3)
-fm.go('Piotr!')
+fm.go("Piotr!")
 ```
 
 **Note** Regardless of how the state is entered or exited, all the associated callbacks will be executed. This provides means for guaranteed initialization and cleanup.
@@ -999,7 +999,7 @@ fm = FiniteMachine.new do
   }
 end
 
-fm.ready(3)   #  => 'lights switching from red to yellow in 3 seconds'
+fm.ready(3)   #  => "lights switching from red to yellow in 3 seconds"
 ```
 
 ### 4.6 Duplicate callbacks
@@ -1083,7 +1083,7 @@ fm = FiniteMachine.new do
   event :forward, [:reverse, :neutral] => :one
   event :back,    [:neutral, :one] => :reverse
 
-  on_enter_reverse { |event| forward('Piotr!') }
+  on_enter_reverse { |event| forward("Piotr!") }
   on_exit_reverse  { |event, name| puts "Go #{name}" }
 end
 fm.back   # => Go Piotr!
@@ -1195,7 +1195,7 @@ fm = FiniteMachine.new(logger) do
   event :slow, :green  => :yellow
   event :stop, :yellow => :red
 
-  handle 'InvalidStateError', with: :log_error
+  handle "InvalidStateError", with: :log_error
 end
 ```
 
