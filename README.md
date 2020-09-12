@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="http://piotrmurach.github.io/finite_machine/"><img width="236" src="https://github.com/piotrmurach/finite_machine/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
+  <a href="https://piotrmurach.github.io/finite_machine/"><img width="236" src="https://github.com/piotrmurach/finite_machine/raw/master/assets/finite_machine_logo.png" alt="finite machine logo" /></a>
 </div>
 
 # FiniteMachine
@@ -119,34 +119,35 @@ fm = FiniteMachine.new do
   event :stop,  :green  => :red
 
   on_before(:ready) { |event| ... }
-  on_after(:go)     { |event| ... }
-  on_before(:stop)  { |event| ... }
+  on_exit(:yellow)  { |event| ... }
+  on_enter(:green)  { |event| ... }
+  on_after(:stop)   { |event| ... }
 end
 ```
 
-As the example demonstrates, by calling the `new` method on **FiniteMachine** you create an instance of finite state machine.
+By calling the `new` method on **FiniteMachine**, you gain access to a powerful DSL for expressing transitions and registering callbacks.
 
-Having declared the states and transitions using `event` method, you can check current state:
+Having declared the states and transitions, you can check current state:
 
 ```ruby
 fm.current # => :red
 ````
 
-And trigger transitions using the `trigger`:
+And then trigger transitions using the `trigger`:
 
 ```ruby
 fm.trigger(:ready)
 ```
 
-or direct method calls:
+Or you can use direct method calls:
 
-* `fm.ready`
-* `fm.go`
-* `fm.stop`
+```ruby
+fm.ready
+```
 
- The `events` and `callbacks` scopes help to define the behaviour of the machine. Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#4-callbacks) sections for more details.
+Read [States and Transitions](#3-states-and-transitions) and [Callbacks](#4-callbacks) sections for more details.
 
-Alternatively, you can construct the state machine like a regular object without using the DSL methods. The same machine could be reimplemented as follows:
+Alternatively, you can construct the state machine like a regular object using the same DSL methods. Similar machine could be reimplemented as follows:
 
 ```ruby
 fm = FiniteMachine.new(initial: :red)
@@ -154,8 +155,9 @@ fm.event(:ready, :red    => :yellow)
 fm.event(:go,    :yellow => :green)
 fm.event(:stop,  :green  => :red)
 fm.on_before(:ready) { |event| ... }
-fm.on_after(:go)     { |event| ... }
-fm.on_before(:stop)  { |event| ...}
+fm.on_exit(:yellow)  { |event| ... }
+fm.on_enter(:green)  { |event| ... }
+fm.on_after(:stop)   { |event| ... }
 ```
 
 ## 2. API
@@ -178,19 +180,19 @@ end
 Alternatively, you can skip block definition and instead call DSL methods directly on the state machine instance:
 
 ```ruby
-fsm = FiniteMachine.new
-fsm.initial(:green)
-fsm.event(:slow, :green => :yellow)
-fsm.event(:stop, :yellow => :red)
-fsm.event(:ready,:red    => :yellow)
-fsm.event(:go,   :yellow => :green)
+fm = FiniteMachine.new
+fm.initial(:green)
+fm.event(:slow, :green  => :yellow)
+fm.event(:stop, :yellow => :red)
+fm.event(:ready,:red    => :yellow)
+fm.event(:go,   :yellow => :green)
 ```
 
 As a guiding rule, any method exposed via DSL is available as a regular method call on the state machine instance.
 
 ### 2.2 define
 
-To create a reusable definition for a state machine use `define` method. By calling `define` you're creating an anonymous class that can act as a factory for state machines. For example, below we create a 'TrafficLights' class that contains our state machine definition:
+To create a reusable definition for a state machine use `define` method. By calling `define` you're creating an anonymous class that can act as a factory for state machines. For example, below we create a `TrafficLights` class that contains our state machine definition:
 
 ```ruby
 TrafficLights = FiniteMachine.define do
@@ -203,7 +205,7 @@ TrafficLights = FiniteMachine.define do
 end
 ```
 
-Then you can create however many instance of above class:
+Then we can create however many instance of above class:
 
 ```ruby
 lights_fm_a = TrafficLights.new
@@ -217,7 +219,7 @@ lights_fm_a.current # => :green
 lights_fm_b.current # => :green
 ```
 
-You can then trigger event in one instance and not the other:
+We can then trigger event for one instance and not the other:
 
 ```ruby
 lights_fm_a.slow
@@ -267,7 +269,7 @@ fm.current # => :green
 Or by passing named argument `:initial` like so:
 
 ```ruby
-fm = FiniteMachine.new initial: :green do
+fm = FiniteMachine.new(initial: :green) do
   ...
 end
 ```
@@ -286,7 +288,7 @@ fm.init    # execute initial transition
 fm.current # => :green
 ```
 
-If your target object already has `init` method or one of the events names renews `init`, you can use different name by passing `:event` option to `initial` helper.
+If your target object already has `init` method or one of the events names redefines `init`, you can use different name by passing `:event` option to `initial` helper.
 
 ```ruby
 fm = FiniteMachine.new do
@@ -301,7 +303,7 @@ fm.start   # => call the renamed event
 fm.current # => :green
 ```
 
-By default the `initial` does not trigger any callbacks. If you need to fire callbacks and any event associated actions on initial transition, pass the `silent` option set to `false` like so
+By default the `initial` does not trigger any callbacks. If you need to fire callbacks and any event associated actions on initial transition, pass the `silent` option set to `false` like so:
 
 ```ruby
 fm = FiniteMachine.new do
@@ -355,7 +357,7 @@ And the terminal state can be checked using `terminated?`:
 
 ```ruby
 fm.decline
-fm.terminated?
+fm.terminated? # => true
 ```
 
 ### 2.6 is?
@@ -376,14 +378,14 @@ fm.yellow?  # => false
 
 ### 2.7 trigger
 
-Transitions events can be fired by calling the `trigger` method with the event name and remaining arguments as data. The return value is either `true` or `false` depending whether the transition succeeded or not:
+Transition events can be fired by calling the `trigger` method with the event name and remaining arguments as data. The return value is either `true` or `false` depending whether the transition succeeded or not:
 
 ```ruby
 fm.trigger(:ready) # => true
 fm.trigger(:ready, "one", "two", "three") # => true
 ```
 
-By default the **FiniteMachine** automatically converts all the transition event names into methods:
+By default, the **FiniteMachine** automatically converts all the transition event names into methods:
 
 ```ruby
 fm.ready # => true
@@ -395,8 +397,7 @@ Please see [States and Transitions](#3-states-and-transitions) for in-depth trea
 
 #### 2.7.1 `:auto_methods`
 
-By default all event names will be converted by **FiniteMachine** into method names. This also means that you won't be able to use event names such as `:fail` or `:trigger` as these are already defined on the machine instance. In situations when you wish to use any event name for your event names use `:auto_methods` keyword to disable automatic methods generation. For example, to define `:fail` event:
-
+By default, all event names will be converted by **FiniteMachine** into method names. This also means that you won't be able to use event names such as `:fail` or `:trigger` as these are already defined on the machine instance. In situations when you wish to use any event name for your event names use `:auto_methods` keyword to disable automatic methods generation. For example, to define `:fail` event:
 
 ```ruby
 fm = FiniteMachine.new(auto_methods: false) do
@@ -431,7 +432,7 @@ fm = FiniteMachine.new do
   initial :green
 
   event :slow,  :green  => :yellow
-  event :stop,  :yellow => :red, if: proc { |_, param| :breaks == param }
+  event :stop,  :yellow => :red, if: ->(_, param) { :breaks == param }
 end
 
 fm.can?(:slow) # => true
@@ -455,15 +456,15 @@ class Engine
   end
 
   def turn_on
-    @engine_on = true
+    @engine = true
   end
 
   def turn_off
-    @engine_on = false
+    @engine = false
   end
 
   def engine_on?
-    @engine_on
+    @engine
   end
 end
 ```
@@ -508,7 +509,7 @@ fm = FiniteMachine.new(engine, alias_target: :engine) do
 end
 ```
 
-When expressing state in definition, you can use the `alias_target` helper method:
+Alternatively, you can use the `alias_target` helper method:
 
 ```ruby
 engine = Engine.new
@@ -577,7 +578,7 @@ in the form of `:from` and `:to` hash keys or by using the state names themselve
 
 ```ruby
 event :start, from: :neutral, to: :first
-or
+# or
 event :start, :neutral => :first
 ```
 
@@ -653,9 +654,7 @@ You can use `any_state` as the name for a given state, for instance:
 
 ```ruby
 event :run, from: any_state, to: :green
-
-or
-
+# or
 event :run, any_state => :green
 ```
 
@@ -672,12 +671,12 @@ All the above `run` event definitions will always transition the state machine i
 Another way to specify state transitions under single event name is to group all your state transitions into a single hash like so:
 
 ```ruby
-fm = FiniteMachine.define do
+fm = FiniteMachine.new do
   initial :initial
 
   event :bump, :initial => :low,
-                :low     => :medium,
-                :medium  => :high
+               :low     => :medium,
+               :medium  => :high
 end
 ```
 
@@ -705,8 +704,8 @@ fm = FiniteMachine.new do
   event :stop, :green => :red
 end
 
-fsm.go   # no callbacks
-fms.stop # callbacks are fired
+fm.go   # no callbacks
+fm.stop # callbacks are fired
 ```
 
 ### 3.7 Logging transitions
@@ -714,7 +713,7 @@ fms.stop # callbacks are fired
 To help debug your state machine, **FiniteMachine** provides `:log_transitions` option.
 
 ```ruby
-FiniteMachine.new log_transitions: true do
+FiniteMachine.new(log_transitions: true) do
   ...
 end
 ```
@@ -741,11 +740,11 @@ fm.current # => :green
 Condition by default receives the current context, which is the current state machine instance, followed by extra arguments.
 
 ```ruby
-fsm = FiniteMachine.new do
+fm = FiniteMachine.new do
   initial :red
 
   event :go, :red => :green,
-        if: -> (context, a) { context.current == a }
+        if: ->(context, a) { context.current == a }
 end
 
 fm.go(:yellow) # doesn't transition
@@ -755,46 +754,48 @@ fm.go          # raises ArgumentError
 **Note** If you specify condition with a given number of arguments then you need to call an event with the exact number of arguments, otherwise you will get `ArgumentError`. Thus in above scenario to prevent errors specify condition like so:
 
 ```ruby
-if: -> (context, *args) { ... }
+if: ->(context, *args) { ... }
 ```
 
 Provided your **FiniteMachine** is associated with another object through `target` helper. Then the target object together with event arguments will be passed to the `:if` or `:unless` condition scope.
 
 ```ruby
-class Car
-  attr_accessor :engine_on
-
-  def turn_engine_on
-    @engine_on = true
+class Engine
+  def initialize
+    @engine = false
   end
 
-  def turn_engine_off
-    @engine_on = false
+  def turn_on
+    @engine = true
+  end
+
+  def turn_off
+    @engine = false
   end
 
   def engine_on?
-    @engine_on
+    @engine
   end
 end
 
-car = Car.new
-car.turn_engine_on
+engine = Engine.new
+engine.turn_on
 
-fm = FiniteMachine.new do
+car = FiniteMachine.new(engine) do
   initial :neutral
 
-  target car
-
-  event :start, :neutral => :one, if: -> (target, state) {
-    target.engine_on = state
-    target.engine_on?
-  }
+  event :start, :neutral => :one, if: ->(target, state) do
+    state ? target.engine_on : target.engine_off
+  end
 end
 
 fm.start(false)
-fm.current       # => :neutral
+fm.current        # => :neutral
+engine.engine_on? # => false
+
 fm.start(true)
-fm.current       # => :one
+fm.current        # => :one
+engine.engine_on? # => true
 ```
 
 When the one-liner conditions are not enough for your needs, you can perform conditional logic inside the callbacks. See [4.9 Cancelling callbacks](#49-cancelling-inside-callbacks)
@@ -804,10 +805,8 @@ When the one-liner conditions are not enough for your needs, you can perform con
 You can also use a symbol corresponding to the name of a method that will get called right before transition happens.
 
 ```ruby
-fsm = FiniteMachine.new do
+fm = FiniteMachine.new(engine) do
   initial :neutral
-
-  target car
 
   event :start, :neutral => :one, if: :engine_on?
 end
@@ -818,10 +817,8 @@ end
 Finally, it's possible to use string that will be evaluated using `eval` and needs to contain valid Ruby code. It should only be used when the string represents a short condition.
 
 ```ruby
-fsm = FiniteMachine.new do
+fm = FiniteMachine.new(engine) do
   initial :neutral
-
-  target car
 
   event :start, :neutral => :one, if: "engine_on?"
 end
@@ -832,7 +829,7 @@ end
 When multiple conditions define whether or not a transition should happen, an Array can be used. Furthermore, you can apply both `:if` and `:unless` to the same transition.
 
 ```ruby
-fsm = FiniteMachine.new do
+fm = FiniteMachine.new do
   initial :green
 
   event :slow, :green => :yellow,
@@ -846,27 +843,27 @@ The transition only runs when all the `:if` conditions and none of the `unless` 
 
 ### 3.9 Choice pseudostates
 
-Choice pseudostate allows you to implement conditional branch. The conditions of an event's transitions are evaluated in order to to select only one outgoing transition.
+Choice pseudostate allows you to implement conditional branch. The conditions of an event's transitions are evaluated in order to select only one outgoing transition.
 
 You can implement the conditional branch as ordinary events grouped under the same name and use familiar `:if/:unless` conditions:
 
 ```ruby
-fsm = FiniteMachine.define do
+fm = FiniteMachine.define do
   initial :green
 
   event :next, :green => :yellow, if: -> { false }
   event :next, :green => :red,    if: -> { true }
 end
 
-fsm.current # => :green
-fsm.next
-fsm.current # => :red
+fm.current # => :green
+fm.next
+fm.current # => :red
 ```
 
 The same conditional logic can be implemented using much shorter and more descriptive style using `choice` method:
 
 ```ruby
-fsm = FiniteMachine.new do
+fm = FiniteMachine.new do
   initial :green
 
   event :next, from: :green do
@@ -875,9 +872,9 @@ fsm = FiniteMachine.new do
   end
 end
 
-fsm.current # => :green
-fsm.next
-fsm.current # => :red
+fm.current # => :green
+fm.next
+fm.current # => :red
 ```
 
 #### 3.9.1 Dynamic choice conditions
@@ -885,19 +882,19 @@ fsm.current # => :red
 Just as with event conditions you can make conditional logic dynamic and dependent on parameters passed in:
 
 ```ruby
-fsm = FiniteMachine.new do
+fm = FiniteMachine.new do
   initial :green
 
   event :next, from: :green do
-    choice :yellow, if: -> (context, a) { a < 1 }
-    choice :red,    if: -> (context, a) { a > 1 }
+    choice :yellow, if: ->(context, a) { a < 1 }
+    choice :red,    if: ->(context, a) { a > 1 }
     default :red
   end
 end
 
-fsm.current # => :green
-fsm.next(0)
-fsm.current # => :yellow
+fm.current # => :green
+fm.next(0)
+fm.current # => :yellow
 ```
 
 If more than one of the conditions evaluates to true, a first matching one is chosen. If none of the conditions evaluate to true, then the `default` state is matched. However if default state is not present and non of the conditions match, no transition is performed. To avoid such situation always specify `default` choice.
@@ -917,7 +914,7 @@ FiniteMachine.new do
 end
 ```
 
-or from any state using the `:any` state name like so:
+Or from any state using the `:any` state name like so:
 
 ```ruby
 FiniteMachine.new do
@@ -943,7 +940,7 @@ You can register a callback to listen for state transitions and events triggered
 Use the state or event name as a first parameter to the callback helper followed by block with event argument and a list arguments that you expect to receive like so:
 
 ```ruby
-on_enter :green { |event, a, b, c| ... }
+on_enter(:green) { |event, a, b, c| ... }
 ```
 
 When you subscribe to the `:green` state change, the callback will be called whenever someone triggers event that transitions in or out of that state. The same will happen on subscription to event `ready`, namely, the callback will be called each time the state transition method is triggered regardless of the states it transitions from or to.
@@ -956,9 +953,13 @@ fm = FiniteMachine.new do
   event :go,    :yellow => :green
   event :stop,  :green  => :red
 
-  on_before :ready { |event, time1, time2, time3| puts "#{time1} #{time2} #{time3} Go!" }
-  on_before :go    { |event, name| puts "Going fast #{name}" }
-  on_before :stop  { |event| ... }
+  on_before :ready do |event, time1, time2, time3|
+    puts "#{time1} #{time2} #{time3} Go!" }
+  end
+  on_before :go do |event, name|
+    puts "Going fast #{name}"
+  end
+  on_before(:stop) { |event| ... }
 end
 
 fm.ready(1, 2, 3)
@@ -1016,9 +1017,9 @@ Then by calling `go` event the following callbacks sequence will be executed:
 
 All callbacks as a first argument yielded to a block receive the `TransitionEvent` object with the following attributes:
 
-* `name    # the event name`
-* `from    # the state transitioning from`
-* `to      # the state transitioning to`
+* `name` - the event name`
+* `from` - the state transitioning from`
+* `to` - the state transitioning to`
 
 followed by the rest of arguments that were passed to the event method.
 
@@ -1028,17 +1029,20 @@ fm = FiniteMachine.new do
 
   event :ready, :red => :yellow
 
-  on_enter_ready { |event, time|
+  on_before_ready do |event, time|
     puts "lights switching from #{event.from} to #{event.to} in #{time} seconds"
-  }
+  end
 end
 
-fm.ready(3)   #  => "lights switching from red to yellow in 3 seconds"
+fm.ready(3)
+#  => "lights switching from red to yellow in 3 seconds"
 ```
 
 ### 4.6 Duplicate callbacks
 
 You can define any number of the same kind of callback. These callbacks will be executed in the order they are specified.
+
+Given the following state machine instance:
 
 ```ruby
 fm = FiniteMachine.new do
@@ -1046,15 +1050,22 @@ fm = FiniteMachine.new do
 
   event :slow, :green => :yellow
 
-  on_enter(:yellow) { this_is_run_first }
-  on_enter(:yellow) { then_this }
+  on_enter(:yellow) { puts "this is run first" }
+  on_enter(:yellow) { puts "then this is run" }
 end
-fm.slow # => will invoke both callbacks
+```
+
+Triggerring the `:slow` event results in:
+
+```ruby
+fm.slow
+# => "this is run first"
+# => "then this is run"
 ```
 
 ### 4.7 Fluid callbacks
 
-Callbacks can also be specified as full method calls.
+Callbacks can also be specified as full method calls separated with underscores:
 
 ```ruby
 fm = FiniteMachine.define do
@@ -1120,7 +1131,12 @@ fm = FiniteMachine.new do
   on_enter_reverse { |event| forward("Piotr!") }
   on_exit_reverse  { |event, name| puts "Go #{name}" }
 end
-fm.back   # => Go Piotr!
+```
+
+Then triggerring `:back` event gives:
+
+```ruby
+fm.back  # => Go Piotr!
 ```
 
 For more complex example see [Integration](#7-integration) section.
@@ -1131,7 +1147,7 @@ A simple way to prevent transitions is to use [3 Conditional transitions](#3-con
 
 There are times when you want to cancel transition in a callback. For example, you have logic which allows transition to happen only under certain complex conditions. Using `cancel_event` inside the `on_(enter|transition|exit)` or `on_(before|after)` callbacks will stop all the callbacks from firing and prevent current transition from happening.
 
-For example, firing any event will not move the current state:
+For example, the following state machine cancels any event leaving `:red` state:
 
 ```ruby
 fm = FiniteMachine.new do
@@ -1146,7 +1162,12 @@ fm = FiniteMachine.new do
     cancel_event
   end
 end
+```
 
+Then firing `:ready` event will not transition out of the current `:red` state:
+
+```ruby
+fm.current  # => :red
 fm.ready
 fm.current  # => :red
 ```
@@ -1156,21 +1177,18 @@ fm.current  # => :red
 By default all callbacks are run synchronously. In order to add a callback that runs asynchronously, you need to pass second `:async` argument like so:
 
 ```ruby
-  on_enter :green, :async do |event| ... end
-```
-
-Or
-
-```ruby
-  on_enter_green(:async) { |event| }
+on_enter(:green, :async) do |event| ... end
+# or
+on_enter_green(:async) { |event| }
 ```
 
 This will ensure that when the callback is fired it will run in separate thread outside of the main execution thread.
 
-
 ### 4.11 Instance callbacks
 
-When defining callbacks you are not limited to the `callbacks` helper. After **FiniteMachine** instance is created you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
+When defining callbacks you are not limited to the **FiniteMachine** block definition. After creating an instance, you can register callbacks the same way as before by calling `on` and supplying the type of notification and state/event you are interested in.
+
+For example, given the following state machine:
 
 ```ruby
 fm = FiniteMachine.new do
@@ -1180,10 +1198,14 @@ fm = FiniteMachine.new do
   event :go,    :yellow => :green
   event :stop,  :green  => :red
 end
+```
 
-fm.on_enter_yellow do |event|
-  ...
-end
+We can add callbacks as follows:
+
+```ruby
+fm.on_enter(:yellow) { |event| ... }
+# or
+fm.en_enter_yellow { |event| ... }
 ```
 
 ## 5. Error Handling
@@ -1208,7 +1230,7 @@ fm = FiniteMachine.new do
     raise exception
   end
 
-  handle FiniteMachine::TransitionError, with: proc { |exception| ... }
+  handle FiniteMachine::TransitionError, with: -> { |exception| ... }
 end
 ```
 
@@ -1257,7 +1279,9 @@ class Engine < FiniteMachine::Definition
     target.turn_reverse_lights_off
   end
 
-  handle FiniteMachine::InvalidStateError do |exception| ... end
+  handle FiniteMachine::InvalidStateError do |exception|
+    ...
+  end
 end
 ```
 
@@ -1294,7 +1318,7 @@ engine.back
 car.reverse_lights?  # => true
 ```
 
-Alternatively, create method inside the `Car` that will do the integration like so
+Alternatively, create method inside the `Car` that will do the integration like so:
 
 ```ruby
 class Car
