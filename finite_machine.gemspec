@@ -21,14 +21,13 @@ Gem::Specification.new do |spec|
   end
 
   spec.files         = Dir["lib/**/*"]
-  spec.files        += Dir["README.md", "CHANGELOG.md", "LICENSE.txt"]
-  spec.executables   = []
+  spec.extra_rdoc_files = ["README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 2.0.0"
 
   spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
   spec.add_runtime_dependency "sync", "~> 0.5"
 
-  spec.add_development_dependency "rspec", ">= 3.1"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec", ">= 3.0"
 end
