@@ -1,6 +1,6 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+# frozen_string_literal: true
 
-require 'finite_machine'
+require_relative "../lib/finite_machine"
 
 class User
   attr_accessor :name
@@ -60,19 +60,37 @@ class BugSystem
 
   def notify_manager(bug)
     manager = @managers.first
+    puts "Notifying #{manager.name.inspect} about #{bug.name.inspect}"
     manager.assign(bug)
   end
 end
 
+class BugStatus < FiniteMachine::Definition
+  alias_target :bug
+
+  event :report, :none => :new
+  event :assign, :new => :assigned
+  event :start,  :assigned => :in_progress
+  event :close,  [:in_progress, :reopened] => :resolved
+  event :reopen, :resolved => :reopened
+
+  on_enter :new do |event|
+    bug.notify_manager
+  end
+end
+
 class Bug
-  attr_accessor :name
-  attr_accessor :priority
+  attr_reader :name
+  attr_reader :priority
+  attr_reader :status
+
   # fake belongs_to relationship
   attr_accessor :bug_system
 
   def initialize(name, priority)
     @name = name
     @priority = priority
+    @status = BugStatus.new(self)
   end
 
   def report
@@ -95,31 +113,15 @@ class Bug
     status.reopen
   end
 
-  def status
-    context = self
-    @status ||= FiniteMachine.define do
-      target context
-
-      events {
-        event :report, :none => :new
-        event :assign, :new => :assigned
-        event :start,  :assigned => :in_progress
-        event :close,  [:in_progress, :reopened] => :resolved
-        event :reopen, :resolved => :reopened
-      }
-
-      callbacks {
-        on_enter :new do |event|
-          bug_system.notify_manager(self)
-        end
-      }
-    end
+  def notify_manager
+    bug_system.notify_manager(self)
   end
 end
 
 tester    = Tester.new("John")
 manager   = Manager.new("David")
 developer = Developer.new("Piotr")
+
 manager.manages(developer)
 
 bug_system = BugSystem.new([manager])
