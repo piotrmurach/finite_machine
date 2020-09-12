@@ -1,9 +1,10 @@
 # Change Log
 
-## [v0.14.0] - unreleased
+## [v0.14.0] - 2020-09-12
 
 ### Added
 * Add ability to declare alias target inside definition
+* Add #respond_to_missing? to DSL to check if a given method is supported
 
 ## [v0.13.0] - 2020-05-13
 
