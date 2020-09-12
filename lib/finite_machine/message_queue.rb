@@ -31,6 +31,7 @@ module FiniteMachine
     # @api private
     def start
       return if running?
+
       @mutex.synchronize { spawn_thread }
     end
 
@@ -114,6 +115,7 @@ module FiniteMachine
     # @api public
     def join(timeout = nil)
       return unless @thread
+
       timeout.nil? ? @thread.join : @thread.join(timeout)
     end
 
@@ -126,7 +128,7 @@ module FiniteMachine
     #
     # @api public
     def shutdown
-      fail EventQueueDeadError, 'event queue already dead' if @dead
+      raise EventQueueDeadError, "event queue already dead" if @dead
 
       queue = []
       @mutex.synchronize do
@@ -184,6 +186,7 @@ module FiniteMachine
           end
           event = @queue.pop
           break unless event
+
           notify_listeners(event)
           event.dispatch
         end
