@@ -446,19 +446,19 @@ fm.can?(:stop, :no_breaks) # => false
 
 If you need to execute some external code in the context of the current state machine, pass that object as a first argument to `new` method.
 
-Assuming we have a simple `Car` class that holds an internal state whether the car's engine is on or off:
+Assuming we have a simple `Engine` class that holds an internal state whether the car's engine is on or off:
 
 ```ruby
-class Car
+class Engine
   def initialize
-    @engine_on = false
+    @engine = false
   end
 
-  def turn_engine_on
+  def turn_on
     @engine_on = true
   end
 
-  def turn_engine_off
+  def turn_off
     @engine_on = false
   end
 
@@ -468,23 +468,23 @@ class Car
 end
 ```
 
-And given an instance of `Car` class:
+And given an instance of `Engine` class:
 
 ```ruby
-car = Car.new
+engine = Engine.new
 ```
 
 You can provide a context to a state machine by passing it as a first argument to a `new` call. You can then reference this context inside the callbacks by calling the `target` helper:
 
 ```ruby
-fm = FiniteMachine.new(car) do
+fm = FiniteMachine.new(engine) do
   initial :neutral
 
-  event :start, :neutral => :one, if: "engine_on?"
+  event :start, :neutral => :one, unless: "engine_on?"
   event :stop,  :one => :neutral
 
-  on_enter_start do |event| target.turn_engine_on end
-  on_exit_start  do |event| target.turn_engine_off end
+  on_before_start { |event| target.turn_on }
+  on_after_stop { |event| target.turn_off }
 end
 ```
 
@@ -495,16 +495,50 @@ For more complex example see [Integration](#7-integration) section.
 If you wish to better express the intention behind the context object, in particular when calling actions in callbacks, you can use the `:alias_target` option:
 
 ```ruby
-car = Car.new
+engine = Engine.new
 
-fm = FiniteMachine.new(car, alias_target: :car) do
+fm = FiniteMachine.new(engine, alias_target: :engine) do
+  initial :neutral
+
+  event :start, :neutral => :one, unless: "engine_on?"
+  event :stop, :none => :neutral, if: "engine_on?"
+
+  on_before_start { |event| engine.turn_on }
+  on_after_stop { |event| engine.turn_off }
+end
+```
+
+When expressing state in definition, you can use the `alias_target` helper method:
+
+```ruby
+engine = Engine.new
+
+Car = FiniteMachine.define do
+  alias_target :engine
+
   initial :neutral
 
   event :start, :neutral => :one, if: "engine_on?"
+  event :stop, :none => :neutral, if: "engine_on?"
 
-  on_enter_start do |event| car.turn_engine_on end
-  on_exit_start  do |event| car.turn_engine_off end
+  on_before_start { |event| engine.turn_on }
+  on_after_stop { |event| engine.turn_off }
 end
+```
+
+Then to link `Car` definition with `Engine` instance, pass the `Engine` instance as a first argument:
+
+```ruby
+car = Car.new(engine)
+```
+
+Triggering `start` event will change `Engine` instance state from `false` to `true`:
+
+```ruby
+engine.engine_on? # => false
+car.start
+car.current       # => :one
+engine.engine_on? # => true
 ```
 
 ### 2.10 restore!
