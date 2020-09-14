@@ -4570,7 +4570,7 @@ body {
   -webkit-text-size-adjust: 100%; }
 
 ul, ol {
-  margin-left: 30px; }
+  margin-left: 1rem; }
 
 li > ul,
 li > ol {
@@ -4591,7 +4591,7 @@ a {
 blockquote {
   color: #828282;
   border-left: 4px solid #e8e8e8;
-  padding-left: 15px;
+  padding-left: 0.5rem;
   font-size: 18px;
   letter-spacing: -1px;
   font-style: italic; }
@@ -4615,6 +4615,16 @@ pre {
     padding-right: 0;
     padding-left: 0; }
 
+.wrapper {
+  position: relative;
+  max-width: 60em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2em; }
+  @media screen and (max-width: 600px) {
+    .wrapper {
+      padding: 0 1em; } }
+
 /**
  * Site header
  */
@@ -4623,40 +4633,38 @@ pre {
   border-top: 5px solid #828282;
   padding-top: 2em;
   padding-bottom: 2em; }
+  .site-header .wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between; }
   .site-header .logo {
+    display: inline-block;
     margin: 0;
     padding: 0;
-    float: left;
     text-align: center; }
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 700px) {
       .site-header .logo {
-        float: none; } }
-    .site-header .logo a {
+        margin: 0 auto; } }
+    .site-header .logo .logo-link {
       display: inline-block;
       overflow: hidden;
       background: url(/finite_machine/assets/finite_machine_logo-3cb8bb55e2c91a8e9b452f7779c8019e062846a0928a45f623f27ee71718cdb1.svg) no-repeat;
       background-size: contain;
       width: 250px;
       height: 176px; }
-      @media screen and (max-width: 600px) {
-        .site-header .logo a {
-          width: 180px;
-          height: 130px; } }
   .site-header .actions {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 2em;
-    margin: auto;
-    height: 3em; }
-    @media screen and (max-width: 600px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap; }
+    @media screen and (max-width: 700px) {
       .site-header .actions {
-        position: relative;
-        float: left;
-        height: auto;
-        margin: 0 2em;
-        width: 100%; } }
-    .site-header .actions a {
+        margin: 1rem auto; } }
+    .site-header .actions .action {
       display: inline-block;
       width: 12em;
       padding: 1em;
@@ -4672,18 +4680,25 @@ pre {
       text-transform: uppercase;
       text-decoration: none;
       background: #E1541B; }
-      @media screen and (max-width: 700px) {
-        .site-header .actions a {
-          width: 100%;
-          margin-bottom: 1em; } }
-      .site-header .actions a:hover {
+      .site-header .actions .action:first-child {
+        margin-right: 1rem; }
+      @media screen and (max-width: 500px) {
+        .site-header .actions .action {
+          display: block;
+          width: 100%; }
+          .site-header .actions .action:first-child {
+            margin-right: 0;
+            margin-bottom: 1rem; } }
+      .site-header .actions .action:hover {
         background: #B12403; }
 
 /**
  * Hero
  */
 .hero {
-  background-color: #0bd18d; }
+  background-color: #0bd18d;
+  padding-top: 1rem;
+  padding-bottom: 2rem; }
   .hero .hero-intro {
     color: #ffffff;
     text-align: center;
@@ -4693,20 +4708,6 @@ pre {
     @media screen and (max-width: 600px) {
       .hero .hero-intro {
         padding: 0; } }
-
-.wrapper {
-  position: relative;
-  max-width: 60em;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 2em; }
-  .wrapper::after {
-    clear: both;
-    content: "";
-    display: table; }
-  @media screen and (max-width: 600px) {
-    .wrapper {
-      padding: 0 1em; } }
 
 .browser-window {
   width: 80%;
@@ -4821,49 +4822,59 @@ pre {
  */
 .features {
   background-color: #ffffff;
-  margin-bottom: 30px; }
-  .features .feature-items::after {
-    clear: both;
-    content: "";
-    display: table; }
-  .features .feature-items .title {
+  padding-top: 1rem;
+  padding-bottom: 2rem; }
+  .features .title {
     color: #525252;
     font-size: 2.6em;
     text-align: center; }
-  .features .feature-items .feature-item {
-    float: left;
-    width: 33.3333333333%;
-    min-height: 14em;
-    padding: 1em; }
+  .features .feature-items {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    list-style: none; }
     @media screen and (max-width: 600px) {
-      .features .feature-items .feature-item {
-        width: 100%;
-        min-height: auto; } }
-    .features .feature-items .feature-item .feature-icon {
-      position: relative;
-      text-align: center;
-      background-color: #f05f5c;
-      border: 5px solid #b12403;
-      width: 6.4em;
-      height: 6.4em;
-      margin: 0 auto 0.25em;
-      border-radius: 50%; }
-      .features .feature-items .feature-item .feature-icon svg {
-        margin-top: 9px;
-        width: 4.6em;
-        height: 4.6em;
-        fill: #fff; }
-    .features .feature-items .feature-item h2 {
-      font-family: "Ubuntu", sans-serif;
-      color: #e1541b;
-      font-size: 1.6em;
-      margin: 0;
-      text-align: center;
-      font-weight: 500; }
-    .features .feature-items .feature-item p {
-      color: #525252;
-      font-size: 1.1em;
-      text-align: center; }
+      .features .feature-items {
+        flex-direction: column; } }
+    .features .feature-items .feature-item {
+      flex: 0 0 33.3333333333%;
+      max-width: 33.3333333333%;
+      min-height: 14em;
+      padding: 1em; }
+      @media screen and (max-width: 600px) {
+        .features .feature-items .feature-item {
+          flex: 0 0 100%;
+          max-width: 100%;
+          min-height: auto; } }
+      .features .feature-items .feature-item .feature-icon {
+        position: relative;
+        text-align: center;
+        background-color: #f05f5c;
+        border: 5px solid #b12403;
+        width: 6.4em;
+        height: 6.4em;
+        margin: 0 auto 0.25em;
+        border-radius: 50%; }
+        .features .feature-items .feature-item .feature-icon svg {
+          margin-top: 9px;
+          width: 4.6em;
+          height: 4.6em;
+          fill: #fff; }
+      .features .feature-items .feature-item .feature-title {
+        padding-top: 1rem;
+        font-family: "Ubuntu", sans-serif;
+        color: #e1541b;
+        font-size: 1.6em;
+        margin: 0;
+        text-align: center;
+        font-weight: 500; }
+      .features .feature-items .feature-item p {
+        color: #525252;
+        font-size: 1.1em;
+        text-align: center; }
 
 .installation {
   background-color: #011135;
@@ -4901,35 +4912,26 @@ pre {
   border-top: 1px solid #e8e8e8;
   background-color: #e8e8e8;
   color: #525252;
-  padding-top: 3em;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
   text-align: center; }
   .site-footer .footer-heading {
     text-align: center;
     font-size: 1.2em;
-    margin-bottom: 15px; }
+    margin-bottom: 0.5rem; }
   .site-footer p {
-    font-size: 1.1em; }
+    font-size: 1em; }
   .site-footer .social-media-list {
-    display: block;
-    list-style: none;
-    margin: 0 auto;
-    width: 20em;
-    border-bottom: 2px solid #828282;
-    text-align: center;
-    padding: 0 0 1em 0; }
-    .site-footer .social-media-list::after {
-      clear: both;
-      content: "";
-      display: table; }
-    .site-footer .social-media-list li {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    padding: 0; }
+    .site-footer .social-media-list .social-link {
       display: inline-block;
       margin-bottom: 0.2em;
-      text-align: center;
-      padding: 0 1em; }
-      .site-footer .social-media-list li::after {
-        clear: both;
-        content: "";
-        display: table; }
+      padding: 0 1rem; }
     .site-footer .social-media-list a {
       margin: 0 auto;
       display: inline-block;
@@ -4941,11 +4943,12 @@ pre {
       .site-footer .social-media-list a:hover {
         color: #1f1f1f; }
   .site-footer .copy {
-    margin-top: 2em;
+    margin-top: 1em;
     text-align: center; }
     .site-footer .copy a {
       color: #525252;
-      text-decoration: underline; }
+      text-decoration: underline;
+      outline: none; }
       .site-footer .copy a:hover {
         color: #1f1f1f; }
 

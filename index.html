@@ -13,9 +13,10 @@
   <title>FiniteMachine Ruby gem</title>
   <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 ">
+  <meta name="copyright" content="&copy; 2015 Piotr Murach.">
   <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,900,300' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" type="text/css" href="/finite_machine/assets/app-160d1eaf67a7bb245adaf318795f6fa466dc2c5471f50ce95b5245d811bb20c0.css" />
+  <link rel="stylesheet" type="text/css" href="/finite_machine/assets/app-9ad8d42c32f502162c5cc0b378d319a5f3c2f7c32365c5aa0de88788468750cd.css" />
   <link rel="canonical" href="/finite_machine/">
 
   <link rel="apple-touch-icon" sizes="57x57" href="./favicons/apple-touch-icon-57x57.png">
@@ -41,11 +42,11 @@
     <header class="site-header">
   <div class="wrapper">
     <h1 class="logo">
-      <a href="/finite_machine"></a>
+      <a href="/finite_machine" class="logo-link"></a>
     </h1>
     <nav class="actions">
-      <a href="//github.com/piotrmurach/finite_machine#contents">documentation</a>
-      <a href="//github.com/piotrmurach/finite_machine">github</a>
+      <a href="//github.com/piotrmurach/finite_machine#contents" class="action">documentation</a>
+      <a href="//github.com/piotrmurach/finite_machine" class="action">github</a>
     </nav>
   </div>
 </header>
@@ -94,36 +95,36 @@
 
 <section class='features'>
   <div class='wrapper'>
-    <div class='feature-items'>
-      <h2 class='title'>Powerful state machine features </h2>
-      <div class='feature-item'>
+    <h2 class='title'>Powerful state machine features </h2>
+    <ul class='feature-items'>
+      <li class='feature-item'>
         <div class='feature-icon'>
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
           <path d="M256,50c-57.861,49.195-96.167,57-156.5,57c0,0,0,116.921,0,192.528c0,79,56.996,99.629,156.5,162.472 c99.504-62.843,156.5-83.472,156.5-162.472c0-75.607,0-192.528,0-192.528C352.167,107,313.861,99.195,256,50z M158.067,348.581 c-11.145-11.566-18.567-24.334-18.567-49.053v-41.445H256V100.867c40.768,29.345,75.684,40.771,116.5,44.536v112.68H256v156.812 C211.745,387.728,177.041,368.271,158.067,348.581z"/>
           </svg>
         </div>
-        <h2>ORM agnostic</h2>
+        <h2 class="feature-title">ORM agnostic</h2>
         <p>Value flexibility and maintainabilty? Since FiniteMachine is just an object it allows for easy integration with the rest of the system.</p>
-      </div>
-      <div class='feature-item'>
+      </li>
+      <li class='feature-item'>
         <div class='feature-icon'>
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
         <path d="M379.417,142.776H133.583v25h245.834V142.776z M379.417,187.776H133.583v25h245.834V187.776z M379.417,232.776H133.583v25h245.834V232.776z M252,277.776H133.583v25H252V277.776z M50,63.237v318.525h412V63.237H50z M419.891,339.654H92.109l-0.001-234.308l327.782-0.002V339.654z M314.393,406.655l42.107,42.107h-201l42.107-42.107H314.393z"/>
         </svg>
         </div>
-        <h2>Expressive syntax</h2>
+        <h2 class="feature-title">Expressive syntax</h2>
         <p>If you want simplicity and readability, FiniteMachine provides a natural DSL for declaring events, callbacks and exception handlers.</p>
-      </div>
-      <div class='feature-item'>
+      </li>
+      <li class='feature-item'>
         <div class='feature-icon'>
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
           <path d="M50,364.9l97.099,97.1L462,147.099L364.885,50L50,364.9z M413.434,147.116L147.116,413.45L98.55,364.885 l17.854-17.318l36.429,36.43l12.137-12.139l-36.429-36.428l24.275-24.275l24.274,24.275l12.154-12.138l-24.275-24.274l24.275-24.275 l24.275,24.275l12.137-12.138l-24.274-24.274l24.274-24.275l36.43,36.412l12.137-12.137l-36.412-36.413l24.275-24.275l24.274,24.275 l12.138-12.137l-24.275-24.275l24.275-24.275l24.274,24.275l12.138-12.137l-24.275-24.275l24.275-24.292l36.412,36.429 l12.137-12.137l-36.412-36.429l17.838-18.391L413.434,147.116z M134.626,231.725L50,147.099L147.099,50l84.626,84.626 l-48.818,48.818l-12.137-12.154l24.274-24.274l-18.474-18.475l-24.006,24.007l-12.138-12.138l24.007-24.006l-17.318-17.854 L98.55,147.116l60.352,60.334L134.626,231.725z M328.557,329.092l12.137,12.138l24.275-24.274l17.954,17.955l-24.292,24.258 l12.138,12.137l24.292-24.258l18.391,17.838l-48.566,48.549l-60.335-60.335l-24.274,24.274L364.901,462L462,364.885l-84.626-84.61 L328.557,329.092z"/>
           </svg>
         </div>
-        <h2>Highly flexible</h2>
+        <h2 class="feature-title">Highly flexible</h2>
         <p>Transition guard conditions paired with dynamic conditional branching allow for modelling any state flows.</p>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -160,22 +161,29 @@
     <footer class="site-footer">
   <div class="wrapper">
     <ul class="social-media-list">
-      <li>
-        <a href="http://twitter.com/piotr_murach/" target="_blank" title="Follow Piotr Murach on Twitter" class='icon'><i class='fab fa-twitter'></i></a>
+      <li class="social-link">
+        <a href="https://twitter.com/piotr_murach/" target="_blank" title="Follow Piotr Murach on Twitter" class='icon'><i class='fab fa-twitter'></i></a>
       </li>
-      <li>
-        <a href="http://github.com/piotrmurach/" target="_blank" title="Follow Piotr Murach on GitHub" class='icon'><i class='fab fa-github-alt'></i></a>
+      <li class="social-link">
+        <a href="https://github.com/piotrmurach/" target="_blank" title="Follow Piotr Murach on GitHub" class='icon'><i class='fab fa-github-alt'></i></a>
       </li>
-      <li>
+      <li class="social-link">
+        <a href="https://piotrmurach.com" target="_blank" title="Read Piotr Murach personal site" class='icon'><i class='fas fa-link'></i></a>
+      </li>
+      <li class="social-link">
         <a href="https://uk.linkedin.com/pub/piotr-murach/24/96b/1a8" target="_blank" title="Connect with Piotr Murach on Linkedin" class='icon'><i class='fab fa-linkedin-in'></i></a>
       </li>
-      <li>
+      <li class="social-link">
+        <a href='https://stackoverflow.com/users/330813/piotr-murach' target="_blank" title="Read Piotr Murach profile on StackOverflow" class="fab fa-stack-overflow"></a>
+      </li>
+      <li class="social-link">
         <a href="https://www.patreon.com/piotrmurach" target="_blank" title="Become a patron" class='icon'><i class='fab fa-patreon'></i></a>
       </li>
     </ul>
 
-    <p class='copy'>Crafted with <i class='fas fa-heart'></i> by Piotr Murach. Logo by <a href="https://twitter.com/gavjessop" target="_blank">Gavin Jessop</a></p>
-    <p>Copyright &copy; 2015-2019</p>
+    <p class='copy'>
+      &copy; <span>2015</span> Crafted with <i class='fas fa-heart'></i> by Piotr Murach. Logo by <a href="https://twitter.com/gavjessop" target="_blank">Gavin Jessop</a>
+    </p>
   </div>
 </footer>
 
