@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 gemspec
 
+gem "json", "2.4.1" if RUBY_VERSION == "2.0.0"
+
 group :development do
   gem "ruby-prof", "~> 0.17.0", platforms: :mri
   gem "pry",   "~> 0.10.1"
