@@ -24,11 +24,10 @@ begin
       task.pattern = "spec/performance{,/*/**}/*_spec.rb"
     end
   end
-
 rescue LoadError
   %w[spec spec:unit spec:integration].each do |name|
     task name do
-      $stderr.puts "In order to run #{name}, do `gem install rspec`"
+      warn "In order to run #{name}, do `gem install rspec`"
     end
   end
 end

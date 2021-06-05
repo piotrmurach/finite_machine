@@ -1,12 +1,12 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require "bundler/gem_tasks"
 
-FileList['tasks/**/*.rake'].each(&method(:import))
+FileList["tasks/**/*.rake"].each(&method(:import))
 
-mri = RUBY_ENGINE == 'ruby'
-specs = ['spec']
-specs.unshift('spec:perf') if mri
+mri = RUBY_ENGINE == "ruby"
+specs = ["spec"]
+specs.unshift("spec:perf") if mri
 
-desc 'Run all specs'
+desc "Run all specs"
 task ci: specs
