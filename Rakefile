@@ -4,9 +4,9 @@ require "bundler/gem_tasks"
 
 FileList['tasks/**/*.rake'].each(&method(:import))
 
-jruby = RUBY_ENGINE == 'ruby'
+mri = RUBY_ENGINE == 'ruby'
 specs = ['spec']
-specs << 'spec:perf' if jruby
+specs.unshift('spec:perf') if mri
 
 desc 'Run all specs'
 task ci: specs
