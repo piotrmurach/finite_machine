@@ -30,8 +30,8 @@ module FiniteMachine
       message.join
     end
 
-    def report_transition(name, from, to, *args)
-      message = ["Transition: @event=#{name} "]
+    def report_transition(machine_name, event_name, from, to, *args)
+      message = ["Transition: @machine=#{machine_name} @event=#{event_name} "]
       unless args.empty?
         message << "@with=[#{args.join(',')}] "
       end

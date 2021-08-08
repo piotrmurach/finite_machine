@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "forwardable"
+require "securerandom"
 
 require_relative "catchable"
 require_relative "dsl"
@@ -95,6 +96,7 @@ module FiniteMachine
       @events_map    = EventsMap.new
       @env           = Env.new(self, [])
       @dsl           = DSL.new(self, options)
+      @name          = options.fetch(:name) { SecureRandom.uuid.split("-")[0] }
 
       env.target = args.pop unless args.empty?
       env.aliases << options[:alias_target] if options[:alias_target]
@@ -356,7 +358,7 @@ module FiniteMachine
       block.call(from_state, to_state) if block
 
       if log_transitions
-        Logger.report_transition(event_name, from_state, to_state, *data)
+        Logger.report_transition(@name, event_name, from_state, to_state, *data)
       end
 
       try_trigger(event_name) { transition_to!(to_state) }
