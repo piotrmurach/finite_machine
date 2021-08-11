@@ -29,8 +29,8 @@ RSpec.describe FiniteMachine::Logger do
   end
 
   it "reports transition" do
-    logger.report_transition(:go, :red, :green)
+    logger.report_transition('TrafficLights', :go, :red, :green)
 
-    expect(log).to have_received(:info).with("Transition: @event=go red -> green")
+    expect(log).to have_received(:info).with("Transition: @machine=TrafficLights @event=go red -> green")
   end
 end

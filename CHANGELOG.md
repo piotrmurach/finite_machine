@@ -1,5 +1,10 @@
 # Change Log
 
+## [v0.14.1] - unreleased
+
+### Added
+* Add ability to name a FiniteMachine instance
+
 ## [v0.14.0] - 2020-09-12
 
 ### Added
@@ -312,6 +317,7 @@
 
 * Initial release
 
+[v0.14.1]: https://github.com/piotrmurach/finite_machine/compare/v0.14.0...v0.14.1
 [v0.14.0]: https://github.com/piotrmurach/finite_machine/compare/v0.13.0...v0.14.0
 [v0.13.0]: https://github.com/piotrmurach/finite_machine/compare/v0.12.1...v0.13.0
 [v0.12.1]: https://github.com/piotrmurach/finite_machine/compare/v0.12.0...v0.12.1

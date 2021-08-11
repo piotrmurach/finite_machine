@@ -710,13 +710,25 @@ fm.stop # callbacks are fired
 
 ### 3.7 Logging transitions
 
-To help debug your state machine, **FiniteMachine** provides `:log_transitions` option.
+To help debug your state machine, **FiniteMachine** provides a `:log_transitions` option.
 
 ```ruby
 FiniteMachine.new(log_transitions: true) do
   ...
 end
 ```
+
+A FiniteMachine instance can optionally be given a name:
+
+```ruby
+fm = FiniteMachine.new(name: 'TrafficLights', log_transitions: true) do
+  ...
+end
+```
+
+The name will then appear in transition logs which helps disambiguate events relevant to different state machines.
+
+Note that if no name is specified then the first 8 characters from a randomly generated UUID string are used as a default name.
 
 ### 3.8 Conditional transitions
 
