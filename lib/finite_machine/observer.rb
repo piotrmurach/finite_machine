@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "securerandom"
 require_relative "async_call"
 require_relative "callable"
 require_relative "hook_event"
@@ -16,15 +17,11 @@ module FiniteMachine
     # Clean up callback queue
     #
     # @api private
-    def self.cleanup_callback_queue
-      proc do
-        begin
-          if callback_queue.alive?
-            callback_queue.shutdown
-          end
-        rescue MessageQueueDeadError
-        end
+    def cleanup_callback_queue(_id)
+      if callback_queue.alive?
+        callback_queue.shutdown
       end
+    rescue MessageQueueDeadError
     end
 
     # The current state machine
@@ -40,11 +37,12 @@ module FiniteMachine
     #
     # @api public
     def initialize(machine)
+      @id = SecureRandom.uuid
       @machine = machine
       @hooks   = Hooks.new
 
       @machine.subscribe(self)
-      ObjectSpace.define_finalizer(self, self.class.cleanup_callback_queue)
+      ObjectSpace.define_finalizer(@id, method(:cleanup_callback_queue))
     end
 
     def callback_queue
