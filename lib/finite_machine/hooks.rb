@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "concurrent/array"
 require "concurrent/map"
 
 require_relative "hook_event"
@@ -12,13 +13,17 @@ module FiniteMachine
     # Initialize a hooks_map of hooks
     #
     # @example
-    #   Hoosk.new(machine)
+    #   Hooks.new
     #
     # @api public
     def initialize
       @hooks_map = Concurrent::Map.new do |events_hash, hook_event|
-        events_hash[hook_event] = Concurrent::Map.new do |state_hash, name|
-          state_hash[name] = []
+        events_hash.compute_if_absent(hook_event) do
+          Concurrent::Map.new do |state_hash, name|
+            state_hash.compute_if_absent(name) do
+              Concurrent::Array.new
+            end
+          end
         end
       end
     end
