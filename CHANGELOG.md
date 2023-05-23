@@ -1,5 +1,10 @@
 # Change Log
 
+## [unreleased] - 2023-05-23
+
+### Fixed
+* Fix a 'callback_queue' exception in Ruby 3.1.1 and higher.
+
 ## [v0.14.0] - 2020-09-12
 
 ### Added
