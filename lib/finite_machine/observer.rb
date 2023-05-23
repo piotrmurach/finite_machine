@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "securerandom"
+
 require_relative "async_call"
 require_relative "callable"
 require_relative "hook_event"
@@ -19,6 +20,7 @@ module FiniteMachine
     # @api private
     def cleanup_callback_queue(_id)
       if callback_queue.alive?
+        ObjectSpace.undefine_finalizer(@id)
         callback_queue.shutdown
       end
     rescue MessageQueueDeadError
