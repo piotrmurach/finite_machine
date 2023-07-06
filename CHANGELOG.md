@@ -1,9 +1,7 @@
 # Change Log
 
-## [unreleased] - 2023-05-23
-
 ### Fixed
-* Fix a 'callback_queue' exception in Ruby 3.1.1 by Vadim Kononov(@vkononov)
+* Fix defining object finalizer in Ruby 3.1 to reference a UUID string. by Vadim Kononov(@vkononov)
 
 ## [v0.14.0] - 2020-09-12
 

@@ -18,12 +18,16 @@ module FiniteMachine
     # Clean up callback queue
     #
     # @api private
-    def cleanup_callback_queue(_id)
-      if callback_queue.alive?
-        ObjectSpace.undefine_finalizer(@id)
-        callback_queue.shutdown
+    def cleanup_callback_queue
+      proc do
+        begin
+          ObjectSpace.undefine_finalizer(@object_id)
+          if callback_queue.alive?
+            callback_queue.shutdown
+          end
+        rescue MessageQueueDeadError
+        end
       end
-    rescue MessageQueueDeadError
     end
 
     # The current state machine
@@ -39,16 +43,19 @@ module FiniteMachine
     #
     # @api public
     def initialize(machine)
-      @id = SecureRandom.uuid
-      @machine = machine
-      @hooks   = Hooks.new
+      @machine   = machine
+      @hooks     = Hooks.new
+      @object_id = nil
 
       @machine.subscribe(self)
-      ObjectSpace.define_finalizer(@id, method(:cleanup_callback_queue))
     end
 
     def callback_queue
-      @callback_queue ||= MessageQueue.new
+      return @callback_queue if instance_variable_defined?(:@callback_queue)
+
+      @callback_queue = MessageQueue.new
+      @object_id = SecureRandom.uuid
+      ObjectSpace.define_finalizer(@object_id, cleanup_callback_queue)
     end
 
     # Evaluate in current context
