@@ -53,9 +53,9 @@ module FiniteMachine
     def callback_queue
       return @callback_queue if instance_variable_defined?(:@callback_queue)
 
-      @callback_queue = MessageQueue.new
       @object_id = SecureRandom.uuid
       ObjectSpace.define_finalizer(@object_id, cleanup_callback_queue)
+      @callback_queue = MessageQueue.new
     end
 
     # Evaluate in current context
