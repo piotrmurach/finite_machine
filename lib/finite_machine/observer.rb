@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require "securerandom"
+
 require_relative "async_call"
 require_relative "callable"
 require_relative "hook_event"
