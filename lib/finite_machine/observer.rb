@@ -15,21 +15,6 @@ module FiniteMachine
   class Observer < GenericDSL
     include Safety
 
-    # Clean up callback queue
-    #
-    # @api private
-    def cleanup_callback_queue
-      proc do
-        begin
-          ObjectSpace.undefine_finalizer(@object_id)
-          if callback_queue.alive?
-            callback_queue.shutdown
-          end
-        rescue MessageQueueDeadError
-        end
-      end
-    end
-
     # The current state machine
     attr_reader :machine
 
@@ -43,19 +28,10 @@ module FiniteMachine
     #
     # @api public
     def initialize(machine)
-      @machine   = machine
-      @hooks     = Hooks.new
-      @object_id = nil
+      @machine = machine
+      @hooks   = Hooks.new
 
       @machine.subscribe(self)
-    end
-
-    def callback_queue
-      return @callback_queue if instance_variable_defined?(:@callback_queue)
-
-      @object_id = SecureRandom.uuid
-      ObjectSpace.define_finalizer(@object_id, cleanup_callback_queue)
-      @callback_queue = MessageQueue.new
     end
 
     # Evaluate in current context
@@ -209,6 +185,35 @@ module FiniteMachine
       async_call = AsyncCall.new(machine, callable, trans_event, *data)
       callback_queue.start unless callback_queue.running?
       callback_queue << async_call
+    end
+
+    # Get an existing callback queue or create a new one
+    #
+    # @return [FiniteMachine::MessageQueue]
+    #
+    # @api private
+    def callback_queue
+      @callback_queue ||= MessageQueue.new.tap do
+        @queue_id = SecureRandom.uuid
+        ObjectSpace.define_finalizer(@queue_id, proc do
+          cleanup_callback_queue
+        end)
+      end
+    end
+
+    # Clean up the callback queue
+    #
+    # @return [Boolean, nil]
+    #
+    # @api private
+    def cleanup_callback_queue
+      ObjectSpace.undefine_finalizer(@queue_id) if @queue_id
+      return unless @callback_queue && callback_queue.alive?
+
+      begin
+        callback_queue.shutdown
+      rescue MessageQueueDeadError
+      end
     end
 
     # Create callable instance
