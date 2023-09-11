@@ -119,16 +119,18 @@ module FiniteMachine
       timeout.nil? ? @thread.join : @thread.join(timeout)
     end
 
-    # Shut down this event queue and clean it up
+    # Shut down this message queue and clean it up
     #
     # @example
-    #   event_queue.shutdown
+    #   message_queue.shutdown
+    #
+    # @raise [FiniteMachine::MessageQueueDeadError]
     #
     # @return [Boolean]
     #
     # @api public
     def shutdown
-      raise EventQueueDeadError, "event queue already dead" if @dead
+      raise MessageQueueDeadError, "message queue already dead" if @dead
 
       queue = []
       @mutex.synchronize do

@@ -3,6 +3,7 @@
 ### Fixed
 * Fix defining object finalizer in Ruby 3.1 to reference a UUID string
   by Vadim Kononov(@vkononov)
+* Fix message queue shutdown to raise valid error
 
 ## [v0.14.0] - 2020-09-12
 

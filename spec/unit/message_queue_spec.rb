@@ -59,4 +59,15 @@ RSpec.describe FiniteMachine::MessageQueue do
     expect(event_queue.running?).to be(false)
     event_queue.join(0.001)
   end
+
+  it "raises an error when the message queue is already shut down" do
+    message_queue = described_class.new
+    message_queue.start
+    message_queue.shutdown
+
+    expect {
+      message_queue.shutdown
+    }.to raise_error(FiniteMachine::MessageQueueDeadError,
+                     "message queue already dead")
+  end
 end
