@@ -4,17 +4,17 @@ require_relative "listener"
 require "thread"
 
 module FiniteMachine
-  # Allows for storage of asynchronous messages such as events
+  # Responsible for storage of asynchronous messages such as events
   # and callbacks.
   #
-  # Used internally by {Observer} and {StateMachine}
+  # Used internally by {Observer}
   #
   # @api private
   class MessageQueue
-    # Initialize an event queue in separate thread
+    # Initialize a MessageQueue
     #
     # @example
-    #   MessageQueue.new
+    #   message_queue = FiniteMachine::MessageQueue.new
     #
     # @api public
     def initialize
@@ -28,6 +28,11 @@ module FiniteMachine
 
     # Start a new thread with a queue of callback events to run
     #
+    # @example
+    #   message_queue.start
+    #
+    # @return [Thread, nil]
+    #
     # @api private
     def start
       return if running?
@@ -35,7 +40,9 @@ module FiniteMachine
       @mutex.synchronize { spawn_thread }
     end
 
-    # Spawn new background thread
+    # Spawn a new background thread
+    #
+    # @return [Thread]
     #
     # @api private
     def spawn_thread
@@ -45,18 +52,27 @@ module FiniteMachine
       end
     end
 
+    # Check whether or not the message queue is running
+    #
+    # @example
+    #   message_queue.running?
+    #
+    # @return [Boolean]
+    #
+    # @api public
     def running?
       !@thread.nil? && alive?
     end
 
-    # Add asynchronous event to the event queue to process
+    # Add an asynchronous event to the message queue to process
     #
     # @example
-    #   event_queue << AsyncCall.build(...)
+    #   message_queue << AsyncCall.build(...)
     #
-    # @param [AsyncCall] event
+    # @param [FiniteMachine::AsyncCall] event
+    #   the event to add
     #
-    # @return [nil]
+    # @return [void]
     #
     # @api public
     def <<(event)
@@ -70,7 +86,12 @@ module FiniteMachine
       end
     end
 
-    # Add listener to the queue to receive messages
+    # Add a listener for the message queue to receive notifications
+    #
+    # @example
+    #   message_queue.subscribe { |event| ... }
+    #
+    # @return [void]
     #
     # @api public
     def subscribe(*args, &block)
@@ -81,20 +102,20 @@ module FiniteMachine
       end
     end
 
-    # Check if there are any events to handle
+    # Check whether or not there are any messages to handle
     #
     # @example
-    #   event_queue.empty?
+    #   message_queue.empty?
     #
     # @api public
     def empty?
       @mutex.synchronize { @queue.empty? }
     end
 
-    # Check if the event queue is alive
+    # Check whether or not the message queue is alive
     #
     # @example
-    #   event_queue.alive?
+    #   message_queue.alive?
     #
     # @return [Boolean]
     #
@@ -103,14 +124,15 @@ module FiniteMachine
       @mutex.synchronize { !@dead }
     end
 
-    # Join the event queue from current thread
+    # Join the message queue from the current thread
     #
     # @param [Fixnum] timeout
+    #   the time limit
     #
     # @example
-    #   event_queue.join
+    #   message_queue.join
     #
-    # @return [nil, Thread]
+    # @return [Thread, nil]
     #
     # @api public
     def join(timeout = nil)
@@ -146,10 +168,10 @@ module FiniteMachine
       true
     end
 
-    # Get number of events waiting for processing
+    # The number of messages waiting for processing
     #
     # @example
-    #   event_queue.size
+    #   message_queue.size
     #
     # @return [Integer]
     #
@@ -158,6 +180,14 @@ module FiniteMachine
       @mutex.synchronize { @queue.size }
     end
 
+    # Inspect this message queue
+    #
+    # @example
+    #   message_queue.inspect
+    #
+    # @return [String]
+    #
+    # @api public
     def inspect
       @mutex.synchronize do
         "#<#{self.class}:#{object_id.to_s(16)} @size=#{size}, @dead=#{@dead}>"
@@ -166,9 +196,12 @@ module FiniteMachine
 
     private
 
-    # Notify consumers about process event
+    # Notify listeners about the event
     #
-    # @param [AsyncCall] event
+    # @param [FiniteMachine::AsyncCall] event
+    #   the event to notify listeners about
+    #
+    # @return [void]
     #
     # @api private
     def notify_listeners(event)
@@ -197,6 +230,14 @@ module FiniteMachine
       Logger.error "Error while running event: #{Logger.format_error(ex)}"
     end
 
+    # Log discarded message
+    #
+    # @param [FiniteMachine::AsyncCall] message
+    #   the message to discard
+    #
+    # @return [void]
+    #
+    # @api private
     def discard_message(message)
       Logger.debug "Discarded message: #{message}" if $DEBUG
     end
