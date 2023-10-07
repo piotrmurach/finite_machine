@@ -4,6 +4,7 @@
 * Fix defining object finalizer in Ruby 3.1 to reference a UUID string
   by Vadim Kononov(@vkononov)
 * Fix message queue shutdown to raise valid error
+* Fix any_event and any_state methods in the define method and definition class
 
 ## [v0.14.0] - 2020-09-12
 

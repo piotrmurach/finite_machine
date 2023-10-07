@@ -1,26 +1,27 @@
 # frozen_string_literal: true
 
-RSpec.describe FiniteMachine::Definition, "definition" do
-
+RSpec.describe FiniteMachine::Definition do
   before do
-    class Engine < FiniteMachine::Definition
+    stub_const("Engine", Class.new(described_class) do
       initial :neutral
 
-      event :forward, [:reverse, :neutral] => :one
+      event :forward, %i[reverse neutral] => :one
       event :shift, :one => :two
       event :shift, :two => :one
-      event :back,  [:neutral, :one] => :reverse
+      event :back,  %i[neutral one] => :reverse
 
-      on_enter :reverse do |event|
+      on_enter :reverse do
         target.turn_reverse_lights_on
       end
 
-      on_exit :reverse do |event|
+      on_exit :reverse do
         target.turn_reverse_lights_off
       end
 
-      handle FiniteMachine::InvalidStateError do |exception| end
-    end
+      handle FiniteMachine::InvalidStateError do
+        target.turn_reverse_lights_off
+      end
+    end)
   end
 
   it "creates unique instances" do
@@ -35,7 +36,7 @@ RSpec.describe FiniteMachine::Definition, "definition" do
     expect(engine_b.current).to eq(:neutral)
   end
 
-  it "allows to create standalone machine" do
+  it "creates a standalone machine" do
     stub_const("Car", Class.new do
       def turn_reverse_lights_off
         @reverse_lights = false
@@ -61,38 +62,77 @@ RSpec.describe FiniteMachine::Definition, "definition" do
     engine.back
     expect(engine.current).to eq(:reverse)
     expect(car.reverse_lights?).to eq(true)
+
+    engine.shift
+    expect(engine.current).to eq(:reverse)
+    expect(car.reverse_lights?).to eq(false)
   end
 
-  it "supports inheritance of definitions" do
-    class GenericStateMachine < FiniteMachine::Definition
+  it "uses any_state method inside the definition class" do
+    stub_const("TrafficLights", Class.new(described_class) do
+      initial :green
+
+      event :slow, any_state => :yellow
+
+      on_enter(any_state) { |event| target << "enter_#{event.to}" }
+      on_transition(any_state) { |event| target << "transition_#{event.to}" }
+      on_exit(any_state) { |event| target << "exit_#{event.from}" }
+    end)
+
+    fsm = TrafficLights.new(called = [])
+    fsm.slow
+
+    expect(fsm.current).to eq(:yellow)
+    expect(called).to eq(%w[exit_green transition_yellow enter_yellow])
+  end
+
+  it "uses any_event method inside the definition class" do
+    stub_const("TrafficLights", Class.new(described_class) do
+      initial :green
+
+      event :slow, :green => :yellow
+
+      on_before(any_event) { |event| target << "before_#{event.name}" }
+      on_after(any_event) { |event| target << "after_#{event.name}" }
+    end)
+
+    fsm = TrafficLights.new(called = [])
+    fsm.slow
+
+    expect(fsm.current).to eq(:yellow)
+    expect(called).to eq(%w[before_slow after_slow])
+  end
+
+  it "supports definitions inheritance" do
+    stub_const("GenericStateMachine", Class.new(described_class) do
       initial :red
 
       event :start, :red => :green
 
-      on_enter { |event| target << "generic" }
-    end
+      on_enter { target << "generic" }
+    end)
 
-    class SpecificStateMachine < GenericStateMachine
+    stub_const("SpecificStateMachine", Class.new(GenericStateMachine) do
       event :stop, :green => :yellow
 
-      on_enter(:yellow) { |event| target << "specific" }
-    end
+      on_enter(:yellow) { target << "specific" }
+    end)
 
     called = []
     generic_fsm  = GenericStateMachine.new(called)
     specific_fsm = SpecificStateMachine.new(called)
 
-    expect(generic_fsm.states).to match_array([:none, :red, :green])
-    expect(specific_fsm.states).to match_array([:none, :red, :green, :yellow])
+    expect(generic_fsm.states).to match_array(%i[none red green])
+    expect(specific_fsm.states).to match_array(%i[none red green yellow])
 
     expect(specific_fsm.current).to eq(:red)
 
     specific_fsm.start
     expect(specific_fsm.current).to eq(:green)
-    expect(called).to match_array(["generic"])
+    expect(called).to eq(%w[generic])
 
     specific_fsm.stop
     expect(specific_fsm.current).to eq(:yellow)
-    expect(called).to match_array(["generic", "generic", "specific"])
+    expect(called).to eq(%w[generic generic specific])
   end
 end

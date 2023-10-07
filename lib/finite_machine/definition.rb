@@ -1,30 +1,38 @@
 # frozen_string_literal: true
 
 module FiniteMachine
-  # A class responsible for defining standalone state machine
+  # Responsible for defining a standalone state machine
+  #
+  # @api public
   class Definition
-    # The machine deferreds
+    # The any event constant
     #
-    # @return [Array[Proc]]
+    # @example
+    #   on_before(any_event) { ... }
     #
-    # @api private
-    def self.deferreds
-      @deferreds ||= []
+    # @return [FiniteMachine::Const]
+    #
+    # @api public
+    def self.any_event
+      ANY_EVENT
     end
 
-    # Add deferred
+    # The any state constant
     #
-    # @param [Proc] deferred
-    #   the deferred execution
+    # @example
+    #   event :go, any_state => :green
     #
-    # @return [Array[Proc]]
+    # @example
+    #   on_enter(any_state) { ... }
     #
-    # @api private
-    def self.add_deferred(deferred)
-      deferreds << deferred
+    # @return [FiniteMachine::Const]
+    #
+    # @api public
+    def self.any_state
+      ANY_STATE
     end
 
-    # Instantiate a new Definition
+    # Initialize a StateMachine
     #
     # @example
     #   class Engine < FiniteMachine::Definition
@@ -43,7 +51,12 @@ module FiniteMachine
       end
     end
 
-    # Set deferrerd methods on the subclass
+    # Add deferred methods to the subclass
+    #
+    # @param [Class] subclass
+    #   the inheriting subclass
+    #
+    # @return [void]
     #
     # @api private
     def self.inherited(subclass)
@@ -52,11 +65,35 @@ module FiniteMachine
       deferreds.each { |d| subclass.add_deferred(d) }
     end
 
+    # The state machine deferreds
+    #
+    # @return [Array<Proc>]
+    #
+    # @api private
+    def self.deferreds
+      @deferreds ||= []
+    end
+
+    # Add deferred
+    #
+    # @param [Proc] deferred
+    #   the deferred execution
+    #
+    # @return [Array<Proc>]
+    #
+    # @api private
+    def self.add_deferred(deferred)
+      deferreds << deferred
+    end
+
     # Delay lookup of DSL method
     #
     # @param [Symbol] method_name
+    #   the method name
+    # @param [Array] arguments
+    #   the method arguments
     #
-    # @return [nil]
+    # @return [void]
     #
     # @api private
     def self.method_missing(method_name, *arguments, &block)
