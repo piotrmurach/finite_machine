@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.version       = FiniteMachine::VERSION
   spec.authors       = ["Piotr Murach"]
   spec.email         = ["piotr@piotrmurach.com"]
-  spec.description   = %q{A minimal finite state machine with a straightforward syntax. You can quickly model states, add callbacks and use object-oriented techniques to integrate with ORMs.}
-  spec.summary       = %q{A minimal finite state machine with a straightforward syntax.}
+  spec.description   = "A minimal finite state machine with a straightforward syntax. You can quickly model states, add callbacks and use object-oriented techniques to integrate with ORMs."
+  spec.summary       = "A minimal finite state machine with a straightforward syntax."
   spec.homepage      = "https://piotrmurach.github.io/finite_machine/"
   spec.license       = "MIT"
 
@@ -17,10 +17,11 @@ Gem::Specification.new do |spec|
     spec.metadata["changelog_uri"] = "https://github.com/piotrmurach/finite_machine/blob/master/CHANGELOG.md"
     spec.metadata["documentation_uri"] = "https://www.rubydoc.info/gems/finite_machine"
     spec.metadata["homepage_uri"] = spec.homepage
+    spec.metadata["rubygems_mfa_required"] = "true"
     spec.metadata["source_code_uri"] = "https://github.com/piotrmurach/finite_machine"
   end
 
-  spec.files         = Dir["lib/**/*"]
+  spec.files = Dir["lib/**/*"]
   spec.extra_rdoc_files = ["README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 2.0.0"
