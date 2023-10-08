@@ -5,6 +5,8 @@
   by Vadim Kononov(@vkononov)
 * Fix message queue shutdown to raise valid error
 * Fix any_event and any_state methods in the define method and definition class
+* Fix hooks_map initialization to be fully thread-safe
+  by Maciej Mensfeld(@mensfeld)
 
 ## [v0.14.0] - 2020-09-12
 
