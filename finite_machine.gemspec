@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
 
   if spec.respond_to?(:metadata)
     spec.metadata["allowed_push_host"] = "https://rubygems.org"
+    spec.metadata["bug_tracker_uri"] = "https://github.com/piotrmurach/finite_machine/issues"
     spec.metadata["changelog_uri"] = "https://github.com/piotrmurach/finite_machine/blob/master/CHANGELOG.md"
     spec.metadata["documentation_uri"] = "https://www.rubydoc.info/gems/finite_machine"
     spec.metadata["homepage_uri"] = spec.homepage
