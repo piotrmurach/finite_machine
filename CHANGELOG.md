@@ -1,5 +1,7 @@
 # Change Log
 
+## [v0.14.1] - 2023-10-08
+
 ### Fixed
 * Fix defining object finalizer in Ruby 3.1 to reference a UUID string
   by Vadim Kononov(@vkononov)
@@ -320,6 +322,7 @@
 
 * Initial release
 
+[v0.14.1]: https://github.com/piotrmurach/finite_machine/compare/v0.14.0...v0.14.1
 [v0.14.0]: https://github.com/piotrmurach/finite_machine/compare/v0.13.0...v0.14.0
 [v0.13.0]: https://github.com/piotrmurach/finite_machine/compare/v0.12.1...v0.13.0
 [v0.12.1]: https://github.com/piotrmurach/finite_machine/compare/v0.12.0...v0.12.1
